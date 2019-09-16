@@ -1,28 +1,11 @@
-# WAVEFRONT PARSER VERSION 3
+# EVENT
 
+WARNING: Work in Progress.  This document needs to be cleaned up.
 
-## Testing Methodology
+This is a simple event processing system that I pulled from a subsystem in my private "WF Parser Version 3"
+ongoing project.  The original history is preserved, but I'll be deleting much of the content not related to
+the event system.
 
-The user acceptance tests define the behaviour of the system from the product owner's perspective.  They are used to
-demonstrate the correct behaviour of the system.  The system is structured into several different subsystems.  The
-most important subsystem are the domain objects defined in the "com.nickmlanglois.wfp3.api.*" packages.  All other subsystems,
-including the parser itself will be implemented based on these base subsystems.  The user acceptance tests are
-written solely based on the published APIs of their respective subsystems.  This may result in duplication of testing
-if the implementation results in shared classes that is not evident in the published APIs.  Similarly, the
-implementation may result in classes or methods not visible from the published APIs.  Testing coverage analysis may
-indicate that these implementation artifacts require additional tests to achieve sufficient testing coverage.  Any
-such supplemental testing will be covered through unit testing.
-
-In consideration of the extent of the coverage for the published APIs: The acceptance tests are defined by the user
-stories acceptance criteria for visible behaviour, and all published API classes are visible, then any behaviour that
-is associated with a published class is required to be defined by the acceptance tests, even if the user stories do
-not explicitly state the behaviour in their acceptance criteria.
-
-
-## Subsystems
-
-
-### Subsystems: Event Subsystem
 
 WARN: I renamed the "message" subsystem to "event" but did not update the notes in this section.  The subsystem
 is more accurately implemented as an event system and follows a simple event driven architecture.
@@ -231,115 +214,6 @@ For initialization, use ONLY the actual instances of Channel, Event, when creati
 However, for processing requests, use ONLY the UIDs.
      
 
-### Subsystems: The Guard And Constraint Subsystem
-  
-Rough description
-   * I want to create another small subsystem in a package called "com.nickmlanglois.guard" that provides
-     reusable guard code that can be used throughout all other subsystems, but I am having a
-     difficult time figuring out how to structure the code so that the guard code supports optionally
-     throwing exceptions, especially checked exceptions, without explicitly adding a generic
-     "throws Exception" to the method interface.  I probably need to implement two interfaces within
-     the subsystem.  One to mark a parameter to check for a specific condition.  Another to perform
-     a specific action when that condition occurs.  The former method would never need to specify
-     a throws clause.  The latter method would be implementation specific and might specify a
-     throws clause.  I'm not sure that gets me any further ahead ...  Leave this until later.  If
-     you do write this, make it a whitelist instead of a blacklist.  Also, you should set the
-     naming convention you want to specify as compatible with Java package, class, and data field
-     names for group, type, and field names respectively.  This would permit you to potentially
-     defined annotations that automatically determined most of the data.  The only thing not set
-     is the instance name which would be set in the annotation.  You should look at the Java
-     validation framework.  It is an annotation based solution that you could potentially
-     base your solution on.  At least some of the default annotations can be applied to
-     method parameters.  Would be interesting to see if these or annotations of your own
-     creation could be used.
-   * The message subsystem contains "Constraint" and "ConstraintViolation" implementations that
-     really don't belong in the message subsystem.  This is a similar concept to the "guard"
-     subsystem I've mentioned previously and maybe should be rolled into that.  I'll leave it for
-     now since I'm busy replacing the localization implementation at the moment but maybe after
-     that the next step is to build the guard / constraints solution.  The constraints are things
-     like the length of UIDs, length of descriptions, naming conventions, ...
-   * I like the validation implementation in the Localizer more than the validation implementation
-     for the "statement" or "document" subsystems.  I think it makes more sense since I get better
-     code reuse and having all the validation in the factory instead of the constructors means
-     that no memory allocation is incurred until after I know the data being used is valid.
-   * NOTE: While writing the StubUidFactory, it occurred to me that the primary difference between
-     the StubUidFactory and the UidFactory is that the latter validates its inputs and the former
-     does not.  Looking at the structure of the code, it would be easy to separate the validation
-     from the creation using a simple Decorator pattern to wrap the creator factor with the
-     validator factory.  This same concept could be further used to wrap the creator with a
-     caching factory and then the validator.  The validator first validates the input, the caching
-     factory checks to see if an instance with the given input parameters already exists, and if
-     not, the creator factory creates one!  All with very clear roles and responsibilities.
-
-
-### Subsystems: The Localizer Subsystem
-
-work:
-   * For LocalizerBundle, I am using an OrderedSet as the data structure.  I think that is wrong.
-     I think what I want is for the LocalizerBundle to maintain the order in which they are added
-     to the Localizer.  This would be different from OrderedSet which will order the
-     LocalizerBundle instances according to their natural order.  Very different.
-   * I want some means to validate the localization at test time so that I can compare all defined field instances
-     against the configured localization and know EXACTLY where each field is defined AND be able to easily compare
-     to ensure it is defined as expected.
-   * I don't like Java properties files and never have.  You should implement the localization resource bundle data
-     as a JSON file, or something, so that it has more structure and internal validation.  But how would it be
-     extendible if someone wants to localize existing data to yet another locale?
-   * Not sure I like using a checked exception.  Finish implementation and review.  The objective of the new Localizer
-     implementation is to ensure there are no unneeded exceptions during runtime.  This also applies to casting errors.
-     From a reuse perspective, it makes more sense to use the standard, conventional Java casting exception instead
-     of rolling your own.  But, the API implementation must check itself, early, right when the object passed in by
-     the client to follow the "fail-fast" convention.  Thus the consequences of the bad client implementation are
-     determined earlier rather than later.
-   * WARNING: There could be overlap between different fields that LOOK distinct based on how the
-     types and fields are named.  That is, the LocalizerType and LocalizerField instances are all
-     unique but the fully qualified names for the fields can be exactly the same.  Since it is the
-     FQDN that are used in the localization properties files, this is an issue.  You should solve this
-     problem, but get things working, first.
-   * Right now the Localizer interface setLocale() throws a LocalizerException, although the CompositeLocalizer
-     class should never throw this exception since it will always set SOME localization bundle.  You should
-     refactor to remove the throws clause from the published interface and have another internal method
-     defined in the internal interface for the Localizer implementations to implement.  The internal class
-     implementations should just throw an unsupported exception for their implementations of the published
-     API since it does not make sense for them to implement them.  You cannot invert the inheritance
-     hierarchy between the published and internal interfaces since this would cause the internal methods
-     to be visible in the published API.
-   * I think it was a mistake to enforce a specific naming convention / structure within the localizer
-     subsystem.  The naming convention should be defined by the system that uses it.  At most the localizer
-     should have something like the LocalizerType with one named field and MAYBE the LocalizerInstance.
-     Maybe the localizer instance does not even use its name when resolving the localized resource.  The
-     role of the LocalizerInstance is just to mark where class data fields use a localized resource.  The
-     actual localized resource is defined in the LocalizerType (whatever it should be called) instances.
-
-
-### Subsystems: The Connect Subsystem
-
-Rough:
-  * very poorly defined at the moment.
-  * the idea is to have similar interfaces between subsystems to simplify integrating them.  The problem is that
-    I don't have a good idea how to do this yet.  So, thus far, I am just implementing similar interfaces between
-    subsystems to see if anything can be done to make them consistent enough.
-  * All the subsystem interconnection logic MUST (by definition practically) be defined outside those subsystems.
-    You'd have one subsystem that defines the connections points and the connections in a generic way.  Possibly
-    only interfaces.  Then for the overall software system, an "integration" subsystem that implements all the
-    connection points and connections.  The connection points and connections would define the services that
-    each subsystem is required to provide.
-  * The connection subsystem would be like the "wrap" subsystem.  In fact, the "wrap" subsystem should just
-    implement the appropriate connection interfaces.
-  * Also, continue to define very similar interfaces at a subsystem level.  Eventually, I would
-    like to implement what I intended to implement in the "connect" subsystem.  It is just too
-    soon, right now, because I don't see the requirements, yet.
-
-
-### Subsystems: The UID Subsystem
-
-Rough:
-   * There is an issue in the UID subsystem that will cause an integration problem when it is
-     integrated with the Localizer subsystem.  The scenario where you try and recreate the same
-     UID using "UidFactory.createUid(...)" twice in a row with the same parameters will fail the
-     second time.  What it should do is return the same instance the second time that was created
-     the first.
-     
   
 ### Subsystems: All Subsystems In General
 
@@ -353,32 +227,3 @@ Rough:
      should not be too extensive to reduce redundancy and should only indicate that ... what?
      Think about what the integration testing should prove in more concrete and limited terms.
      
-## Rough Notes
-
-You should rename the "DocumentView" to "DocumentModel" because that is what it is.  When you start implementing
-things like the "validation" subsystem, then the created validation data structures would be a view of the document
-model, following the Model-View-Controller design pattern.  The same thing for the parser.
-
-When implementing the copying of malicious, mutable data ensure you also handle those statements that contain complex
-member data, such as VertexReferenceGroup containing VertexReferences.  You'll also need to handle defensive copying
-for BigDecimal since it has an implementation flaw (missing "final" keyword in class definition) so it can be sub
-classed and made modifiable.  NOTE: you have a prototype solution for testing BasisMatrix for copying, only.  Try
-making the implementation as simple as possible so that you don't have to write too much code.  You'll have to test
-both creating objects, data members that are non-final classes (BigDecimal) and data members that are classes defined
-in this subsystem.
-   * NOTE: You want to add additional testing to MutabilityTester to ensure the defensive copy ONLY occurs if the
-     object being copied is NOT the expected type.
-
-After completing the acceptance tests, check testing coverage to find where supplemental unit testing is required.
-
-You should probably review and clean up the Javadoc for the published APIs.  For example, you should move the
-discussion about the vertex references from the vertex implementations into the vertex reference implementations.
-
-If you start using singleton, and fly weight patterns in the implementation, it would make more sense to do so
-on a StatementFactory by StatementFactory basis, since eventually you want to be able to start setting different
-policies changing behaviours when creating the StatementFactory.
-
-It may make the interface simpler to use, and it is possible to enforce the minimum number of members
-for statements with lists of things if you use varargs.  Actually, I'm not sure whether this idea will work
-well with the parser.  I'll leave this idea until last.  NOTE: I started working on a solution for this in
-the branch "refactor".  I'll keep it for now, but this work is no longer a priority.
