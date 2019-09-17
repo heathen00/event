@@ -4,11 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import java.security.InvalidParameterException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -155,19 +157,20 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  public void EventCore_addValidSubscriberToChannelBeforeChannelIsOpen_subscriberSuccessfullyRegistered() {
-    final Subscriber expectedSubscriber = accumulatorSubscriberStub;
+  public void EventCore_addSubscriberToChannelBeforeChannelIsOpen_subscriberSuccessfullyRegistered() {
     final String expectedChannelName = "test.channel";
     final boolean expectedIsOpen = false;
     final List<EventDescription> expectedEventDescriptionsList = Collections.emptyList();
     final List<Publisher> expectedPublishersList = Collections.emptyList();
-    final Channel channel = eventFactory.createChannel(expectedChannelName);
+    final Channel expectedChannel = eventFactory.createChannel(expectedChannelName);
+    final Subscriber subscriber = accumulatorSubscriberStub;
 
-    eventFactory.addSubscriber(channel, expectedSubscriber);
+    eventFactory.addSubscriber(expectedChannel, subscriber);
 
     assertEventCore.assertExpectedChannel(expectedChannelName, expectedIsOpen,
-        expectedEventDescriptionsList, expectedPublishersList, Arrays.asList(expectedSubscriber),
-        channel);
+        expectedEventDescriptionsList, expectedPublishersList, Arrays.asList(subscriber),
+        subscriber.getChannel());
+    assertEquals(expectedChannel, subscriber.getChannel());
   }
 
   @Test
@@ -427,13 +430,14 @@ public class EventCoreAcceptanceTests {
     final boolean expectedIsOpen = false;
     final List<EventDescription> expectedEventsList = Collections.emptyList();
     final List<Publisher> expectedPublishersList = Collections.emptyList();
-    Channel channel = eventFactory.createChannel(expectedChannelName);
+    Channel expectedChannel = eventFactory.createChannel(expectedChannelName);
+    Subscriber subscriber = accumulatorSubscriberStub;
 
-    eventFactory.addSubscriber(channel, accumulatorSubscriberStub);
-    eventFactory.addSubscriber(channel, accumulatorSubscriberStub);
+    eventFactory.addSubscriber(expectedChannel, subscriber);
+    eventFactory.addSubscriber(expectedChannel, subscriber);
 
     assertEventCore.assertExpectedChannel(expectedChannelName, expectedIsOpen, expectedEventsList,
-        expectedPublishersList, Arrays.asList(accumulatorSubscriberStub), channel);
+        expectedPublishersList, Arrays.asList(subscriber), subscriber.getChannel());
   }
 
   @Test
@@ -1416,12 +1420,41 @@ public class EventCoreAcceptanceTests {
         accumulatorSubscriberStub.getProcessedPublishedEventList().get(1));
   }
 
+  @Test
+  public void EventCore_addSubscriberWhenSubscriberGetNameReturnsNull_nullPointerExceptionIsThrown() {
+    fail("not implemented yet");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_addSubscriberWhenSubscriberGetNameThrowsException_unsupportedOperationExceptionIsThrown() {
+    // TODO implementation note: wrap the thrown exception.
+    fail("not implemented yet");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_addSubscriberWhenSubscriberGetNameReturnsEmptyString_invalidParameterExceptionIsThrown() {
+    fail("not implemented yet");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_addSubscriberWithMutableName_subscriberContinuesToReceiveEvents() {
+    fail("not implemented yet");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_addSubscriberThenMutateNameThenAddSubscriber_subscriberOnlyAddedOnce() {
+    // TODO implementation note: I'm not even sure I can implement this, but I want the behaviour to
+    // be similar to adding the same subscriber twice. Maybe use a map to map subscriber names to
+    // external subscriber implementations.
+    fail("not implemented yet");
+  }
+
   /*
    * Rough:
-   * 
-   * You need to test to ensure the Subscriber.getName() method is properly implemented.
-   * 
-   * You'll need more tests for the now published getChannel methods in Subscriber.
    * 
    * Register two subscribers. Publish a number of events. First subscriber requests a resend of all
    * published events. First subscriber receives all published events in the order they were
