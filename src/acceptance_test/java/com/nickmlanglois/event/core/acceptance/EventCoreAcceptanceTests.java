@@ -9,12 +9,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import com.nickmlanglois.event.core.AccumulatorSubscriberStub;
 import com.nickmlanglois.event.core.AssertEventCore;
 import com.nickmlanglois.event.core.AssertNaturalOrder;
+import com.nickmlanglois.event.core.AssertNaturalOrder.Relation;
 import com.nickmlanglois.event.core.Channel;
 import com.nickmlanglois.event.core.Event;
 import com.nickmlanglois.event.core.EventDescription;
@@ -23,7 +25,6 @@ import com.nickmlanglois.event.core.Publisher;
 import com.nickmlanglois.event.core.Subject;
 import com.nickmlanglois.event.core.SubjectStub;
 import com.nickmlanglois.event.core.Subscriber;
-import com.nickmlanglois.event.core.AssertNaturalOrder.Relation;
 
 public class EventCoreAcceptanceTests {
 
@@ -1402,6 +1403,21 @@ public class EventCoreAcceptanceTests {
     assertNaturalOrder.assertExpectedRelation(leftOperand, Relation.GT, rightOperand);
   }
 
+  @Test
+  @Ignore("not implemented yet but needs refactoring first")
+  public void EventCore_subscriberRequestsPublishedEventResentWhenOnlyOnePublishedEvent_subscriberReceivesOnePublishedEvent() {
+    eventFactory.addSubscriber(defaultTestChannel, accumulatorSubscriberStub);
+    eventFactory.openChannel(defaultTestChannel);
+    defaultTestPublisher.publish(defaultTestEventDescription);
+
+    // accumulatorSubscriberStub.resendAllCurrentPublishedEvents();
+
+    assertEventCore.assertExpectedEvent(defaultTestEventDescription,
+        accumulatorSubscriberStub.getProcessedPublishedEventList().get(0));
+    assertEventCore.assertExpectedEvent(defaultTestEventDescription,
+        accumulatorSubscriberStub.getProcessedPublishedEventList().get(1));
+  }
+
   /*
    * Rough:
    * 
@@ -1437,6 +1453,12 @@ public class EventCoreAcceptanceTests {
    * at the Factory level which, in turn implies "disable". After that, I could potentially
    * implement some intelligence in the InternalSystem itself for monitoring to ensure instances are
    * still being used and closing them otherwise.
+   * 
+   * How much do you trust the externally implemented Subscriber getName()? Maybe its value should
+   * be cached?
+   * 
+   * What if an External Subscriber implementation does not use the default Subscriber base class
+   * default constructor?
    */
 
 }
