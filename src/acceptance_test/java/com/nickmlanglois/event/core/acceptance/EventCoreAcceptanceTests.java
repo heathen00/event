@@ -1405,9 +1405,6 @@ public class EventCoreAcceptanceTests {
   /*
    * Rough:
    * 
-   * Could the channel be broken down into parameter validation / cache / processing layers, too,
-   * using the decorator pattern in a similar way to the factory?
-   * 
    * Register two subscribers. Publish a number of events. First subscriber requests a resend of all
    * published events. First subscriber receives all published events in the order they were
    * originally sent. Second subscriber does not. As a point of clarification, the objective is NOT
@@ -1440,9 +1437,6 @@ public class EventCoreAcceptanceTests {
    * at the Factory level which, in turn implies "disable". After that, I could potentially
    * implement some intelligence in the InternalSystem itself for monitoring to ensure instances are
    * still being used and closing them otherwise.
-   * 
-   * After all the refactoring, implement something to get rid of the two warnings that have been
-   * lingering forever.
    */
 
 }

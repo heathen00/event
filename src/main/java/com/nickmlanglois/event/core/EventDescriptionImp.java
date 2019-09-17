@@ -1,15 +1,12 @@
 package com.nickmlanglois.event.core;
 
 final class EventDescriptionImp implements EventDescription {
-  private final EventFactoryInternal eventFactoryInternal;
   private final Channel channel;
   private final String family;
   private final String name;
   private final EventDescriptionNaturalOrderImp eventDescriptionNaturalOrder;
 
-  EventDescriptionImp(EventFactoryInternal eventFactoryInternal, Channel channel, String family,
-      String name) {
-    this.eventFactoryInternal = eventFactoryInternal;
+  EventDescriptionImp(Channel channel, String family, String name) {
     this.channel = channel;
     this.family = family;
     this.name = name;

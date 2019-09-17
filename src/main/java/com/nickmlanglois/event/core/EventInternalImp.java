@@ -1,19 +1,16 @@
 package com.nickmlanglois.event.core;
 
 public final class EventInternalImp extends NaturalOrderBase<Event> implements Event {
-  private final EventFactoryInternal eventFactoryInternal;
   private final EventDescription eventDescription;
   private final Subject subject;
 
-  EventInternalImp(EventFactoryInternal eventFactoryInternal, EventDescription eventDescription,
-      Subject subject) {
-    this.eventFactoryInternal = eventFactoryInternal;
+  EventInternalImp(EventDescription eventDescription, Subject subject) {
     this.eventDescription = eventDescription;
     this.subject = subject;
   }
 
   EventInternalImp(EventFactoryInternal eventFactoryInternal, Event event, Subject subject) {
-    this(eventFactoryInternal, event.getEventDescription(), subject);
+    this(event.getEventDescription(), subject);
   }
 
   @Override

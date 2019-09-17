@@ -1,11 +1,9 @@
 package com.nickmlanglois.event.core;
 
 public final class PublisherImp implements Publisher {
-  private final EventFactoryInternal eventFactoryInternal;
   private final ChannelInternal channelInternal;
 
-  PublisherImp(EventFactoryInternal eventFactoryInternal, ChannelInternal channelInternal) {
-    this.eventFactoryInternal = eventFactoryInternal;
+  PublisherImp(ChannelInternal channelInternal) {
     this.channelInternal = channelInternal;
   }
 

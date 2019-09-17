@@ -13,8 +13,8 @@ final class ChannelInternalCoreImp extends NaturalOrderBase<Channel> implements 
   private final Map<Event, Set<Publisher>> publishedEventToPublisherMap;
   private boolean isOpen;
 
-  ChannelInternalCoreImp(EventFactoryInternal eventFactoryInternal, ChannelInternal rootChannelInternal,
-      String name) {
+  ChannelInternalCoreImp(EventFactoryInternal eventFactoryInternal,
+      ChannelInternal rootChannelInternal, String name) {
     this.eventFactoryInternal = eventFactoryInternal;
     this.rootChannelInternal = rootChannelInternal;
     this.name = name;
