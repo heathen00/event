@@ -18,7 +18,5 @@ interface SubscriberPublished<T> {
 
   void resendAllCurrentPublishedEvents();
 
-  void setChannel(Channel channel);
-
   Channel getChannel();
 }

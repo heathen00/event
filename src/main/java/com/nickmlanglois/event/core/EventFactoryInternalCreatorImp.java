@@ -29,7 +29,7 @@ final class EventFactoryInternalCreatorImp implements EventFactoryInternal {
   }
 
   @Override
-  public void addSubscriber(Channel channel, Subscriber eventSubscriber) {
+  public void addSubscriber(Channel channel, Subscriber subscriber) {
     throw new UnsupportedOperationException("EventFactory creator does not create subscribers");
   }
 

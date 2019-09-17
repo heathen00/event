@@ -28,9 +28,9 @@ final class ChannelCacheImp implements ChannelCache {
   }
 
   @Override
-  public void addSubscriberInternal(SubscriberInternal eventSubscriber) {
-    if (!subscriberInternalList.contains(eventSubscriber)) {
-      subscriberInternalList.add(eventSubscriber);
+  public void addSubscriberInternal(SubscriberInternal subscriber) {
+    if (!subscriberInternalList.contains(subscriber)) {
+      subscriberInternalList.add(subscriber);
     }
   }
 

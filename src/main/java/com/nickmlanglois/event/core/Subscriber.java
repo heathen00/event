@@ -3,8 +3,7 @@ package com.nickmlanglois.event.core;
 public abstract class Subscriber implements SubscriberPublished<Subscriber> {
   private ChannelInternal channelInternal;
 
-  @Override
-  public final void setChannel(Channel channel) {
+  final void setChannel(Channel channel) {
     channelInternal = (ChannelInternal) channel;
   }
 

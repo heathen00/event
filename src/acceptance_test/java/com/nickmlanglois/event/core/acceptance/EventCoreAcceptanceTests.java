@@ -329,7 +329,7 @@ public class EventCoreAcceptanceTests {
   @Test
   public void EventCore_addSubscriberWithNullSubscriberParameter_nullPointerExceptionIsThrown() {
     thrown.expect(NullPointerException.class);
-    thrown.expectMessage("eventSubscriber cannot equal null");
+    thrown.expectMessage("subscriber cannot equal null");
 
     eventFactory.addSubscriber(defaultTestChannel, null);
   }
@@ -1419,6 +1419,10 @@ public class EventCoreAcceptanceTests {
   /*
    * Rough:
    * 
+   * You need to test to ensure the Subscriber.getName() method is properly implemented.
+   * 
+   * You'll need more tests for the now published getChannel methods in Subscriber.
+   * 
    * Register two subscribers. Publish a number of events. First subscriber requests a resend of all
    * published events. First subscriber receives all published events in the order they were
    * originally sent. Second subscriber does not. As a point of clarification, the objective is NOT
@@ -1439,7 +1443,8 @@ public class EventCoreAcceptanceTests {
    * the messages be in band? Does that make sense from the perspective of the subscribers? The
    * subscribers should only know about what is relevant to them, so perhaps the messages should be
    * limited to those events that all subscribers care about such as when the channel is opened or
-   * closed.
+   * closed. This would break a number of existing test cases. Thus, maybe the events should not be
+   * in band.
    * 
    * Maybe implement an InternalSystem that is a singleton that is created on demand. This
    * InternalSystem could have the instance cache and all factories could reference it, so for
@@ -1452,15 +1457,6 @@ public class EventCoreAcceptanceTests {
    * implement some intelligence in the InternalSystem itself for monitoring to ensure instances are
    * still being used and closing them otherwise.
    * 
-   * How much do you trust the externally implemented Subscriber getName()? Maybe its value should
-   * be cached?
-   * 
-   * What if an External Subscriber implementation does not use the default Subscriber base class
-   * default constructor?
-   * 
-   * You need to test to ensure the Subscriber.getName() method is properly implemented. It might be
-   * easier if you just add the subscriber name as a parameter in the factory. That way, the
-   * Subscriber published base clease is even simpler.
    */
 
 }

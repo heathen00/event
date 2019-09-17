@@ -58,9 +58,9 @@ final class EventFactoryInternalCacherImp implements EventFactoryInternal {
   }
 
   @Override
-  public void addSubscriber(Channel channel, Subscriber eventSubscriber) {
+  public void addSubscriber(Channel channel, Subscriber subscriber) {
     ensureChannelBelongsToFactory(channel);
-    SubscriberInternal subscriberInternal = new SubscriberInternalImp(eventSubscriber);
+    SubscriberInternal subscriberInternal = new SubscriberInternalImp(subscriber);
     ChannelInternal subscriberInternalsCurrentChannelInternal =
         getInstanceCache().getChannelInternalForSubscriberInternal(subscriberInternal);
     if (null != subscriberInternalsCurrentChannelInternal
@@ -69,7 +69,7 @@ final class EventFactoryInternalCacherImp implements EventFactoryInternal {
           + subscriberInternalsCurrentChannelInternal.getName());
     }
     getChannelCache(channel).addSubscriberInternal(subscriberInternal);
-    subscriberInternal.setChannel(channel);
+    subscriber.setChannel(channel);
   }
 
   @Override

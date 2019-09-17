@@ -19,8 +19,8 @@ final class EventFactoryInternalRootImp implements EventFactoryInternal {
   }
 
   @Override
-  public void addSubscriber(Channel channel, Subscriber eventSubscriber) {
-    nextEventFactoryInternal.addSubscriber(channel, eventSubscriber);
+  public void addSubscriber(Channel channel, Subscriber subscriber) {
+    nextEventFactoryInternal.addSubscriber(channel, subscriber);
   }
 
   @Override

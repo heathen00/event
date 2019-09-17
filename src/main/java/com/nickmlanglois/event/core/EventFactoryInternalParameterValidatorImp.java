@@ -67,12 +67,12 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
   }
 
   @Override
-  public void addSubscriber(Channel channel, Subscriber eventSubscriber) {
+  public void addSubscriber(Channel channel, Subscriber subscriber) {
     ensureParameterNotNull("channel", channel);
     ensureExpectedImplementation("channel", ChannelInternal.class, channel);
     ensureChannelDisabled(channel, "cannot add subscribers after enabling channel");
-    ensureParameterNotNull("eventSubscriber", eventSubscriber);
-    nextEventFactoryInternal.addSubscriber(channel, eventSubscriber);
+    ensureParameterNotNull("subscriber", subscriber);
+    nextEventFactoryInternal.addSubscriber(channel, subscriber);
   }
 
   @Override

@@ -10,6 +10,11 @@ final class SubscriberInternalImp implements SubscriberInternal {
   }
 
   @Override
+  public Channel getChannel() {
+    return externalSubscriber.getChannel();
+  }
+
+  @Override
   public void processPublishEventCallback(Event event) {
     try {
       externalSubscriber.processPublishEventCallback(event);
@@ -26,9 +31,8 @@ final class SubscriberInternalImp implements SubscriberInternal {
   }
 
   @Override
-  public String toString() {
-    return "SubscriberInternalImp [externalSubscriber.toString()=" + externalSubscriber.toString()
-        + "]";
+  public void resendAllCurrentPublishedEvents() {
+    externalSubscriber.resendAllCurrentPublishedEvents();
   }
 
   @Override
@@ -57,17 +61,8 @@ final class SubscriberInternalImp implements SubscriberInternal {
   }
 
   @Override
-  public void resendAllCurrentPublishedEvents() {
-    externalSubscriber.resendAllCurrentPublishedEvents();
-  }
-
-  @Override
-  public void setChannel(Channel channel) {
-    externalSubscriber.setChannel(channel);
-  }
-
-  @Override
-  public Channel getChannel() {
-    return externalSubscriber.getChannel();
+  public String toString() {
+    return "SubscriberInternalImp [externalSubscriber.toString()=" + externalSubscriber.toString()
+        + "]";
   }
 }
