@@ -8,11 +8,17 @@ package com.nickmlanglois.event.core;
  * @param <T>
  */
 interface SubscriberPublished<T> {
-  void processPublishEvent(Event event);
+  void processPublishEventCallback(Event event);
 
-  void processUnpublishEvent(Event event);
+  void processUnpublishEventCallback(Event event);
 
   String getName();
 
   T getExternalSubscriber();
+
+  void resendAllCurrentPublishedEvents();
+
+  void setChannel(Channel channel);
+
+  Channel getChannel();
 }

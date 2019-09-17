@@ -114,5 +114,10 @@ final class ChannelInternalParameterValidatorImp implements ChannelInternal {
   public ChannelInternal getRootChannelInternal() {
     return rootChannelInternal;
   }
+
+  @Override
+  public void resendAllCurrentPublishedEventsToExternalSubscriber(Subscriber subscriber) {
+    nextChannelInternal.resendAllCurrentPublishedEventsToExternalSubscriber(subscriber);
+  }
 }
 

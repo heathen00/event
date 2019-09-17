@@ -75,4 +75,9 @@ final class ChannelInternalRootImp implements ChannelInternal {
     return this;
   }
 
+  @Override
+  public void resendAllCurrentPublishedEventsToExternalSubscriber(Subscriber subscriber) {
+    nextChannelInternal.resendAllCurrentPublishedEventsToExternalSubscriber(subscriber);
+  }
+
 }

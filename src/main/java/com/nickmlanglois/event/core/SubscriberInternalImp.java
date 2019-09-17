@@ -10,17 +10,17 @@ final class SubscriberInternalImp implements SubscriberInternal {
   }
 
   @Override
-  public void processPublishEvent(Event event) {
+  public void processPublishEventCallback(Event event) {
     try {
-      externalSubscriber.processPublishEvent(event);
+      externalSubscriber.processPublishEventCallback(event);
     } catch (Exception e) {
     }
   }
 
   @Override
-  public void processUnpublishEvent(Event event) {
+  public void processUnpublishEventCallback(Event event) {
     try {
-      externalSubscriber.processUnpublishEvent(event);
+      externalSubscriber.processUnpublishEventCallback(event);
     } catch (Exception e) {
     }
   }
@@ -54,5 +54,20 @@ final class SubscriberInternalImp implements SubscriberInternal {
   @Override
   public int hashCode() {
     return getName().hashCode();
+  }
+
+  @Override
+  public void resendAllCurrentPublishedEvents() {
+    externalSubscriber.resendAllCurrentPublishedEvents();
+  }
+
+  @Override
+  public void setChannel(Channel channel) {
+    externalSubscriber.setChannel(channel);
+  }
+
+  @Override
+  public Channel getChannel() {
+    return externalSubscriber.getChannel();
   }
 }

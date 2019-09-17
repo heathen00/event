@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -1277,7 +1276,7 @@ public class EventCoreAcceptanceTests {
     Subscriber unstableSubscriber = new Subscriber() {
 
       @Override
-      public void processPublishEvent(Event event) {
+      public void processPublishEventCallback(Event event) {
         throw new NullPointerException();
       }
 
@@ -1310,7 +1309,7 @@ public class EventCoreAcceptanceTests {
     Subscriber unstableSubscriber = new Subscriber() {
 
       @Override
-      public void processUnpublishEvent(Event event) {
+      public void processUnpublishEventCallback(Event event) {
         throw new NullPointerException();
       }
 
@@ -1404,13 +1403,12 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  @Ignore("not implemented yet but needs refactoring first")
   public void EventCore_subscriberRequestsPublishedEventResentWhenOnlyOnePublishedEvent_subscriberReceivesOnePublishedEvent() {
     eventFactory.addSubscriber(defaultTestChannel, accumulatorSubscriberStub);
     eventFactory.openChannel(defaultTestChannel);
     defaultTestPublisher.publish(defaultTestEventDescription);
 
-    // accumulatorSubscriberStub.resendAllCurrentPublishedEvents();
+    accumulatorSubscriberStub.resendAllCurrentPublishedEvents();
 
     assertEventCore.assertExpectedEvent(defaultTestEventDescription,
         accumulatorSubscriberStub.getProcessedPublishedEventList().get(0));

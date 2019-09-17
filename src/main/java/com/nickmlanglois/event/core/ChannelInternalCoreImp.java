@@ -60,7 +60,7 @@ final class ChannelInternalCoreImp extends NaturalOrderBase<Channel> implements 
       return;
     }
     for (SubscriberInternal subscriber : getChannelCache().getSubscriberInternalList()) {
-      subscriber.processPublishEvent(event);
+      subscriber.processPublishEventCallback(event);
     }
     if (!publishedEventToPublisherMap.containsKey(event)) {
       publishedEventToPublisherMap.put(event, new HashSet<>());
@@ -86,7 +86,7 @@ final class ChannelInternalCoreImp extends NaturalOrderBase<Channel> implements 
       return;
     }
     for (SubscriberInternal subscriber : getChannelCache().getSubscriberInternalList()) {
-      subscriber.processUnpublishEvent(event);
+      subscriber.processUnpublishEventCallback(event);
     }
     publishedEventToPublisherMap.get(event).remove(publisher);
     if (0 == publishedEventToPublisherMap.get(event).size()) {
@@ -152,5 +152,12 @@ final class ChannelInternalCoreImp extends NaturalOrderBase<Channel> implements 
   @Override
   public ChannelInternal getRootChannelInternal() {
     return rootChannelInternal;
+  }
+
+  @Override
+  public void resendAllCurrentPublishedEventsToExternalSubscriber(Subscriber subscriber) {
+    for (Event publishedEvent : publishedEventToPublisherMap.keySet()) {
+      subscriber.processPublishEventCallback(publishedEvent);
+    }
   }
 }

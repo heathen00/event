@@ -22,12 +22,12 @@ public final class AccumulatorSubscriberStub extends Subscriber {
   }
 
   @Override
-  public void processPublishEvent(Event event) {
+  public void processPublishEventCallback(Event event) {
     processedPublishedEventList.add(event);
   }
 
   @Override
-  public void processUnpublishEvent(Event event) {
+  public void processUnpublishEventCallback(Event event) {
     processedUnpublishedEventList.add(event);
   }
 
