@@ -7,10 +7,12 @@ package com.nickmlanglois.event.core;
  * 
  * @param <T>
  */
-interface SubscriberPublished<T> extends NaturalOrder<T> {
+interface SubscriberPublished<T> {
   void processPublishEvent(Event event);
 
   void processUnpublishEvent(Event event);
 
   String getName();
+
+  T getExternalSubscriber();
 }

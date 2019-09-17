@@ -1459,6 +1459,10 @@ public class EventCoreAcceptanceTests {
    * 
    * What if an External Subscriber implementation does not use the default Subscriber base class
    * default constructor?
+   * 
+   * You need to test to ensure the Subscriber.getName() method is properly implemented. It might be
+   * easier if you just add the subscriber name as a parameter in the factory. That way, the
+   * Subscriber published base clease is even simpler.
    */
 
 }

@@ -1,19 +1,18 @@
 package com.nickmlanglois.event.core;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 final class ChannelCacheImp implements ChannelCache {
   private final ChannelInternal channelInternal;
-  private final List<Subscriber> subscriberList;
+  private final List<SubscriberInternal> subscriberInternalList;
   private final List<Publisher> publisherList;
   private final List<EventDescription> eventDescriptionList;
   private final EventDescriptionForComparisonImp eventDescriptionForComparison;
 
   ChannelCacheImp(ChannelInternal channelInternal) {
     this.channelInternal = channelInternal;
-    subscriberList = new ArrayList<>();
+    subscriberInternalList = new ArrayList<>();
     publisherList = new ArrayList<>();
     eventDescriptionList = new ArrayList<>();
     eventDescriptionForComparison = new EventDescriptionForComparisonImp();
@@ -24,14 +23,14 @@ final class ChannelCacheImp implements ChannelCache {
   }
 
   @Override
-  public List<Subscriber> getSubscriberList() {
-    return Collections.unmodifiableList(subscriberList);
+  public List<SubscriberInternal> getSubscriberInternalList() {
+    return subscriberInternalList;
   }
 
   @Override
-  public void addSubscriber(Subscriber eventSubscriber) {
-    if (!subscriberList.contains(eventSubscriber)) {
-      subscriberList.add(eventSubscriber);
+  public void addSubscriberInternal(SubscriberInternal eventSubscriber) {
+    if (!subscriberInternalList.contains(eventSubscriber)) {
+      subscriberInternalList.add(eventSubscriber);
     }
   }
 
@@ -42,13 +41,13 @@ final class ChannelCacheImp implements ChannelCache {
 
   @Override
   public List<Publisher> getPublisherList() {
-    return Collections.unmodifiableList(publisherList);
+    return publisherList;
   }
 
   @Override
   public String toString() {
     return "ChannelCacheImp [getChannelInternal()=" + getChannelInternal()
-        + ", getSubscriberList()=" + getSubscriberList() + ", getPublisherList()="
+        + ", getSubscriberList()=" + getSubscriberInternalList() + ", getPublisherList()="
         + getPublisherList() + ", getEventDescriptionList()=" + getEventDescriptionList()
         + ", hashCode()=" + hashCode() + "]";
   }
@@ -73,6 +72,6 @@ final class ChannelCacheImp implements ChannelCache {
 
   @Override
   public List<EventDescription> getEventDescriptionList() {
-    return Collections.unmodifiableList(eventDescriptionList);
+    return eventDescriptionList;
   }
 }

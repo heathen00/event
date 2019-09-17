@@ -5,9 +5,9 @@ import java.util.List;
 interface ChannelCache {
   ChannelInternal getChannelInternal();
 
-  List<Subscriber> getSubscriberList();
+  List<SubscriberInternal> getSubscriberInternalList();
 
-  void addSubscriber(Subscriber eventSubscriber);
+  void addSubscriberInternal(SubscriberInternal subscriberInternal);
 
   List<Publisher> getPublisherList();
 

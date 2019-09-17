@@ -21,11 +21,11 @@ final class InstanceCacheImp implements InstanceCache {
   }
 
   @Override
-  public ChannelInternal getChannelInternalForSubscriber(Subscriber eventSubscriber) {
+  public ChannelInternal getChannelInternalForSubscriberInternal(SubscriberInternal subscriberInternal) {
     ChannelInternal subscribersChannel = null;
     for (String channelName : channelNameToChannelCacheMap.keySet()) {
-      if (channelNameToChannelCacheMap.get(channelName).getSubscriberList()
-          .contains(eventSubscriber)) {
+      if (channelNameToChannelCacheMap.get(channelName).getSubscriberInternalList()
+          .contains(subscriberInternal)) {
         subscribersChannel = channelNameToChannelCacheMap.get(channelName).getChannelInternal();
       }
     }

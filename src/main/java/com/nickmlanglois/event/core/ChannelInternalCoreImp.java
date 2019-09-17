@@ -1,5 +1,7 @@
 package com.nickmlanglois.event.core;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -33,12 +35,16 @@ final class ChannelInternalCoreImp extends NaturalOrderBase<Channel> implements 
 
   @Override
   public List<Subscriber> getSubscriberList() {
-    return getChannelCache().getSubscriberList();
+    List<Subscriber> externalSubscriberList = new ArrayList<>();
+    for (SubscriberInternal subscriberInternal : getChannelCache().getSubscriberInternalList()) {
+      externalSubscriberList.add(subscriberInternal.getExternalSubscriber());
+    }
+    return Collections.unmodifiableList(externalSubscriberList);
   }
 
   @Override
   public List<Publisher> getPublisherList() {
-    return getChannelCache().getPublisherList();
+    return Collections.unmodifiableList(getChannelCache().getPublisherList());
   }
 
   @Override
@@ -53,7 +59,7 @@ final class ChannelInternalCoreImp extends NaturalOrderBase<Channel> implements 
       publishedEventToPublisherMap.get(event).add(publisher);
       return;
     }
-    for (Subscriber subscriber : getChannelCache().getSubscriberList()) {
+    for (SubscriberInternal subscriber : getChannelCache().getSubscriberInternalList()) {
       subscriber.processPublishEvent(event);
     }
     if (!publishedEventToPublisherMap.containsKey(event)) {
@@ -79,7 +85,7 @@ final class ChannelInternalCoreImp extends NaturalOrderBase<Channel> implements 
       publishedEventToPublisherMap.get(event).remove(publisher);
       return;
     }
-    for (Subscriber subscriber : getChannelCache().getSubscriberList()) {
+    for (SubscriberInternal subscriber : getChannelCache().getSubscriberInternalList()) {
       subscriber.processUnpublishEvent(event);
     }
     publishedEventToPublisherMap.get(event).remove(publisher);
@@ -140,7 +146,7 @@ final class ChannelInternalCoreImp extends NaturalOrderBase<Channel> implements 
 
   @Override
   public List<EventDescription> getEventDescriptionList() {
-    return getChannelCache().getEventDescriptionList();
+    return Collections.unmodifiableList(getChannelCache().getEventDescriptionList());
   }
 
   @Override

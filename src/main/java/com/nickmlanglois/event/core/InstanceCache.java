@@ -9,5 +9,5 @@ interface InstanceCache {
 
   void addChannelCache(String channelName, ChannelInternal channelInternal);
 
-  ChannelInternal getChannelInternalForSubscriber(Subscriber eventSubscriber);
+  ChannelInternal getChannelInternalForSubscriberInternal(SubscriberInternal subscriberInternal);
 }

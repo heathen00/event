@@ -9,17 +9,7 @@ public abstract class Subscriber implements SubscriberPublished<Subscriber> {
   public void processUnpublishEvent(Event event) {}
 
   @Override
-  public final int compareTo(Subscriber o) {
-    return getName().compareTo(o.getName());
-  }
-
-  @Override
-  public final boolean equals(Object obj) {
-    return getName().equals(((Subscriber) obj).getName());
-  }
-
-  @Override
-  public final int hashCode() {
-    return getName().hashCode();
+  public final Subscriber getExternalSubscriber() {
+    return this;
   }
 }
