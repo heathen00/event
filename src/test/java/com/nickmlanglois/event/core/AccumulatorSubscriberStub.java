@@ -6,7 +6,7 @@ import java.util.List;
 import com.nickmlanglois.event.core.Event;
 import com.nickmlanglois.event.core.Subscriber;
 
-public final class AccumulatorSubscriberStub extends Subscriber {
+public class AccumulatorSubscriberStub extends Subscriber {
   public static AccumulatorSubscriberStub createAccumulatorSubscriber(String name) {
     return new AccumulatorSubscriberStub(name);
   }

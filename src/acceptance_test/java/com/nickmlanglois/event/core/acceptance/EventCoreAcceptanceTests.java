@@ -1,16 +1,14 @@
 package com.nickmlanglois.event.core.acceptance;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.security.InvalidParameterException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -22,6 +20,7 @@ import com.nickmlanglois.event.core.Channel;
 import com.nickmlanglois.event.core.Event;
 import com.nickmlanglois.event.core.EventDescription;
 import com.nickmlanglois.event.core.EventFactory;
+import com.nickmlanglois.event.core.MutableAccumulatorSubscriberStub;
 import com.nickmlanglois.event.core.Publisher;
 import com.nickmlanglois.event.core.Subject;
 import com.nickmlanglois.event.core.SubjectStub;
@@ -210,8 +209,8 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  public void EventCore_createChannelWithEmptyChannelName_invalidParameterExceptionIsThrown() {
-    thrown.expect(InvalidParameterException.class);
+  public void EventCore_createChannelWithEmptyChannelName_illegalArgumentExceptionIsThrown() {
+    thrown.expect(IllegalArgumentException.class);
     thrown.expectMessage(
         "name can only contain lower case letters, numbers, and periods, and cannot start or end with a period");
 
@@ -219,8 +218,8 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  public void EventCore_createChannelWithInvalidCharactersInChannelName_invalidParameterExceptionIsThrown() {
-    thrown.expect(InvalidParameterException.class);
+  public void EventCore_createChannelWithInvalidCharactersInChannelName_illegalArgumentExceptionIsThrown() {
+    thrown.expect(IllegalArgumentException.class);
     thrown.expectMessage(
         "name can only contain lower case letters, numbers, and periods, and cannot start or end with a period");
 
@@ -236,8 +235,8 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  public void EventCore_createEventDescriptionWithUnknownExternalChannelImplementation_invalidParameterExceptionIsThrown() {
-    thrown.expect(InvalidParameterException.class);
+  public void EventCore_createEventDescriptionWithUnknownExternalChannelImplementation_illegalArgumentExceptionIsThrown() {
+    thrown.expect(IllegalArgumentException.class);
     thrown.expectMessage("unknown channel implementation");
 
     eventFactory.createEventDescription(createUnsupportedExternalChannelImplementation(),
@@ -253,8 +252,8 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  public void EventCore_createEventDescriptionWithEmptyFamilyParameter_invalidParameterExceptionIsThrown() {
-    thrown.expect(InvalidParameterException.class);
+  public void EventCore_createEventDescriptionWithEmptyFamilyParameter_illegalArgumentExceptionIsThrown() {
+    thrown.expect(IllegalArgumentException.class);
     thrown.expectMessage(
         "family can only contain lower case letters, numbers, and periods, and cannot start or end with a period");
 
@@ -262,8 +261,8 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  public void EventCore_createEventDescriptionWithInvalidCharactersInFamilyParameter_invalidParameterExceptionIsThrown() {
-    thrown.expect(InvalidParameterException.class);
+  public void EventCore_createEventDescriptionWithInvalidCharactersInFamilyParameter_illegalArgumentExceptionIsThrown() {
+    thrown.expect(IllegalArgumentException.class);
     thrown.expectMessage(
         "family can only contain lower case letters, numbers, and periods, and cannot start or end with a period");
 
@@ -279,8 +278,8 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  public void EventCore_createEventDescriptionWithEmptyNameParameter_invalidParameterExceptionIsThrown() {
-    thrown.expect(InvalidParameterException.class);
+  public void EventCore_createEventDescriptionWithEmptyNameParameter_illegalArgumentExceptionIsThrown() {
+    thrown.expect(IllegalArgumentException.class);
     thrown.expectMessage(
         "name can only contain lower case letters, numbers, and periods, and cannot start or end with a period");
 
@@ -288,8 +287,8 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  public void EventCore_createEventDescriptionWithInvalidCharactersInNameParameter_invalidParameterExceptionIsThrown() {
-    thrown.expect(InvalidParameterException.class);
+  public void EventCore_createEventDescriptionWithInvalidCharactersInNameParameter_illegalArgumentExceptionIsThrown() {
+    thrown.expect(IllegalArgumentException.class);
     thrown.expectMessage(
         "name can only contain lower case letters, numbers, and periods, and cannot start or end with a period");
 
@@ -305,8 +304,8 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  public void EventCore_createPublisherWithUnknownExternalChannelImplementation_invalidParameterExceptionIsThrown() {
-    thrown.expect(InvalidParameterException.class);
+  public void EventCore_createPublisherWithUnknownExternalChannelImplementation_illegalArgumentExceptionIsThrown() {
+    thrown.expect(IllegalArgumentException.class);
     thrown.expectMessage("unknown channel implementation");
 
     eventFactory.createPublisher(createUnsupportedExternalChannelImplementation());
@@ -321,8 +320,8 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  public void EventCore_addSubscriberWithUnknownExternalChannelImplementation_invalidParameterExceptionIsThrown() {
-    thrown.expect(InvalidParameterException.class);
+  public void EventCore_addSubscriberWithUnknownExternalChannelImplementation_illegalArgumentExceptionIsThrown() {
+    thrown.expect(IllegalArgumentException.class);
     thrown.expectMessage("unknown channel implementation");
 
     eventFactory.addSubscriber(createUnsupportedExternalChannelImplementation(),
@@ -346,8 +345,8 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  public void EventCore_openChannelWithUnknownExternalChannelImplementation_invalidParameterExceptionIsThrown() {
-    thrown.expect(InvalidParameterException.class);
+  public void EventCore_openChannelWithUnknownExternalChannelImplementation_illegalArgumentExceptionIsThrown() {
+    thrown.expect(IllegalArgumentException.class);
     thrown.expectMessage("unknown channel implementation");
 
     eventFactory.openChannel(createUnsupportedExternalChannelImplementation());
@@ -1422,35 +1421,91 @@ public class EventCoreAcceptanceTests {
 
   @Test
   public void EventCore_addSubscriberWhenSubscriberGetNameReturnsNull_nullPointerExceptionIsThrown() {
-    fail("not implemented yet");
+    thrown.expect(NullPointerException.class);
+    thrown.expectMessage("subscriber.getName() cannot return null");
+    final Subscriber badSubscriber = new Subscriber() {
+
+      @Override
+      public String getName() {
+        return null;
+      }
+    };
+
+    eventFactory.addSubscriber(defaultTestChannel, badSubscriber);
   }
 
   @Test
-  @Ignore("not worked on")
-  public void EventCore_addSubscriberWhenSubscriberGetNameThrowsException_unsupportedOperationExceptionIsThrown() {
-    // TODO implementation note: wrap the thrown exception.
-    fail("not implemented yet");
+  public void EventCore_addSubscriberWhenSubscriberGetNameThrowsException_illegalArgumentExceptionIsThrown() {
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("subscriber.getName() threw an exception");
+    NullPointerException expectedNullPointerException =
+        new NullPointerException("test NullPointerException");
+    thrown.expectCause(is(expectedNullPointerException));
+    final Subscriber badSubscriber = new Subscriber() {
+
+      @Override
+      public String getName() {
+        throw expectedNullPointerException;
+      }
+    };
+
+    eventFactory.addSubscriber(defaultTestChannel, badSubscriber);
   }
 
   @Test
-  @Ignore("not worked on")
-  public void EventCore_addSubscriberWhenSubscriberGetNameReturnsEmptyString_invalidParameterExceptionIsThrown() {
-    fail("not implemented yet");
+  public void EventCore_addSubscriberWhenSubscriberGetNameReturnsEmptyString_illegalArgumentExceptionIsThrown() {
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("subscriber.getName() cannot return an empty String");
+    final Subscriber badSubscriber = new Subscriber() {
+
+      @Override
+      public String getName() {
+        return " \t\n";
+      }
+    };
+
+    eventFactory.addSubscriber(defaultTestChannel, badSubscriber);
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_addSubscriberWithMutableName_subscriberContinuesToReceiveEvents() {
-    fail("not implemented yet");
+    final String expectedOriginalName = "original.subscriber.name";
+    final String expectedNewName = "new.subscriber.name";
+    final MutableAccumulatorSubscriberStub badSubscriber =
+        new MutableAccumulatorSubscriberStub(expectedOriginalName);
+    EventDescription eventDescriptionOne =
+        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.name.one");
+    EventDescription eventDescriptionTwo =
+        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.name.two");
+    eventFactory.addSubscriber(defaultTestChannel, badSubscriber);
+    eventFactory.openChannel(defaultTestChannel);
+
+    defaultTestPublisher.publish(eventDescriptionOne);
+    badSubscriber.setName(expectedNewName);
+    defaultTestPublisher.publish(eventDescriptionTwo);
+
+    assertEventCore.assertExpectedEvent(eventDescriptionOne,
+        badSubscriber.getProcessedPublishedEventList().get(0));
+    assertEventCore.assertExpectedEvent(eventDescriptionTwo,
+        badSubscriber.getProcessedPublishedEventList().get(1));
+    assertEquals(expectedNewName, badSubscriber.getName());
+    assertEquals(expectedNewName, defaultTestChannel.getSubscriberList().get(0).getName());
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_addSubscriberThenMutateNameThenAddSubscriber_subscriberOnlyAddedOnce() {
-    // TODO implementation note: I'm not even sure I can implement this, but I want the behaviour to
-    // be similar to adding the same subscriber twice. Maybe use a map to map subscriber names to
-    // external subscriber implementations.
-    fail("not implemented yet");
+    final int expectedSubscriberListSize = 1;
+    final String expectedOriginalName = "original.subscriber.name";
+    final String expectedNewName = "new.subscriber.name";
+    final MutableAccumulatorSubscriberStub badSubscriber =
+        new MutableAccumulatorSubscriberStub(expectedOriginalName);
+
+    eventFactory.addSubscriber(defaultTestChannel, badSubscriber);
+    badSubscriber.setName(expectedNewName);
+    eventFactory.addSubscriber(defaultTestChannel, badSubscriber);
+
+    assertEquals(expectedSubscriberListSize, defaultTestChannel.getSubscriberList().size());
+    assertEquals(expectedNewName, defaultTestChannel.getSubscriberList().get(0).getName());
   }
 
   /*

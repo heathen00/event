@@ -74,4 +74,14 @@ final class ChannelCacheImp implements ChannelCache {
   public List<EventDescription> getEventDescriptionList() {
     return eventDescriptionList;
   }
+
+  @Override
+  public SubscriberInternal getInternalSubscriberForExternalSubscriber(Subscriber subscriber) {
+    for (SubscriberInternal subscriberInternal : subscriberInternalList) {
+      if (subscriber == subscriberInternal.getExternalSubscriber()) {
+        return subscriberInternal;
+      }
+    }
+    return null;
+  }
 }

@@ -1,6 +1,6 @@
 package com.nickmlanglois.event.core;
 
-import java.security.InvalidParameterException;
+import org.apache.commons.lang3.StringUtils;
 
 final class EventFactoryInternalParameterValidatorImp implements EventFactoryInternal {
   private final EventFactoryInternal rootEventFactoryInternal;
@@ -27,15 +27,30 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
   private void ensureExpectedImplementation(String parameterName, Class<?> expectedClazz,
       Object parameter) {
     if (!expectedClazz.isInstance(parameter)) {
-      throw new InvalidParameterException("unknown " + parameterName + " implementation");
+      throw new IllegalArgumentException("unknown " + parameterName + " implementation");
     }
   }
 
   private void ensureExpectedNamingConvention(String parameterName, String parameter) {
     if (!parameter.matches("^[a-z0-9.]+$") || parameter.startsWith(".")
         || parameter.endsWith(".")) {
-      throw new InvalidParameterException(parameterName
+      throw new IllegalArgumentException(parameterName
           + " can only contain lower case letters, numbers, and periods, and cannot start or end with a period");
+    }
+  }
+
+  private void ensureSubscriberGetNameValid(Subscriber subscriber) {
+    String name = null;
+    try {
+      name = subscriber.getName();
+    } catch (Exception e) {
+      throw new IllegalArgumentException("subscriber.getName() threw an exception", e);
+    }
+    if (null == name) {
+      throw new NullPointerException("subscriber.getName() cannot return null");
+    }
+    if (StringUtils.isBlank(name)) {
+      throw new IllegalArgumentException("subscriber.getName() cannot return an empty String");
     }
   }
 
@@ -72,6 +87,7 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
     ensureExpectedImplementation("channel", ChannelInternal.class, channel);
     ensureChannelDisabled(channel, "cannot add subscribers after enabling channel");
     ensureParameterNotNull("subscriber", subscriber);
+    ensureSubscriberGetNameValid(subscriber);
     nextEventFactoryInternal.addSubscriber(channel, subscriber);
   }
 

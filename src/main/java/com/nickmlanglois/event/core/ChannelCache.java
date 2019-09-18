@@ -18,5 +18,7 @@ interface ChannelCache {
   void addEventDescription(EventDescription eventDescription);
 
   EventDescription getEventDescription(Channel channel, String family, String name);
+
+  SubscriberInternal getInternalSubscriberForExternalSubscriber(Subscriber subscriber);
 }
 
