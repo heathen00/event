@@ -1525,7 +1525,6 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  @Ignore("currently broken but need to refactor first")
   public void EventCore_subsRequestPublishedEventResendWhenMultiplePublishedEvents_subsReceivesAllPublishedEventsInOrder() {
     eventFactory.addSubscriber(defaultTestChannel, accumulatorSubscriberStub);
     List<EventDescription> expectedEventDescriptionList = Arrays.asList(
@@ -1542,7 +1541,7 @@ public class EventCoreAcceptanceTests {
 
     assertEquals(expectedEventDescriptionList.size() * 2,
         accumulatorSubscriberStub.getProcessedPublishedEventList().size());
-    int resentEventsBaseIndex = expectedEventDescriptionList.size() - 1;
+    int resentEventsBaseIndex = expectedEventDescriptionList.size();
     for (int i = 0; i < expectedEventDescriptionList.size(); i++) {
       assertEventCore.assertExpectedEvent(expectedEventDescriptionList.get(i),
           accumulatorSubscriberStub.getProcessedPublishedEventList().get(i));

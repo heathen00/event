@@ -13,6 +13,7 @@ final class ChannelInternalCoreImp extends NaturalOrderBase<Channel> implements 
   private final ChannelInternal rootChannelInternal;
   private final String name;
   private final Map<Event, Set<Publisher>> publishedEventToPublisherMap;
+  private final List<Event> publishedEventList;
   private boolean isOpen;
 
   ChannelInternalCoreImp(EventFactoryInternal eventFactoryInternal,
@@ -21,6 +22,7 @@ final class ChannelInternalCoreImp extends NaturalOrderBase<Channel> implements 
     this.rootChannelInternal = rootChannelInternal;
     this.name = name;
     publishedEventToPublisherMap = new HashMap<>();
+    publishedEventList = new ArrayList<>();
     isOpen = false;
   }
 
@@ -36,7 +38,7 @@ final class ChannelInternalCoreImp extends NaturalOrderBase<Channel> implements 
     return true;
   }
 
-  private boolean shouldEventBeUnublishedAndUpdatePublishedEvents(Event event,
+  private boolean shouldEventBeUnpublishedAndUpdatePublishedEvents(Event event,
       Publisher publisher) {
     if (!publishedEventToPublisherMap.containsKey(event)
         || !publishedEventToPublisherMap.get(event).contains(publisher)) {
@@ -53,6 +55,7 @@ final class ChannelInternalCoreImp extends NaturalOrderBase<Channel> implements 
   private void addPublishedEvent(Event event, Publisher publisher) {
     if (!publishedEventToPublisherMap.containsKey(event)) {
       publishedEventToPublisherMap.put(event, new HashSet<>());
+      publishedEventList.add(event);
     }
     publishedEventToPublisherMap.get(event).add(publisher);
   }
@@ -61,6 +64,7 @@ final class ChannelInternalCoreImp extends NaturalOrderBase<Channel> implements 
     publishedEventToPublisherMap.get(event).remove(publisher);
     if (0 == publishedEventToPublisherMap.get(event).size()) {
       publishedEventToPublisherMap.remove(event);
+      publishedEventList.remove(event);
     }
   }
 
@@ -108,7 +112,7 @@ final class ChannelInternalCoreImp extends NaturalOrderBase<Channel> implements 
   @Override
   public void unpublish(Publisher publisher, EventDescription eventDescription, Subject subject) {
     Event event = eventFactoryInternal.createEvent(eventDescription, subject);
-    if (!shouldEventBeUnublishedAndUpdatePublishedEvents(event, publisher)) {
+    if (!shouldEventBeUnpublishedAndUpdatePublishedEvents(event, publisher)) {
       return;
     }
     for (SubscriberInternal subscriber : getChannelCache().getSubscriberInternalList()) {
@@ -179,7 +183,7 @@ final class ChannelInternalCoreImp extends NaturalOrderBase<Channel> implements 
 
   @Override
   public void resendAllCurrentPublishedEventsToExternalSubscriber(Subscriber subscriber) {
-    for (Event publishedEvent : publishedEventToPublisherMap.keySet()) {
+    for (Event publishedEvent : publishedEventList) {
       subscriber.processPublishEventCallback(publishedEvent);
     }
   }
