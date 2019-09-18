@@ -28,6 +28,42 @@ final class ChannelInternalCoreImp extends NaturalOrderBase<Channel> implements 
     return eventFactoryInternal.getInstanceCache().getChannelCache(getName());
   }
 
+  private boolean shouldEventBePublishedAndUpdatePublishedEvents(Event event, Publisher publisher) {
+    if (publishedEventToPublisherMap.containsKey(event)) {
+      publishedEventToPublisherMap.get(event).add(publisher);
+      return false;
+    }
+    return true;
+  }
+
+  private boolean shouldEventBeUnublishedAndUpdatePublishedEvents(Event event,
+      Publisher publisher) {
+    if (!publishedEventToPublisherMap.containsKey(event)
+        || !publishedEventToPublisherMap.get(event).contains(publisher)) {
+      return false;
+    }
+    if (1 < publishedEventToPublisherMap.get(event).size()
+        && publishedEventToPublisherMap.get(event).contains(publisher)) {
+      publishedEventToPublisherMap.get(event).remove(publisher);
+      return false;
+    }
+    return true;
+  }
+
+  private void addPublishedEvent(Event event, Publisher publisher) {
+    if (!publishedEventToPublisherMap.containsKey(event)) {
+      publishedEventToPublisherMap.put(event, new HashSet<>());
+    }
+    publishedEventToPublisherMap.get(event).add(publisher);
+  }
+
+  private void removePublishedEvent(Event event, Publisher publisher) {
+    publishedEventToPublisherMap.get(event).remove(publisher);
+    if (0 == publishedEventToPublisherMap.get(event).size()) {
+      publishedEventToPublisherMap.remove(event);
+    }
+  }
+
   @Override
   public String getName() {
     return name;
@@ -55,17 +91,13 @@ final class ChannelInternalCoreImp extends NaturalOrderBase<Channel> implements 
   @Override
   public void publish(Publisher publisher, EventDescription eventDescription, Subject subject) {
     Event event = eventFactoryInternal.createEvent(eventDescription, subject);
-    if (publishedEventToPublisherMap.containsKey(event)) {
-      publishedEventToPublisherMap.get(event).add(publisher);
+    if (!shouldEventBePublishedAndUpdatePublishedEvents(event, publisher)) {
       return;
     }
     for (SubscriberInternal subscriber : getChannelCache().getSubscriberInternalList()) {
       subscriber.processPublishEventCallback(event);
     }
-    if (!publishedEventToPublisherMap.containsKey(event)) {
-      publishedEventToPublisherMap.put(event, new HashSet<>());
-    }
-    publishedEventToPublisherMap.get(event).add(publisher);
+    addPublishedEvent(event, publisher);
   }
 
   @Override
@@ -76,22 +108,13 @@ final class ChannelInternalCoreImp extends NaturalOrderBase<Channel> implements 
   @Override
   public void unpublish(Publisher publisher, EventDescription eventDescription, Subject subject) {
     Event event = eventFactoryInternal.createEvent(eventDescription, subject);
-    if (!publishedEventToPublisherMap.containsKey(event)
-        || !publishedEventToPublisherMap.get(event).contains(publisher)) {
-      return;
-    }
-    if (1 < publishedEventToPublisherMap.get(event).size()
-        && publishedEventToPublisherMap.get(event).contains(publisher)) {
-      publishedEventToPublisherMap.get(event).remove(publisher);
+    if (!shouldEventBeUnublishedAndUpdatePublishedEvents(event, publisher)) {
       return;
     }
     for (SubscriberInternal subscriber : getChannelCache().getSubscriberInternalList()) {
       subscriber.processUnpublishEventCallback(event);
     }
-    publishedEventToPublisherMap.get(event).remove(publisher);
-    if (0 == publishedEventToPublisherMap.get(event).size()) {
-      publishedEventToPublisherMap.remove(event);
-    }
+    removePublishedEvent(event, publisher);
   }
 
   @Override
