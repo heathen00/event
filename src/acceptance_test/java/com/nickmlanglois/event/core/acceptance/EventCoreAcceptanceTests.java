@@ -5,10 +5,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -1406,7 +1408,7 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  public void EventCore_subscriberRequestsPublishedEventResentWhenOnlyOnePublishedEvent_subscriberReceivesOnePublishedEvent() {
+  public void EventCore_subscriberRequestsPublishedEventResendWhenOnePublishedEvent_subscriberReceivesOnePublishedEvent() {
     eventFactory.addSubscriber(defaultTestChannel, accumulatorSubscriberStub);
     eventFactory.openChannel(defaultTestChannel);
     defaultTestPublisher.publish(defaultTestEventDescription);
@@ -1508,14 +1510,58 @@ public class EventCoreAcceptanceTests {
     assertEquals(expectedNewName, defaultTestChannel.getSubscriberList().get(0).getName());
   }
 
+  @Test
+  public void EventCore_subsRequestsPublishedEventResendWhenOnePublishedEventWithSubj_subsReceivesOnePublishedEventWithSubj() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_subsRequestPublishedEventResendWhenMultiplePublishedEvents_subsReceivesAllPublishedEventsInOrder() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_subsRequestPublishedEventResendWhenMultiplePublishedEventsWithSubj_subsReceivesAllPublishedEventsWithsSubjsInOrder() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_subsRequestPublishedEventResendWhenMultiplePublishedEventsWithAndWithoutSubj_subsReceivesAllPublishedEventsWithAndWithoutSubjInOrder() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_subsRequestPublishedEventResendWhenMultiplePublishedEventsFromMultiplePublishers_subsReceivesAllPublishedEventsFromAllPublishersInOrder() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_subscriberRequestPublishedEventResendWhenMultipleSubscribers_onlySubscriberThatRequestedResendReceivesAllEvents() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_subscriberRequestsPublishedEventResendWhenSomeEventsUnpublished_subscriberDoesNotReceiveUnpublishedEvents() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_subscriberRequestsPublishedEventsResendMultipleTimes_subscriberReceivesAllPublishedEventsEachTime() {
+    fail("not implemented");
+  }
+
+  // TODO Implementation Note: When there are multiple events being received, you must ensure the
+  // resent events are received in their original order, minus any events that were unpublished.
+
   /*
    * Rough:
-   * 
-   * Register two subscribers. Publish a number of events. First subscriber requests a resend of all
-   * published events. First subscriber receives all published events in the order they were
-   * originally sent. Second subscriber does not. As a point of clarification, the objective is NOT
-   * to replay the entire publish/unpublish history for all events since the channel was opened. The
-   * objective is to simply send all current published events to the subscriber that requested it.
    * 
    * Also, it would be useful for testing and debugging to get a list of published events and who
    * published them. Maybe a single method to get an event report for a given channel that lists all
