@@ -1552,13 +1552,47 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_subsRequestPublishedEventResendWhenMultiplePublishedEventsWithSubj_subsReceivesAllPublishedEventsWithsSubjsInOrder() {
-    fail("not implemented");
+    eventFactory.addSubscriber(defaultTestChannel, accumulatorSubscriberStub);
+    final Publisher publisherOne = eventFactory.createPublisher(defaultTestChannel);
+    final EventDescription expectedEventDescriptionOneForPublisherOne =
+        eventFactory.createEventDescription(defaultTestChannel, "publisher.one", "event.one");
+    final EventDescription expectedEventDescriptionTwoForPublisherOne =
+        eventFactory.createEventDescription(defaultTestChannel, "publisher.one", "event.two");
+    final Publisher publisherTwo = eventFactory.createPublisher(defaultTestChannel);
+    final EventDescription expectedEventDescriptionOneForPublisherTwo =
+        eventFactory.createEventDescription(defaultTestChannel, "publisher.two", "event.one");
+    final EventDescription expectedEventDescriptionTwoForPublisherTwo =
+        eventFactory.createEventDescription(defaultTestChannel, "publisher.two", "event.two");
+    final Publisher publisherThree = eventFactory.createPublisher(defaultTestChannel);
+    final EventDescription expectedEventDescriptionOneForPublisherThree =
+        eventFactory.createEventDescription(defaultTestChannel, "publisher.three", "event.one");
+    final EventDescription expectedEventDescriptionTwoForPublisherThree =
+        eventFactory.createEventDescription(defaultTestChannel, "publisher.three", "event.two");
+    eventFactory.openChannel(defaultTestChannel);
+
+    publisherOne.publish(expectedEventDescriptionOneForPublisherOne);
+    publisherTwo.publish(expectedEventDescriptionOneForPublisherTwo);
+    publisherThree.publish(expectedEventDescriptionOneForPublisherThree);
+    publisherOne.publish(expectedEventDescriptionTwoForPublisherOne);
+    publisherTwo.publish(expectedEventDescriptionTwoForPublisherTwo);
+    publisherThree.publish(expectedEventDescriptionTwoForPublisherThree);
+
+    List<EventDescription> expectedEventDescriptionList = Arrays.asList(
+        expectedEventDescriptionOneForPublisherOne, expectedEventDescriptionOneForPublisherTwo,
+        expectedEventDescriptionOneForPublisherThree, expectedEventDescriptionTwoForPublisherOne,
+        expectedEventDescriptionTwoForPublisherTwo, expectedEventDescriptionTwoForPublisherThree);
+    int resentPublishedEventsBaseIndex = expectedEventDescriptionList.size();
+    for (int i = 0; i < expectedEventDescriptionList.size(); i++) {
+      assertEventCore.assertExpectedEvent(expectedEventDescriptionList.get(i),
+          accumulatorSubscriberStub.getProcessedPublishedEventList().get(i));
+      assertEventCore.assertExpectedEvent(expectedEventDescriptionList.get(i),
+          accumulatorSubscriberStub.getProcessedPublishedEventList()
+              .get(resentPublishedEventsBaseIndex + i));
+    }
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_subsRequestPublishedEventResendWhenMultiplePublishedEventsWithAndWithoutSubj_subsReceivesAllPublishedEventsWithAndWithoutSubjInOrder() {
     fail("not implemented");
   }
