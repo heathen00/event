@@ -5,12 +5,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -1554,6 +1552,79 @@ public class EventCoreAcceptanceTests {
   @Test
   public void EventCore_subsRequestPublishedEventResendWhenMultiplePublishedEventsWithSubj_subsReceivesAllPublishedEventsWithsSubjsInOrder() {
     eventFactory.addSubscriber(defaultTestChannel, accumulatorSubscriberStub);
+    List<EventDescription> expectedEventDescriptionList = Arrays.asList(
+        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.zzz"),
+        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.yyy"),
+        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.xxx"),
+        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.www"));
+    List<Subject> expectedSubjectList =
+        Arrays.asList(createSubjectStub("test.subject.one"), createSubjectStub("test.subject.two"),
+            createSubjectStub("test.subject.three"), createSubjectStub("test.subject.four"));
+    eventFactory.openChannel(defaultTestChannel);
+    for (int i = 0; i < expectedEventDescriptionList.size(); i++) {
+      defaultTestPublisher.publish(expectedEventDescriptionList.get(i), expectedSubjectList.get(i));
+    }
+
+    accumulatorSubscriberStub.resendAllCurrentPublishedEvents();
+
+    assertEquals(expectedEventDescriptionList.size() * 2,
+        accumulatorSubscriberStub.getProcessedPublishedEventList().size());
+    int resentEventsBaseIndex = expectedEventDescriptionList.size();
+    for (int i = 0; i < expectedEventDescriptionList.size(); i++) {
+      assertEventCore.assertExpectedEvent(expectedEventDescriptionList.get(i),
+          expectedSubjectList.get(i),
+          accumulatorSubscriberStub.getProcessedPublishedEventList().get(i));
+      assertEventCore.assertExpectedEvent(expectedEventDescriptionList.get(i),
+          expectedSubjectList.get(i), accumulatorSubscriberStub.getProcessedPublishedEventList()
+              .get(resentEventsBaseIndex + i));
+    }
+  }
+
+  @Test
+  public void EventCore_subsRequestPublishedEventResendWhenMultiplePublishedEventsWithAndWithoutSubj_subsReceivesAllPublishedEventsWithAndWithoutSubjInOrder() {
+    eventFactory.addSubscriber(defaultTestChannel, accumulatorSubscriberStub);
+    final int expectedProcessedPublishedEventsListSize = 8;
+    final EventDescription expectedEventDescriptionOne =
+        eventFactory.createEventDescription(defaultTestChannel, "publisher.one", "event.one");
+    final EventDescription expectedEventDescriptionTwo =
+        eventFactory.createEventDescription(defaultTestChannel, "publisher.one", "event.two");
+    final EventDescription expectedEventDescriptionThree =
+        eventFactory.createEventDescription(defaultTestChannel, "publisher.two", "event.three");
+    final EventDescription expectedEventDescriptionFour =
+        eventFactory.createEventDescription(defaultTestChannel, "publisher.two", "event.four");
+    eventFactory.openChannel(defaultTestChannel);
+    final Subject expectedSubjectOne = createSubjectStub("test.subject.one");
+    final Subject expectedSubjectTwo = createSubjectStub("test.subject.two");
+    defaultTestPublisher.publish(expectedEventDescriptionOne, expectedSubjectOne);
+    defaultTestPublisher.publish(expectedEventDescriptionTwo);
+    defaultTestPublisher.publish(expectedEventDescriptionThree, expectedSubjectTwo);
+    defaultTestPublisher.publish(expectedEventDescriptionFour);
+
+    accumulatorSubscriberStub.resendAllCurrentPublishedEvents();
+
+    assertEquals(expectedProcessedPublishedEventsListSize,
+        accumulatorSubscriberStub.getProcessedPublishedEventList().size());
+    assertEventCore.assertExpectedEvent(expectedEventDescriptionOne, expectedSubjectOne,
+        accumulatorSubscriberStub.getProcessedPublishedEventList().get(0));
+    assertEventCore.assertExpectedEvent(expectedEventDescriptionTwo,
+        accumulatorSubscriberStub.getProcessedPublishedEventList().get(1));
+    assertEventCore.assertExpectedEvent(expectedEventDescriptionThree, expectedSubjectTwo,
+        accumulatorSubscriberStub.getProcessedPublishedEventList().get(2));
+    assertEventCore.assertExpectedEvent(expectedEventDescriptionFour,
+        accumulatorSubscriberStub.getProcessedPublishedEventList().get(3));
+    assertEventCore.assertExpectedEvent(expectedEventDescriptionOne, expectedSubjectOne,
+        accumulatorSubscriberStub.getProcessedPublishedEventList().get(4));
+    assertEventCore.assertExpectedEvent(expectedEventDescriptionTwo,
+        accumulatorSubscriberStub.getProcessedPublishedEventList().get(5));
+    assertEventCore.assertExpectedEvent(expectedEventDescriptionThree, expectedSubjectTwo,
+        accumulatorSubscriberStub.getProcessedPublishedEventList().get(6));
+    assertEventCore.assertExpectedEvent(expectedEventDescriptionFour,
+        accumulatorSubscriberStub.getProcessedPublishedEventList().get(7));
+  }
+
+  @Test
+  public void EventCore_subsRequestPublishedEventResendWhenMultiplePublishedEventsFromMultiplePublishers_subsReceivesAllPublishedEventsFromAllPublishersInOrder() {
+    eventFactory.addSubscriber(defaultTestChannel, accumulatorSubscriberStub);
     final Publisher publisherOne = eventFactory.createPublisher(defaultTestChannel);
     final EventDescription expectedEventDescriptionOneForPublisherOne =
         eventFactory.createEventDescription(defaultTestChannel, "publisher.one", "event.one");
@@ -1570,7 +1641,6 @@ public class EventCoreAcceptanceTests {
     final EventDescription expectedEventDescriptionTwoForPublisherThree =
         eventFactory.createEventDescription(defaultTestChannel, "publisher.three", "event.two");
     eventFactory.openChannel(defaultTestChannel);
-
     publisherOne.publish(expectedEventDescriptionOneForPublisherOne);
     publisherTwo.publish(expectedEventDescriptionOneForPublisherTwo);
     publisherThree.publish(expectedEventDescriptionOneForPublisherThree);
@@ -1578,10 +1648,14 @@ public class EventCoreAcceptanceTests {
     publisherTwo.publish(expectedEventDescriptionTwoForPublisherTwo);
     publisherThree.publish(expectedEventDescriptionTwoForPublisherThree);
 
+    accumulatorSubscriberStub.resendAllCurrentPublishedEvents();
+
     List<EventDescription> expectedEventDescriptionList = Arrays.asList(
         expectedEventDescriptionOneForPublisherOne, expectedEventDescriptionOneForPublisherTwo,
         expectedEventDescriptionOneForPublisherThree, expectedEventDescriptionTwoForPublisherOne,
         expectedEventDescriptionTwoForPublisherTwo, expectedEventDescriptionTwoForPublisherThree);
+    assertEquals(expectedEventDescriptionList.size() * 2,
+        accumulatorSubscriberStub.getProcessedPublishedEventList().size());
     int resentPublishedEventsBaseIndex = expectedEventDescriptionList.size();
     for (int i = 0; i < expectedEventDescriptionList.size(); i++) {
       assertEventCore.assertExpectedEvent(expectedEventDescriptionList.get(i),
@@ -1593,36 +1667,99 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  public void EventCore_subsRequestPublishedEventResendWhenMultiplePublishedEventsWithAndWithoutSubj_subsReceivesAllPublishedEventsWithAndWithoutSubjInOrder() {
-    fail("not implemented");
-  }
-
-  @Test
-  @Ignore("not worked on")
-  public void EventCore_subsRequestPublishedEventResendWhenMultiplePublishedEventsFromMultiplePublishers_subsReceivesAllPublishedEventsFromAllPublishersInOrder() {
-    fail("not implemented");
-  }
-
-  @Test
-  @Ignore("not worked on")
   public void EventCore_subscriberRequestPublishedEventResendWhenMultipleSubscribers_onlySubscriberThatRequestedResendReceivesAllEvents() {
-    fail("not implemented");
+    List<EventDescription> expectedEventDescriptionList = Arrays.asList(
+        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.one"),
+        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.two"),
+        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.three"));
+    AccumulatorSubscriberStub subscriberOne =
+        AccumulatorSubscriberStub.createAccumulatorSubscriber("subscriber.one");
+    AccumulatorSubscriberStub subscriberTwo =
+        AccumulatorSubscriberStub.createAccumulatorSubscriber("subscriber.two");
+    eventFactory.addSubscriber(defaultTestChannel, subscriberOne);
+    eventFactory.addSubscriber(defaultTestChannel, subscriberTwo);
+    eventFactory.openChannel(defaultTestChannel);
+    for (EventDescription eventDescription : expectedEventDescriptionList) {
+      defaultTestPublisher.publish(eventDescription);
+    }
+
+    subscriberOne.resendAllCurrentPublishedEvents();
+
+    assertEquals(expectedEventDescriptionList.size() * 2,
+        subscriberOne.getProcessedPublishedEventList().size());
+    assertEquals(expectedEventDescriptionList.size(),
+        subscriberTwo.getProcessedPublishedEventList().size());
+    int publishedEventResendBaseIndex = expectedEventDescriptionList.size();
+    for (int i = 0; i < expectedEventDescriptionList.size(); i++) {
+      assertEventCore.assertExpectedEvent(expectedEventDescriptionList.get(i),
+          subscriberOne.getProcessedPublishedEventList().get(i));
+      assertEventCore.assertExpectedEvent(expectedEventDescriptionList.get(i),
+          subscriberOne.getProcessedPublishedEventList().get(publishedEventResendBaseIndex + i));
+      assertEventCore.assertExpectedEvent(expectedEventDescriptionList.get(i),
+          subscriberTwo.getProcessedPublishedEventList().get(i));
+    }
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_subscriberRequestsPublishedEventResendWhenSomeEventsUnpublished_subscriberDoesNotReceiveUnpublishedEvents() {
-    fail("not implemented");
+    final EventDescription eventDescriptionOne =
+        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.one");
+    final EventDescription eventDescriptionTwo =
+        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.two");
+    final EventDescription eventDescriptionThree =
+        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.three");
+    final EventDescription eventDescriptionFour =
+        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.four");
+    final EventDescription eventDescriptionFive =
+        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.five");
+    eventFactory.addSubscriber(defaultTestChannel, accumulatorSubscriberStub);
+    eventFactory.openChannel(defaultTestChannel);
+    defaultTestPublisher.publish(eventDescriptionOne);
+    defaultTestPublisher.publish(eventDescriptionTwo);
+    defaultTestPublisher.publish(eventDescriptionThree);
+    defaultTestPublisher.publish(eventDescriptionFour);
+    defaultTestPublisher.publish(eventDescriptionFive);
+    defaultTestPublisher.unpublish(eventDescriptionOne);
+    defaultTestPublisher.unpublish(eventDescriptionThree);
+    defaultTestPublisher.unpublish(eventDescriptionFive);
+    final List<EventDescription> expectedEventDescriptionList =
+        Arrays.asList(eventDescriptionOne, eventDescriptionTwo, eventDescriptionThree,
+            eventDescriptionFour, eventDescriptionFive, eventDescriptionTwo, eventDescriptionFour);
+
+    accumulatorSubscriberStub.resendAllCurrentPublishedEvents();
+
+    assertEquals(expectedEventDescriptionList.size(),
+        accumulatorSubscriberStub.getProcessedPublishedEventList().size());
+    for (int i = 0; i < expectedEventDescriptionList.size(); i++) {
+      assertEventCore.assertExpectedEvent(expectedEventDescriptionList.get(i),
+          accumulatorSubscriberStub.getProcessedPublishedEventList().get(i));
+    }
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_subscriberRequestsPublishedEventsResendMultipleTimes_subscriberReceivesAllPublishedEventsEachTime() {
-    fail("not implemented");
-  }
+    final EventDescription eventDescriptionOne =
+        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.one");
+    final EventDescription eventDescriptionTwo =
+        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.two");
+    eventFactory.addSubscriber(defaultTestChannel, accumulatorSubscriberStub);
+    eventFactory.openChannel(defaultTestChannel);
+    defaultTestPublisher.publish(eventDescriptionOne);
+    defaultTestPublisher.publish(eventDescriptionTwo);
+    final List<EventDescription> expectedEventDescriptionList =
+        Arrays.asList(eventDescriptionOne, eventDescriptionTwo, eventDescriptionOne,
+            eventDescriptionTwo, eventDescriptionOne, eventDescriptionTwo);
 
-  // TODO Implementation Note: When there are multiple events being received, you must ensure the
-  // resent events are received in their original order, minus any events that were unpublished.
+    accumulatorSubscriberStub.resendAllCurrentPublishedEvents();
+    accumulatorSubscriberStub.resendAllCurrentPublishedEvents();
+
+    assertEquals(expectedEventDescriptionList.size(),
+        accumulatorSubscriberStub.getProcessedPublishedEventList().size());
+    for (int i = 0; i < expectedEventDescriptionList.size(); i++) {
+      assertEventCore.assertExpectedEvent(expectedEventDescriptionList.get(i),
+          accumulatorSubscriberStub.getProcessedPublishedEventList().get(i));
+    }
+  }
 
   /*
    * Rough:

@@ -44,16 +44,16 @@ public class AssertEventCore {
         expectedEventDescription.getFamily(), expectedEventDescription.getName(), eventDescription);
   }
 
-  public void assertExpectedEvent(EventDescription expectedDescriptionEvent,
+  public void assertExpectedEvent(EventDescription expectedEventDescription,
       Subject expectedSubject, Event event) {
     assertNotNull(event);
-    assertExpectedEventDescription(expectedDescriptionEvent, event.getEventDescription());
+    assertExpectedEventDescription(expectedEventDescription, event.getEventDescription());
     assertExpectedSubject(expectedSubject, event.getSubject());
   }
 
-  public void assertExpectedEvent(EventDescription expectedDescriptionEvent, Event event) {
+  public void assertExpectedEvent(EventDescription expectedEventDescription, Event event) {
     assertNotNull(event);
-    assertExpectedEventDescription(expectedDescriptionEvent, event.getEventDescription());
+    assertExpectedEventDescription(expectedEventDescription, event.getEventDescription());
     assertExpectedSubject(event.getSubject());
   }
 
