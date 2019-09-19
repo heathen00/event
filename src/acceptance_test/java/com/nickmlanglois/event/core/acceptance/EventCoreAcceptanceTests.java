@@ -1760,38 +1760,4 @@ public class EventCoreAcceptanceTests {
           accumulatorSubscriberStub.getProcessedPublishedEventList().get(i));
     }
   }
-
-  /*
-   * Rough:
-   * 
-   * Also, it would be useful for testing and debugging to get a list of published events and who
-   * published them. Maybe a single method to get an event report for a given channel that lists all
-   * defined events, whether the events are currently published and who published them. This would
-   * be an internal interface for debugging purposes only.
-   * 
-   * Maybe you should also have channel specific Events that are published in band in each channel
-   * so that clients can receive events like the channel is opened / closed. The events would be no
-   * different in type from standard client defined events. They could be differentiated from the
-   * client defined events by being in their own family. You could even enforce a specific naming
-   * convention like "event.core.*", so perhaps "event.core.channel.info",
-   * "event.core.system.error", etc. You can report events like when subscribers misbehave. Should
-   * the messages be in band? Does that make sense from the perspective of the subscribers? The
-   * subscribers should only know about what is relevant to them, so perhaps the messages should be
-   * limited to those events that all subscribers care about such as when the channel is opened or
-   * closed. This would break a number of existing test cases. Thus, maybe the events should not be
-   * in band.
-   * 
-   * Maybe implement an InternalSystem that is a singleton that is created on demand. This
-   * InternalSystem could have the instance cache and all factories could reference it, so for
-   * scenarios where Channels and Events are being created by different factories aren't an issue.
-   * The InternalSystem as its name implies would not be accessible by clients. Existing test cases
-   * where UnsupportedOperationExceptions are being thrown would need to be rewritten. There is some
-   * potential for a memory leak with this design since if nothing is referencing the factory, then
-   * all the resources created through this factory would still exist. I would need "delete" options
-   * at the Factory level which, in turn implies "disable". After that, I could potentially
-   * implement some intelligence in the InternalSystem itself for monitoring to ensure instances are
-   * still being used and closing them otherwise.
-   * 
-   */
-
 }
