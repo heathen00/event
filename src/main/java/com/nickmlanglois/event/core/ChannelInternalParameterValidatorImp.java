@@ -36,6 +36,12 @@ final class ChannelInternalParameterValidatorImp implements ChannelInternal {
     }
   }
 
+  private void ensureSubjectIsDefined(Subject subject) {
+    if (!subject.isDefined()) {
+      throw new IllegalArgumentException("Subject.isDefined() cannot return false");
+    }
+  }
+
   @Override
   public String getName() {
     return nextChannelInternal.getName();
@@ -83,6 +89,7 @@ final class ChannelInternalParameterValidatorImp implements ChannelInternal {
   public void publish(Publisher publisher, EventDescription eventDescription, Subject subject) {
     ensureParameterIsNotNull("eventDescription", eventDescription);
     ensureParameterIsNotNull("subject", subject);
+    ensureSubjectIsDefined(subject);
     ensureChannelIsOpen();
     ensureEventDescriptionDefinedInChannel(eventDescription);
     nextChannelInternal.publish(publisher, eventDescription, subject);
@@ -100,6 +107,7 @@ final class ChannelInternalParameterValidatorImp implements ChannelInternal {
   public void unpublish(Publisher publisher, EventDescription eventDescription, Subject subject) {
     ensureParameterIsNotNull("eventDescription", eventDescription);
     ensureParameterIsNotNull("subject", subject);
+    ensureSubjectIsDefined(subject);
     ensureChannelIsOpen();
     ensureEventDescriptionDefinedInChannel(eventDescription);
     nextChannelInternal.unpublish(publisher, eventDescription, subject);

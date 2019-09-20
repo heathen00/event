@@ -2,7 +2,7 @@ package com.nickmlanglois.event.core;
 
 import com.nickmlanglois.event.core.Subject;
 
-public final class SubjectStub extends Subject {
+public class SubjectStub extends Subject {
   private final String subjectName;
 
   public SubjectStub(String subjectName) {

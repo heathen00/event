@@ -25,6 +25,7 @@ import com.nickmlanglois.event.core.Publisher;
 import com.nickmlanglois.event.core.Subject;
 import com.nickmlanglois.event.core.SubjectStub;
 import com.nickmlanglois.event.core.Subscriber;
+import com.nickmlanglois.event.core.UndefinedSubjectStub;
 
 public class EventCoreAcceptanceTests {
 
@@ -1760,5 +1761,25 @@ public class EventCoreAcceptanceTests {
       assertEventCore.assertExpectedEvent(expectedEventDescriptionList.get(i),
           accumulatorSubscriberStub.getProcessedPublishedEventList().get(i));
     }
+  }
+
+  @Test
+  public void EventCore_publishEventWithUndefinedSubject_illegalArgumentExceptionIsThrown() {
+    final Subject undefinedSubject = new UndefinedSubjectStub("undefined.subject");
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("Subject.isDefined() cannot return false");
+    eventFactory.addSubscriber(defaultTestChannel, accumulatorSubscriberStub);
+
+    defaultTestPublisher.publish(defaultTestEventDescription, undefinedSubject);
+  }
+
+  @Test
+  public void EventCore_unpublishEventWithUndefinedSubject_illegalArgumentExceptionIsThrown() {
+    final Subject undefinedSubject = new UndefinedSubjectStub("undefined.subject");
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("Subject.isDefined() cannot return false");
+    eventFactory.addSubscriber(defaultTestChannel, accumulatorSubscriberStub);
+
+    defaultTestPublisher.unpublish(defaultTestEventDescription, undefinedSubject);
   }
 }

@@ -1,7 +1,9 @@
 package com.nickmlanglois.event.core;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import java.util.List;
 import com.nickmlanglois.event.core.Channel;
 import com.nickmlanglois.event.core.Event;
@@ -49,12 +51,14 @@ public class AssertEventCore {
     assertNotNull(event);
     assertExpectedEventDescription(expectedEventDescription, event.getEventDescription());
     assertExpectedSubject(expectedSubject, event.getSubject());
+    assertTrue(event.getSubject().isDefined());
   }
 
   public void assertExpectedEvent(EventDescription expectedEventDescription, Event event) {
     assertNotNull(event);
     assertExpectedEventDescription(expectedEventDescription, event.getEventDescription());
     assertExpectedSubject(event.getSubject());
+    assertFalse(event.getSubject().isDefined());
   }
 
   public void assertExpectedSubject(Subject subject) {
