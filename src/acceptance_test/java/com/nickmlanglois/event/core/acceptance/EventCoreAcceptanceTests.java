@@ -1626,34 +1626,35 @@ public class EventCoreAcceptanceTests {
   public void EventCore_subsRequestPublishedEventResendWhenMultiplePublishedEventsFromMultiplePublishers_subsReceivesAllPublishedEventsFromAllPublishersInOrder() {
     eventFactory.addSubscriber(defaultTestChannel, accumulatorSubscriberStub);
     final Publisher publisherOne = eventFactory.createPublisher(defaultTestChannel);
-    final EventDescription expectedEventDescriptionOneForPublisherOne =
-        eventFactory.createEventDescription(defaultTestChannel, "publisher.one", "event.one");
-    final EventDescription expectedEventDescriptionTwoForPublisherOne =
-        eventFactory.createEventDescription(defaultTestChannel, "publisher.one", "event.two");
     final Publisher publisherTwo = eventFactory.createPublisher(defaultTestChannel);
-    final EventDescription expectedEventDescriptionOneForPublisherTwo =
-        eventFactory.createEventDescription(defaultTestChannel, "publisher.two", "event.one");
-    final EventDescription expectedEventDescriptionTwoForPublisherTwo =
-        eventFactory.createEventDescription(defaultTestChannel, "publisher.two", "event.two");
     final Publisher publisherThree = eventFactory.createPublisher(defaultTestChannel);
-    final EventDescription expectedEventDescriptionOneForPublisherThree =
-        eventFactory.createEventDescription(defaultTestChannel, "publisher.three", "event.one");
-    final EventDescription expectedEventDescriptionTwoForPublisherThree =
-        eventFactory.createEventDescription(defaultTestChannel, "publisher.three", "event.two");
+
+    final List<EventDescription> publisherOnePublishedEventDescriptionList = Arrays.asList(
+        eventFactory.createEventDescription(defaultTestChannel, "publisher.one", "event.one"),
+        eventFactory.createEventDescription(defaultTestChannel, "publisher.one", "event.two"));
+    final List<EventDescription> publisherTwoPublishedEventDescriptionList = Arrays.asList(
+        eventFactory.createEventDescription(defaultTestChannel, "publisher.two", "event.one"),
+        eventFactory.createEventDescription(defaultTestChannel, "publisher.two", "event.two"));
+    final List<EventDescription> publisherThreePublishedEventDescriptionList = Arrays.asList(
+        eventFactory.createEventDescription(defaultTestChannel, "publisher.three", "event.one"),
+        eventFactory.createEventDescription(defaultTestChannel, "publisher.three", "event.two"));
+    final List<EventDescription> expectedEventDescriptionList =
+        Arrays.asList(publisherOnePublishedEventDescriptionList.get(0),
+            publisherTwoPublishedEventDescriptionList.get(0),
+            publisherThreePublishedEventDescriptionList.get(0),
+            publisherOnePublishedEventDescriptionList.get(1),
+            publisherTwoPublishedEventDescriptionList.get(1),
+            publisherThreePublishedEventDescriptionList.get(1));
     eventFactory.openChannel(defaultTestChannel);
-    publisherOne.publish(expectedEventDescriptionOneForPublisherOne);
-    publisherTwo.publish(expectedEventDescriptionOneForPublisherTwo);
-    publisherThree.publish(expectedEventDescriptionOneForPublisherThree);
-    publisherOne.publish(expectedEventDescriptionTwoForPublisherOne);
-    publisherTwo.publish(expectedEventDescriptionTwoForPublisherTwo);
-    publisherThree.publish(expectedEventDescriptionTwoForPublisherThree);
+    final int numberOfPublishedEventsPerPublisher = 2;
+    for (int i = 0; i < numberOfPublishedEventsPerPublisher; i++) {
+      publisherOne.publish(publisherOnePublishedEventDescriptionList.get(i));
+      publisherTwo.publish(publisherTwoPublishedEventDescriptionList.get(i));
+      publisherThree.publish(publisherThreePublishedEventDescriptionList.get(i));
+    }
 
     accumulatorSubscriberStub.resendAllCurrentPublishedEvents();
 
-    List<EventDescription> expectedEventDescriptionList = Arrays.asList(
-        expectedEventDescriptionOneForPublisherOne, expectedEventDescriptionOneForPublisherTwo,
-        expectedEventDescriptionOneForPublisherThree, expectedEventDescriptionTwoForPublisherOne,
-        expectedEventDescriptionTwoForPublisherTwo, expectedEventDescriptionTwoForPublisherThree);
     assertEquals(expectedEventDescriptionList.size() * 2,
         accumulatorSubscriberStub.getProcessedPublishedEventList().size());
     int resentPublishedEventsBaseIndex = expectedEventDescriptionList.size();
@@ -1702,29 +1703,28 @@ public class EventCoreAcceptanceTests {
 
   @Test
   public void EventCore_subscriberRequestsPublishedEventResendWhenSomeEventsUnpublished_subscriberDoesNotReceiveUnpublishedEvents() {
-    final EventDescription eventDescriptionOne =
-        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.one");
-    final EventDescription eventDescriptionTwo =
-        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.two");
-    final EventDescription eventDescriptionThree =
-        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.three");
-    final EventDescription eventDescriptionFour =
-        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.four");
-    final EventDescription eventDescriptionFive =
-        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.five");
+    final List<EventDescription> publishedEventDescriptionList = Arrays.asList(
+        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.one"),
+        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.two"),
+        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.three"),
+        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.four"),
+        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.five"));
+    final List<EventDescription> unpublishedEventDescriptionList =
+        Arrays.asList(publishedEventDescriptionList.get(0), publishedEventDescriptionList.get(2),
+            publishedEventDescriptionList.get(4));
+    final List<EventDescription> expectedEventDescriptionList =
+        Arrays.asList(publishedEventDescriptionList.get(0), publishedEventDescriptionList.get(1),
+            publishedEventDescriptionList.get(2), publishedEventDescriptionList.get(3),
+            publishedEventDescriptionList.get(4), publishedEventDescriptionList.get(1),
+            publishedEventDescriptionList.get(3));
     eventFactory.addSubscriber(defaultTestChannel, accumulatorSubscriberStub);
     eventFactory.openChannel(defaultTestChannel);
-    defaultTestPublisher.publish(eventDescriptionOne);
-    defaultTestPublisher.publish(eventDescriptionTwo);
-    defaultTestPublisher.publish(eventDescriptionThree);
-    defaultTestPublisher.publish(eventDescriptionFour);
-    defaultTestPublisher.publish(eventDescriptionFive);
-    defaultTestPublisher.unpublish(eventDescriptionOne);
-    defaultTestPublisher.unpublish(eventDescriptionThree);
-    defaultTestPublisher.unpublish(eventDescriptionFive);
-    final List<EventDescription> expectedEventDescriptionList =
-        Arrays.asList(eventDescriptionOne, eventDescriptionTwo, eventDescriptionThree,
-            eventDescriptionFour, eventDescriptionFive, eventDescriptionTwo, eventDescriptionFour);
+    for (EventDescription eventDescription : publishedEventDescriptionList) {
+      defaultTestPublisher.publish(eventDescription);
+    }
+    for (EventDescription eventDescription : unpublishedEventDescriptionList) {
+      defaultTestPublisher.unpublish(eventDescription);
+    }
 
     accumulatorSubscriberStub.resendAllCurrentPublishedEvents();
 
@@ -1738,17 +1738,18 @@ public class EventCoreAcceptanceTests {
 
   @Test
   public void EventCore_subscriberRequestsPublishedEventsResendMultipleTimes_subscriberReceivesAllPublishedEventsEachTime() {
-    final EventDescription eventDescriptionOne =
-        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.one");
-    final EventDescription eventDescriptionTwo =
-        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.two");
+    final List<EventDescription> publishedEventDescriptionList = Arrays.asList(
+        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.one"),
+        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event.two"));
+    final List<EventDescription> expectedEventDescriptionList =
+        Arrays.asList(publishedEventDescriptionList.get(0), publishedEventDescriptionList.get(1),
+            publishedEventDescriptionList.get(0), publishedEventDescriptionList.get(1),
+            publishedEventDescriptionList.get(0), publishedEventDescriptionList.get(1));
     eventFactory.addSubscriber(defaultTestChannel, accumulatorSubscriberStub);
     eventFactory.openChannel(defaultTestChannel);
-    defaultTestPublisher.publish(eventDescriptionOne);
-    defaultTestPublisher.publish(eventDescriptionTwo);
-    final List<EventDescription> expectedEventDescriptionList =
-        Arrays.asList(eventDescriptionOne, eventDescriptionTwo, eventDescriptionOne,
-            eventDescriptionTwo, eventDescriptionOne, eventDescriptionTwo);
+    for (EventDescription eventDescription : publishedEventDescriptionList) {
+      defaultTestPublisher.publish(eventDescription);
+    }
 
     accumulatorSubscriberStub.resendAllCurrentPublishedEvents();
     accumulatorSubscriberStub.resendAllCurrentPublishedEvents();
