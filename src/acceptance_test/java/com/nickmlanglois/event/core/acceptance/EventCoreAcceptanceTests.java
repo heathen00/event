@@ -5,10 +5,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -1783,12 +1785,153 @@ public class EventCoreAcceptanceTests {
     defaultTestPublisher.unpublish(defaultTestEventDescription, undefinedSubject);
   }
 
+  @Test
+  public void EventCore_removeSubscriberWithNullParameter_nullPointerExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_removeSubscriberThatWasNeverAdded_nothingHappens() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_removeSubscriberMultipleTimes_subscriberRemovedOnce() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_removeSubscriberAfterDeletingChannel_nothingHappens() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_removeSubscriberWhenChannelOpen_unsupportedOperationExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_removeSubscriberWhenChannelClosed_subscriberRemoved() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_deletePublisherWithNullParameter_nullPointerExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_deletePublisherMultipleTimes_publisherDeletedOnce() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_deletePublisherAfterDeletingChannel_nothingHappens() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_deletePublisherWhenChannelOpen_unsupportedOperationExceptionOccurs() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_deleteUnknownExternalPublisherImplementation_illegalArgumentExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_deletePublisherWhenChannelClosed_publisherDeleted() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_deleteEventDescriptionWithNullParameter_nullPointerExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_deleteEventDescriptionMultipleTimes_eventDescriptionDeletedOnce() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_deleteEventDescriptionAfterDeletingChannel_nothingHappens() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_deleteEventDescriptionWhenChannelOpen_unsupportedOperationException() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_deleteUnknownExternalEventDescriptionImplementation_illegalArgumentExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_deleteEventDescriptionWhenChannelClosed_eventDescriptionIsDeleted() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_deleteChannelWithNullParameter_nullPointerExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_deleteUnknownExternalChannelImplementation_illegalArgumentExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_deleteOpenChannel_unsupportedOperationExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_deleteChannelMultipleTimes_channelDeletedOnce() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_openChannelThatIsDeleted_illegalArgumentExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_deleteEmptyClosedChannel_channelIsDeleted() {
+    fail("not implemented");
+  }
+
+
   /**
+   * 
    * Rough list of test scenarios:
-   * 
-   * delete empty channel should succeed.
-   * 
-   * delete channel that is open should throw unsupportedOperationException
    * 
    * delete channel that contains event descriptions. Event descriptions deleted, then channel
    * deleted.
@@ -1797,61 +1940,11 @@ public class EventCoreAcceptanceTests {
    * 
    * delete channel that contains subscribers. Subscribers removed then channel deleted.
    * 
-   * delete a null channel. null pointer exception is thrown.
-   * 
-   * delete an unknown external channel implementation IllegalArgumentException is thrown.
-   * 
    * add an event description to a deleted channel. IllegalArgumentException is thrown.
    * 
    * add a publisher to a deleted channel. IllegalArgumentException is thrown.
    * 
    * add a subscriber to a deleted channel. IllegalArgumentException
-   * 
-   * open a channel that is deleted. IllegalArgumentException is thrown.
-   * 
-   * delete channel multiple times. Nothing happens.
-   * 
-   * 
-   * delete event desc. with null event desc. NullPointer
-   * 
-   * delete event desc. multiple times. Deleted first time. Nothing happens subsequent times
-   * (Idempotent).
-   * 
-   * delete event desc. after deleting channel. Nothing happens since already implicitly done when
-   * deleting channel.
-   * 
-   * delete event desc. when channel open. UnsupportedOperationException.
-   * 
-   * delete valid event desc. Event desc. deleted.
-   * 
-   * 
-   * delete publisher with null publisher. NullPointerException.
-   * 
-   * delete publisher multiple times. Deleted first time. Nothing happens subsequent times
-   * (Idempotent).
-   * 
-   * delete publisher after deleting channel. Nothing happens since already implicitly done when
-   * deleting channel.
-   * 
-   * delete publisher when channel open. UnsupportedOperationException.
-   * 
-   * delete valid publisher. Publisher deleted.
-   * 
-   * 
-   * remove subscriber with null subscriber. NullPointerException.
-   * 
-   * remove subscriber that was never added in first place. This is a simpler variation of
-   * subscriber removed multiple times.
-   * 
-   * remove subscriber multiple times. Removed first time. Nothing happens subsequent times.
-   * (Idempotent).
-   * 
-   * remove subscriber after deleting channel. Nothing happens since already implicitly done when
-   * deleting channel.
-   * 
-   * remove subscriber when channel open. UnsupportedOperationException.
-   * 
-   * remove valid subscriber. Subscriber removed.
    * 
    * 
    * publisher publishes event to deleted channel. UnsupportedOperationException
@@ -1878,13 +1971,8 @@ public class EventCoreAcceptanceTests {
    * 
    * publisher unpublishes deleted event and valid subject to open channel. Unsupported ...
    * 
-   * 
-   * Delete valid event description from a different channel in this channel.
-   * IllegalArgumentException.
-   * 
-   * Delete valid publisher from a different channel in this channel. IllegalArgumentException.
-   * 
-   * Delete valid subscriber from a different channel in this channel. IllegalArgumentException.
+   * publisher publishes / unpublishes unknown external implementation of EventDescription. What
+   * happens? Not implemented but not related to delete functionality either.
    * 
    */
 }
