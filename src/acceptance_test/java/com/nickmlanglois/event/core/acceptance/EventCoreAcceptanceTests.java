@@ -1782,4 +1782,109 @@ public class EventCoreAcceptanceTests {
 
     defaultTestPublisher.unpublish(defaultTestEventDescription, undefinedSubject);
   }
+
+  /**
+   * Rough list of test scenarios:
+   * 
+   * delete empty channel should succeed.
+   * 
+   * delete channel that is open should throw unsupportedOperationException
+   * 
+   * delete channel that contains event descriptions. Event descriptions deleted, then channel
+   * deleted.
+   * 
+   * delete channel that contains publisher. Publishers deleted then channel deleted.
+   * 
+   * delete channel that contains subscribers. Subscribers removed then channel deleted.
+   * 
+   * delete a null channel. null pointer exception is thrown.
+   * 
+   * delete an unknown external channel implementation IllegalArgumentException is thrown.
+   * 
+   * add an event description to a deleted channel. IllegalArgumentException is thrown.
+   * 
+   * add a publisher to a deleted channel. IllegalArgumentException is thrown.
+   * 
+   * add a subscriber to a deleted channel. IllegalArgumentException
+   * 
+   * open a channel that is deleted. IllegalArgumentException is thrown.
+   * 
+   * delete channel multiple times. Nothing happens.
+   * 
+   * 
+   * delete event desc. with null event desc. NullPointer
+   * 
+   * delete event desc. multiple times. Deleted first time. Nothing happens subsequent times
+   * (Idempotent).
+   * 
+   * delete event desc. after deleting channel. Nothing happens since already implicitly done when
+   * deleting channel.
+   * 
+   * delete event desc. when channel open. UnsupportedOperationException.
+   * 
+   * delete valid event desc. Event desc. deleted.
+   * 
+   * 
+   * delete publisher with null publisher. NullPointerException.
+   * 
+   * delete publisher multiple times. Deleted first time. Nothing happens subsequent times
+   * (Idempotent).
+   * 
+   * delete publisher after deleting channel. Nothing happens since already implicitly done when
+   * deleting channel.
+   * 
+   * delete publisher when channel open. UnsupportedOperationException.
+   * 
+   * delete valid publisher. Publisher deleted.
+   * 
+   * 
+   * remove subscriber with null subscriber. NullPointerException.
+   * 
+   * remove subscriber that was never added in first place. This is a simpler variation of
+   * subscriber removed multiple times.
+   * 
+   * remove subscriber multiple times. Removed first time. Nothing happens subsequent times.
+   * (Idempotent).
+   * 
+   * remove subscriber after deleting channel. Nothing happens since already implicitly done when
+   * deleting channel.
+   * 
+   * remove subscriber when channel open. UnsupportedOperationException.
+   * 
+   * remove valid subscriber. Subscriber removed.
+   * 
+   * 
+   * publisher publishes event to deleted channel. UnsupportedOperationException
+   * 
+   * publisher unpublishes event to deleted channel. UnsupportedOperationException
+   * 
+   * publisher publishes event and subject to deleted channel. Unsupported ...
+   * 
+   * publisher unpublishes event and subject to deleted channel. Unsupported ...
+   * 
+   * deleted publisher publishes event to open channel. Unsupported ...
+   * 
+   * deleted publisher unpublishes event to open channel. Unsupported ...
+   * 
+   * deleted publisher publishes event and subject to open channel. Unsupported ...
+   * 
+   * deleted publisher unpublishes event and subject to open channel. Unsupported ...
+   * 
+   * publisher publishes deleted event to open channel. Unsupported ...
+   * 
+   * publisher unpublishes deleted event to open channel. Unsupported ...
+   * 
+   * publisher publishes deleted event and valid subject to open channel. Unsupported ...
+   * 
+   * publisher unpublishes deleted event and valid subject to open channel. Unsupported ...
+   * 
+   * 
+   * Delete valid event description from a different channel in this channel.
+   * IllegalArgumentException.
+   * 
+   * Delete valid publisher from a different channel in this channel. IllegalArgumentException.
+   * 
+   * Delete valid subscriber from a different channel in this channel. IllegalArgumentException.
+   * 
+   */
 }
