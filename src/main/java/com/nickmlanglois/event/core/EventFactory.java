@@ -89,4 +89,6 @@ public interface EventFactory {
   void openChannel(Channel channel);
 
   void removeSubcriber(Subscriber subscriber);
+
+  void deletePublisher(Publisher publisher);
 }

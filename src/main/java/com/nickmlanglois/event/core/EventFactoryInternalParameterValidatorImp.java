@@ -20,7 +20,7 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
 
   private void ensureChannelIsClosed(Channel channel) {
     if (channel.isOpen()) {
-      throw new UnsupportedOperationException("operation not allowed while channel is open");
+      throw new UnsupportedOperationException("operation not permitted while channel is open");
     }
   }
 
@@ -126,5 +126,12 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
     }
     ensureChannelIsClosed(subscriber.getChannel());
     nextEventFactoryInternal.removeSubcriber(subscriber);
+  }
+
+  @Override
+  public void deletePublisher(Publisher publisher) {
+    ensureParameterNotNull("publisher", publisher);
+    ensureChannelIsClosed(publisher.getChannel());
+    nextEventFactoryInternal.deletePublisher(publisher);
   }
 }

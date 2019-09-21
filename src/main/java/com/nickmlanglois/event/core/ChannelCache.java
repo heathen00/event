@@ -9,9 +9,9 @@ interface ChannelCache {
 
   void addSubscriberInternal(SubscriberInternal subscriberInternal);
 
-  List<Publisher> getPublisherList();
+  List<PublisherInternal> getPublisherInternalList();
 
-  void addPublisher(Publisher eventPublisher);
+  void addPublisher(PublisherInternal publisherInternal);
 
   List<EventDescription> getEventDescriptionList();
 
@@ -22,5 +22,7 @@ interface ChannelCache {
   SubscriberInternal getInternalSubscriberForExternalSubscriber(Subscriber subscriber);
 
   void removeSubscriberInternal(SubscriberInternal subscriberInternal);
+
+  void removePublisher(PublisherInternal publisherInternal);
 }
 

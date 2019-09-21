@@ -6,14 +6,14 @@ import java.util.List;
 final class ChannelCacheImp implements ChannelCache {
   private final ChannelInternal channelInternal;
   private final List<SubscriberInternal> subscriberInternalList;
-  private final List<Publisher> publisherList;
+  private final List<PublisherInternal> publisherInternalList;
   private final List<EventDescription> eventDescriptionList;
   private final EventDescriptionForComparisonImp eventDescriptionForComparison;
 
   ChannelCacheImp(ChannelInternal channelInternal) {
     this.channelInternal = channelInternal;
     subscriberInternalList = new ArrayList<>();
-    publisherList = new ArrayList<>();
+    publisherInternalList = new ArrayList<>();
     eventDescriptionList = new ArrayList<>();
     eventDescriptionForComparison = new EventDescriptionForComparisonImp();
   }
@@ -35,20 +35,20 @@ final class ChannelCacheImp implements ChannelCache {
   }
 
   @Override
-  public void addPublisher(Publisher eventPublisher) {
-    publisherList.add(eventPublisher);
+  public void addPublisher(PublisherInternal publisherInternal) {
+    publisherInternalList.add(publisherInternal);
   }
 
   @Override
-  public List<Publisher> getPublisherList() {
-    return publisherList;
+  public List<PublisherInternal> getPublisherInternalList() {
+    return publisherInternalList;
   }
 
   @Override
   public String toString() {
     return "ChannelCacheImp [getChannelInternal()=" + getChannelInternal()
         + ", getSubscriberList()=" + getSubscriberInternalList() + ", getPublisherList()="
-        + getPublisherList() + ", getEventDescriptionList()=" + getEventDescriptionList()
+        + getPublisherInternalList() + ", getEventDescriptionList()=" + getEventDescriptionList()
         + ", hashCode()=" + hashCode() + "]";
   }
 
@@ -88,5 +88,10 @@ final class ChannelCacheImp implements ChannelCache {
   @Override
   public void removeSubscriberInternal(SubscriberInternal subscriberInternal) {
     subscriberInternalList.remove(subscriberInternal);
+  }
+
+  @Override
+  public void removePublisher(PublisherInternal publisherInternal) {
+    publisherInternalList.remove(publisherInternal);
   }
 }

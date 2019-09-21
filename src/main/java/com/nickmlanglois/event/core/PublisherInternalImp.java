@@ -1,9 +1,9 @@
 package com.nickmlanglois.event.core;
 
-public final class PublisherImp implements Publisher {
-  private final ChannelInternal channelInternal;
+public final class PublisherInternalImp implements PublisherInternal {
+  private ChannelInternal channelInternal;
 
-  PublisherImp(ChannelInternal channelInternal) {
+  PublisherInternalImp(ChannelInternal channelInternal) {
     this.channelInternal = channelInternal;
   }
 
@@ -30,5 +30,10 @@ public final class PublisherImp implements Publisher {
   @Override
   public void unpublish(EventDescription eventDescription, Subject subject) {
     channelInternal.unpublish(this, eventDescription, subject);
+  }
+
+  @Override
+  public void setChannelInternal(ChannelInternal channelInternal) {
+    this.channelInternal = channelInternal;
   }
 }

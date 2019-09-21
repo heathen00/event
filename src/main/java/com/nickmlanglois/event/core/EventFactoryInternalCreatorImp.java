@@ -25,7 +25,7 @@ final class EventFactoryInternalCreatorImp implements EventFactoryInternal {
 
   @Override
   public Publisher createPublisher(Channel channel) {
-    return new PublisherImp((ChannelInternal) channel);
+    return new PublisherInternalImp((ChannelInternal) channel);
   }
 
   @Override
@@ -56,5 +56,10 @@ final class EventFactoryInternalCreatorImp implements EventFactoryInternal {
   @Override
   public void removeSubcriber(Subscriber subscriber) {
     throw new UnsupportedOperationException("EventFactory creator does not remove subscribers");
+  }
+
+  @Override
+  public void deletePublisher(Publisher publisher) {
+    throw new UnsupportedOperationException("EventFactory creator does not delete publishers");
   }
 }

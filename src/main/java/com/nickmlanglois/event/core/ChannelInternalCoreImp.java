@@ -84,7 +84,7 @@ final class ChannelInternalCoreImp extends NaturalOrderBase<Channel> implements 
 
   @Override
   public List<Publisher> getPublisherList() {
-    return Collections.unmodifiableList(getChannelCache().getPublisherList());
+    return Collections.unmodifiableList(getChannelCache().getPublisherInternalList());
   }
 
   @Override

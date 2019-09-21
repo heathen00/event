@@ -377,7 +377,7 @@ public class EventCoreAcceptanceTests {
   @Test
   public void EventCore_createEventForChannelAfterEnablingChannel_unsupportedOperationExceptionIsThrown() {
     thrown.expect(UnsupportedOperationException.class);
-    thrown.expectMessage("operation not allowed while channel is open");
+    thrown.expectMessage("operation not permitted while channel is open");
     eventFactory.openChannel(defaultTestChannel);
 
     eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.name");
@@ -386,7 +386,7 @@ public class EventCoreAcceptanceTests {
   @Test
   public void EventCore_createPublisherForChannelAfterEnablingChannel_unsupportedOperationExceptionIsThrown() {
     thrown.expect(UnsupportedOperationException.class);
-    thrown.expectMessage("operation not allowed while channel is open");
+    thrown.expectMessage("operation not permitted while channel is open");
     eventFactory.openChannel(defaultTestChannel);
 
     eventFactory.createPublisher(defaultTestChannel);
@@ -395,7 +395,7 @@ public class EventCoreAcceptanceTests {
   @Test
   public void EventCore_addSubscriberForChannelAfterEnablingChannel_unsupportedOperationExceptionIsThrown() {
     thrown.expect(UnsupportedOperationException.class);
-    thrown.expectMessage("operation not allowed while channel is open");
+    thrown.expectMessage("operation not permitted while channel is open");
     eventFactory.openChannel(defaultTestChannel);
 
     eventFactory.addSubscriber(defaultTestChannel, accumulatorSubscriberStub);
@@ -1825,7 +1825,7 @@ public class EventCoreAcceptanceTests {
   @Test
   public void EventCore_removeSubscriberWhenChannelOpen_unsupportedOperationExceptionIsThrown() {
     thrown.expect(UnsupportedOperationException.class);
-    thrown.expectMessage("operation not allowed while channel is open");
+    thrown.expectMessage("operation not permitted while channel is open");
     eventFactory.addSubscriber(defaultTestChannel, accumulatorSubscriberStub);
     eventFactory.openChannel(defaultTestChannel);
 
@@ -1844,13 +1844,14 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_deletePublisherWithNullParameter_nullPointerExceptionIsThrown() {
-    fail("not implemented");
+    thrown.expect(NullPointerException.class);
+    thrown.expectMessage("publisher cannot equal null");
+
+    eventFactory.deletePublisher((Publisher) null);
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_deletePublisherMultipleTimes_publisherDeletedOnce() {
     fail("not implemented");
   }
@@ -1862,9 +1863,13 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_deletePublisherWhenChannelOpen_unsupportedOperationExceptionOccurs() {
-    fail("not implemented");
+    thrown.expect(UnsupportedOperationException.class);
+    thrown.expectMessage("operation not permitted while channel is open");
+    Publisher publisher = eventFactory.createPublisher(defaultTestChannel);
+    eventFactory.openChannel(defaultTestChannel);
+
+    eventFactory.deletePublisher(publisher);
   }
 
   @Test
@@ -1874,9 +1879,15 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_deletePublisherWhenChannelClosed_publisherDeleted() {
-    fail("not implemented");
+    Publisher publisher = eventFactory.createPublisher(defaultTestChannel);
+    assertTrue(defaultTestChannel.getPublisherList().contains(publisher));
+    assertEquals(defaultTestChannel, publisher.getChannel());
+
+    eventFactory.deletePublisher(publisher);
+
+    assertFalse(defaultTestChannel.getPublisherList().contains(publisher));
+    assertNull(publisher.getChannel());
   }
 
   @Test
@@ -1996,6 +2007,8 @@ public class EventCoreAcceptanceTests {
    * 
    * publisher publishes / unpublishes unknown external implementation of EventDescription. What
    * happens? Not implemented but not related to delete functionality either.
+   * 
+   * remove, add, then remove a subscriber. Should work fine.
    * 
    */
 }
