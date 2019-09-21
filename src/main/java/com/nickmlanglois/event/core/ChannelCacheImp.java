@@ -84,4 +84,9 @@ final class ChannelCacheImp implements ChannelCache {
     }
     return null;
   }
+
+  @Override
+  public void removeSubscriberInternal(SubscriberInternal subscriberInternal) {
+    subscriberInternalList.remove(subscriberInternal);
+  }
 }

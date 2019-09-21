@@ -18,9 +18,9 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
     }
   }
 
-  private void ensureChannelDisabled(Channel channel, String message) {
+  private void ensureChannelIsClosed(Channel channel) {
     if (channel.isOpen()) {
-      throw new UnsupportedOperationException(message);
+      throw new UnsupportedOperationException("operation not allowed while channel is open");
     }
   }
 
@@ -65,7 +65,7 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
   public EventDescription createEventDescription(Channel channel, String family, String name) {
     ensureParameterNotNull("channel", channel);
     ensureExpectedImplementation("channel", ChannelInternal.class, channel);
-    ensureChannelDisabled(channel, "cannot create event descriptions after enabling channel");
+    ensureChannelIsClosed(channel);
     ensureParameterNotNull("family", family);
     ensureExpectedNamingConvention("family", family);
     ensureParameterNotNull("name", name);
@@ -77,7 +77,7 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
   public Publisher createPublisher(Channel channel) {
     ensureParameterNotNull("channel", channel);
     ensureExpectedImplementation("channel", ChannelInternal.class, channel);
-    ensureChannelDisabled(channel, "cannot create publishers after enabling channel");
+    ensureChannelIsClosed(channel);
     return nextEventFactoryInternal.createPublisher(channel);
   }
 
@@ -85,7 +85,7 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
   public void addSubscriber(Channel channel, Subscriber subscriber) {
     ensureParameterNotNull("channel", channel);
     ensureExpectedImplementation("channel", ChannelInternal.class, channel);
-    ensureChannelDisabled(channel, "cannot add subscribers after enabling channel");
+    ensureChannelIsClosed(channel);
     ensureParameterNotNull("subscriber", subscriber);
     ensureSubscriberGetNameValid(subscriber);
     nextEventFactoryInternal.addSubscriber(channel, subscriber);
@@ -116,5 +116,15 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
   @Override
   public Event createEvent(EventDescription eventDescription, Subject subject) {
     return nextEventFactoryInternal.createEvent(eventDescription, subject);
+  }
+
+  @Override
+  public void removeSubcriber(Subscriber subscriber) {
+    ensureParameterNotNull("subscriber", subscriber);
+    if (null == subscriber.getChannel()) {
+      return;
+    }
+    ensureChannelIsClosed(subscriber.getChannel());
+    nextEventFactoryInternal.removeSubcriber(subscriber);
   }
 }

@@ -101,4 +101,16 @@ final class EventFactoryInternalCacherImp implements EventFactoryInternal {
   public Subject getNoSubject() {
     return nextEventFactoryInternal.getNoSubject();
   }
+
+
+  @Override
+  public void removeSubcriber(Subscriber subscriber) {
+    SubscriberInternal subscriberInternal = getChannelCache(subscriber.getChannel())
+        .getInternalSubscriberForExternalSubscriber(subscriber);
+    if (null == subscriberInternal) {
+      return;
+    }
+    getChannelCache(subscriber.getChannel()).removeSubscriberInternal(subscriberInternal);
+    subscriber.setChannel(null);
+  }
 }

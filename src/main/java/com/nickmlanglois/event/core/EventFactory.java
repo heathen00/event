@@ -87,4 +87,6 @@ public interface EventFactory {
    * @throws IllegalArgumentException if channel is an unknown implementation.
    */
   void openChannel(Channel channel);
+
+  void removeSubcriber(Subscriber subscriber);
 }

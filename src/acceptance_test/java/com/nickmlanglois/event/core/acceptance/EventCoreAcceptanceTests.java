@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.util.Arrays;
@@ -376,7 +377,7 @@ public class EventCoreAcceptanceTests {
   @Test
   public void EventCore_createEventForChannelAfterEnablingChannel_unsupportedOperationExceptionIsThrown() {
     thrown.expect(UnsupportedOperationException.class);
-    thrown.expectMessage("cannot create event descriptions after enabling channel");
+    thrown.expectMessage("operation not allowed while channel is open");
     eventFactory.openChannel(defaultTestChannel);
 
     eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.name");
@@ -385,7 +386,7 @@ public class EventCoreAcceptanceTests {
   @Test
   public void EventCore_createPublisherForChannelAfterEnablingChannel_unsupportedOperationExceptionIsThrown() {
     thrown.expect(UnsupportedOperationException.class);
-    thrown.expectMessage("cannot create publishers after enabling channel");
+    thrown.expectMessage("operation not allowed while channel is open");
     eventFactory.openChannel(defaultTestChannel);
 
     eventFactory.createPublisher(defaultTestChannel);
@@ -394,7 +395,7 @@ public class EventCoreAcceptanceTests {
   @Test
   public void EventCore_addSubscriberForChannelAfterEnablingChannel_unsupportedOperationExceptionIsThrown() {
     thrown.expect(UnsupportedOperationException.class);
-    thrown.expectMessage("cannot add subscribers after enabling channel");
+    thrown.expectMessage("operation not allowed while channel is open");
     eventFactory.openChannel(defaultTestChannel);
 
     eventFactory.addSubscriber(defaultTestChannel, accumulatorSubscriberStub);
@@ -1787,19 +1788,32 @@ public class EventCoreAcceptanceTests {
 
   @Test
   public void EventCore_removeSubscriberWithNullParameter_nullPointerExceptionIsThrown() {
-    fail("not implemented");
+    thrown.expect(NullPointerException.class);
+    thrown.expectMessage("subscriber cannot equal null");
+
+    eventFactory.removeSubcriber((Subscriber) null);
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_removeSubscriberThatWasNeverAdded_nothingHappens() {
-    fail("not implemented");
+    eventFactory.removeSubcriber(accumulatorSubscriberStub);
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_removeSubscriberMultipleTimes_subscriberRemovedOnce() {
-    fail("not implemented");
+    eventFactory.addSubscriber(defaultTestChannel, accumulatorSubscriberStub);
+    assertTrue(defaultTestChannel.getSubscriberList().contains(accumulatorSubscriberStub));
+    assertEquals(defaultTestChannel, accumulatorSubscriberStub.getChannel());
+    eventFactory.removeSubcriber(accumulatorSubscriberStub);
+    assertFalse(defaultTestChannel.getSubscriberList().contains(accumulatorSubscriberStub));
+    assertNull(accumulatorSubscriberStub.getChannel());
+
+    eventFactory.removeSubcriber(accumulatorSubscriberStub);
+    eventFactory.removeSubcriber(accumulatorSubscriberStub);
+    eventFactory.removeSubcriber(accumulatorSubscriberStub);
+
+    assertFalse(defaultTestChannel.getSubscriberList().contains(accumulatorSubscriberStub));
+    assertNull(accumulatorSubscriberStub.getChannel());
   }
 
   @Test
@@ -1809,15 +1823,24 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_removeSubscriberWhenChannelOpen_unsupportedOperationExceptionIsThrown() {
-    fail("not implemented");
+    thrown.expect(UnsupportedOperationException.class);
+    thrown.expectMessage("operation not allowed while channel is open");
+    eventFactory.addSubscriber(defaultTestChannel, accumulatorSubscriberStub);
+    eventFactory.openChannel(defaultTestChannel);
+
+    eventFactory.removeSubcriber(accumulatorSubscriberStub);
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_removeSubscriberWhenChannelClosed_subscriberRemoved() {
-    fail("not implemented");
+    eventFactory.addSubscriber(defaultTestChannel, accumulatorSubscriberStub);
+    assertTrue(defaultTestChannel.getSubscriberList().contains(accumulatorSubscriberStub));
+    assertEquals(defaultTestChannel, accumulatorSubscriberStub.getChannel());
+
+    eventFactory.removeSubcriber(accumulatorSubscriberStub);
+    assertFalse(defaultTestChannel.getSubscriberList().contains(accumulatorSubscriberStub));
+    assertNull(accumulatorSubscriberStub.getChannel());
   }
 
   @Test

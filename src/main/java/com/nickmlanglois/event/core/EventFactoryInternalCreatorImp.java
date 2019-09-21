@@ -52,4 +52,9 @@ final class EventFactoryInternalCreatorImp implements EventFactoryInternal {
   public Subject getNoSubject() {
     return noSubjectSingleton;
   }
+
+  @Override
+  public void removeSubcriber(Subscriber subscriber) {
+    throw new UnsupportedOperationException("EventFactory creator does not remove subscribers");
+  }
 }

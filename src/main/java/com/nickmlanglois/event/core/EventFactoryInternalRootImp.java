@@ -52,4 +52,9 @@ final class EventFactoryInternalRootImp implements EventFactoryInternal {
   public Event createEvent(EventDescription eventDescription, Subject subject) {
     return nextEventFactoryInternal.createEvent(eventDescription, subject);
   }
+
+  @Override
+  public void removeSubcriber(Subscriber subscriber) {
+    nextEventFactoryInternal.removeSubcriber(subscriber);
+  }
 }
