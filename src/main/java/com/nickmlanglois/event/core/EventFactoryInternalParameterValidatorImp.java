@@ -166,4 +166,9 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
     ensureChannelIsClosed(channel);
     nextEventFactoryInternal.deleteChannel(channel);
   }
+
+  @Override
+  public ChannelInternal getDeletedChannelInternal(String channelName) {
+    return nextEventFactoryInternal.getDeletedChannelInternal(channelName);
+  }
 }

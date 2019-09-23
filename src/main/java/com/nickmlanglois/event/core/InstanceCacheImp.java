@@ -21,7 +21,8 @@ final class InstanceCacheImp implements InstanceCache {
   }
 
   @Override
-  public ChannelInternal getChannelInternalForSubscriberInternal(SubscriberInternal subscriberInternal) {
+  public ChannelInternal getChannelInternalForSubscriberInternal(
+      SubscriberInternal subscriberInternal) {
     ChannelInternal subscribersChannel = null;
     for (String channelName : channelNameToChannelCacheMap.keySet()) {
       if (channelNameToChannelCacheMap.get(channelName).getSubscriberInternalList()
@@ -30,5 +31,10 @@ final class InstanceCacheImp implements InstanceCache {
       }
     }
     return subscribersChannel;
+  }
+
+  @Override
+  public void deleteChannelCache(String channelName) {
+    channelNameToChannelCacheMap.remove(channelName);
   }
 }

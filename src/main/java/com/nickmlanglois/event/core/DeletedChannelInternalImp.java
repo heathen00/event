@@ -5,10 +5,15 @@ import java.util.List;
 
 final class DeletedChannelInternalImp implements ChannelInternal {
   private final EventFactoryInternal eventFactoryInternal;
-  private final String name = "__DELETED__";
+  private final String name;
+
+  DeletedChannelInternalImp(EventFactoryInternal eventFactoryInternal, String channelName) {
+    this.eventFactoryInternal = eventFactoryInternal;
+    this.name = channelName;
+  }
 
   DeletedChannelInternalImp(EventFactoryInternal eventFactoryInternal) {
-    this.eventFactoryInternal = eventFactoryInternal;
+    this(eventFactoryInternal, "__DELETED__");
   }
 
   @Override
@@ -103,4 +108,7 @@ final class DeletedChannelInternalImp implements ChannelInternal {
 
   @Override
   public void resendAllCurrentPublishedEventsToExternalSubscriber(Subscriber subscriber) {}
+
+  @Override
+  public void setDeleted() {}
 }

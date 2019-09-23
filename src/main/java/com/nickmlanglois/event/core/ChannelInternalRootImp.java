@@ -84,4 +84,9 @@ final class ChannelInternalRootImp implements ChannelInternal {
   public boolean isDefined() {
     return nextChannelInternal.isDefined();
   }
+
+  @Override
+  public void setDeleted() {
+    nextChannelInternal.setDeleted();
+  }
 }

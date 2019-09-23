@@ -4,7 +4,7 @@ import java.util.List;
 
 final class ChannelInternalParameterValidatorImp implements ChannelInternal {
   private final ChannelInternal rootChannelInternal;
-  private final ChannelInternal nextChannelInternal;
+  private ChannelInternal nextChannelInternal;
 
   ChannelInternalParameterValidatorImp(ChannelInternal rootChannelInternal,
       ChannelInternal nextChannelInternal) {
@@ -131,6 +131,11 @@ final class ChannelInternalParameterValidatorImp implements ChannelInternal {
   @Override
   public boolean isDefined() {
     return nextChannelInternal.isDefined();
+  }
+
+  @Override
+  public void setDeleted() {
+    nextChannelInternal = getEventFactoryInternal().getDeletedChannelInternal(getName());
   }
 }
 

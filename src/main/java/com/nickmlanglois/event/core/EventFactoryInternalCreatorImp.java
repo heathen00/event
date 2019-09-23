@@ -80,4 +80,9 @@ final class EventFactoryInternalCreatorImp implements EventFactoryInternal {
   public void deleteChannel(Channel channel) {
     throw new UnsupportedOperationException("EventFactory creator does not delete channels");
   }
+
+  @Override
+  public ChannelInternal getDeletedChannelInternal(String channelName) {
+    return new DeletedChannelInternalImp(getRootEventFactoryInternal(), channelName);
+  }
 }

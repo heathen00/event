@@ -10,4 +10,6 @@ interface InstanceCache {
   void addChannelCache(String channelName, ChannelInternal channelInternal);
 
   ChannelInternal getChannelInternalForSubscriberInternal(SubscriberInternal subscriberInternal);
+
+  void deleteChannelCache(String channelName);
 }

@@ -16,4 +16,6 @@ interface ChannelInternal extends Channel {
   ChannelInternal getRootChannelInternal();
 
   void resendAllCurrentPublishedEventsToExternalSubscriber(Subscriber subscriber);
+
+  void setDeleted();
 }

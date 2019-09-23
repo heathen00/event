@@ -2074,7 +2074,16 @@ public class EventCoreAcceptanceTests {
 
   @Test
   public void EventCore_deleteEmptyClosedChannel_channelIsDeleted() {
-    fail("not implemented");
+    final String expectedChannelName = "test.channel";
+    Channel channel = eventFactory.createChannel(expectedChannelName);
+
+    assertTrue(channel.isDefined());
+    assertFalse(channel.isOpen());
+    assertEquals(expectedChannelName, channel.getName());
+    eventFactory.deleteChannel(channel);
+    assertFalse(channel.isDefined());
+    assertFalse(channel.isOpen());
+    assertEquals(expectedChannelName, channel.getName());
   }
 
 

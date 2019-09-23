@@ -192,4 +192,10 @@ final class ChannelInternalCoreImp extends NaturalOrderBase<Channel> implements 
   public boolean isDefined() {
     return true;
   }
+
+  @Override
+  public void setDeleted() {
+    throw new UnsupportedOperationException(
+        "internal channel core does not support being set to deleted.");
+  }
 }

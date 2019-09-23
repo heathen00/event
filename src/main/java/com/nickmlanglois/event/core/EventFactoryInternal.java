@@ -10,4 +10,6 @@ interface EventFactoryInternal extends EventFactory {
   ChannelInternal getDeletedChannelInternal();
 
   Event createEvent(EventDescription eventDescription, Subject subject);
+
+  ChannelInternal getDeletedChannelInternal(String channelName);
 }
