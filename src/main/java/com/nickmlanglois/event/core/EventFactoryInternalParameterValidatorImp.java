@@ -131,6 +131,10 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
   @Override
   public void deletePublisher(Publisher publisher) {
     ensureParameterNotNull("publisher", publisher);
+    ensureExpectedImplementation("publisher", PublisherInternal.class, publisher);
+    if (null == publisher.getChannel()) {
+      return;
+    }
     ensureChannelIsClosed(publisher.getChannel());
     nextEventFactoryInternal.deletePublisher(publisher);
   }

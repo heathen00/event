@@ -1853,7 +1853,16 @@ public class EventCoreAcceptanceTests {
 
   @Test
   public void EventCore_deletePublisherMultipleTimes_publisherDeletedOnce() {
-    fail("not implemented");
+    Publisher publisher = eventFactory.createPublisher(defaultTestChannel);
+
+    assertTrue(defaultTestChannel.getPublisherList().contains(publisher));
+    assertEquals(defaultTestChannel, publisher.getChannel());
+    eventFactory.deletePublisher(publisher);
+    assertFalse(defaultTestChannel.getPublisherList().contains(publisher));
+    assertNull(publisher.getChannel());
+    eventFactory.deletePublisher(publisher);
+    assertFalse(defaultTestChannel.getPublisherList().contains(publisher));
+    assertNull(publisher.getChannel());
   }
 
   @Test
@@ -1873,9 +1882,38 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_deleteUnknownExternalPublisherImplementation_illegalArgumentExceptionIsThrown() {
-    fail("not implemented");
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("unknown publisher implementation");
+    Publisher unknownExternalPublisherImplementation = new Publisher() {
+
+      @Override
+      public Channel getChannel() {
+        throw new UnsupportedOperationException("operation not supported by stub.");
+      }
+
+      @Override
+      public void publish(EventDescription eventDescription) {
+        throw new UnsupportedOperationException("operation not supported by stub.");
+      }
+
+      @Override
+      public void unpublish(EventDescription eventDescription) {
+        throw new UnsupportedOperationException("operation not supported by stub.");
+      }
+
+      @Override
+      public void publish(EventDescription eventDescription, Subject subject) {
+        throw new UnsupportedOperationException("operation not supported by stub.");
+      }
+
+      @Override
+      public void unpublish(EventDescription eventDescription, Subject subject) {
+        throw new UnsupportedOperationException("operation not supported by stub.");
+      }
+    };
+
+    eventFactory.deletePublisher(unknownExternalPublisherImplementation);
   }
 
   @Test
