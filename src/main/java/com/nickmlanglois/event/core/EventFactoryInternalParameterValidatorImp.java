@@ -138,4 +138,13 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
     ensureChannelIsClosed(publisher.getChannel());
     nextEventFactoryInternal.deletePublisher(publisher);
   }
+
+  @Override
+  public void deleteEventDescription(EventDescription eventDescription) {
+    ensureParameterNotNull("eventDescription", eventDescription);
+    ensureExpectedImplementation("eventDescription", EventDescriptionInternal.class,
+        eventDescription);
+    ensureChannelIsClosed(eventDescription.getChannel());
+    nextEventFactoryInternal.deleteEventDescription(eventDescription);
+  }
 }

@@ -11,18 +11,20 @@ interface ChannelCache {
 
   List<PublisherInternal> getPublisherInternalList();
 
-  void addPublisher(PublisherInternal publisherInternal);
+  void addPublisherInternal(PublisherInternal publisherInternal);
 
-  List<EventDescription> getEventDescriptionList();
+  List<EventDescriptionInternal> getEventDescriptionInternalList();
 
-  void addEventDescription(EventDescription eventDescription);
+  void addEventDescriptionInternal(EventDescriptionInternal eventDescriptionInternal);
 
-  EventDescription getEventDescription(Channel channel, String family, String name);
+  EventDescriptionInternal getEventDescriptionInternal(Channel channel, String family, String name);
 
-  SubscriberInternal getInternalSubscriberForExternalSubscriber(Subscriber subscriber);
+  SubscriberInternal getSubscriberInternalForExternalSubscriber(Subscriber subscriber);
 
   void removeSubscriberInternal(SubscriberInternal subscriberInternal);
 
-  void removePublisher(PublisherInternal publisherInternal);
+  void removePublisherInternal(PublisherInternal publisherInternal);
+
+  void removeEventDescriptionInternal(EventDescriptionInternal eventDescriptionInternal);
 }
 

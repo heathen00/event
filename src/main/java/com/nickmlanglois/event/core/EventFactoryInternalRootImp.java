@@ -62,4 +62,9 @@ final class EventFactoryInternalRootImp implements EventFactoryInternal {
   public void deletePublisher(Publisher publisher) {
     nextEventFactoryInternal.deletePublisher(publisher);
   }
+
+  @Override
+  public void deleteEventDescription(EventDescription eventDescription) {
+    nextEventFactoryInternal.deleteEventDescription(eventDescription);
+  }
 }

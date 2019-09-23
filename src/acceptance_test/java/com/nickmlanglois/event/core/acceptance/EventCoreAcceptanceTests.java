@@ -1929,9 +1929,11 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_deleteEventDescriptionWithNullParameter_nullPointerExceptionIsThrown() {
-    fail("not implemented");
+    thrown.expect(NullPointerException.class);
+    thrown.expectMessage("eventDescription cannot equal null");
+
+    eventFactory.deleteEventDescription((EventDescription) null);
   }
 
   @Test
@@ -1947,21 +1949,62 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_deleteEventDescriptionWhenChannelOpen_unsupportedOperationException() {
-    fail("not implemented");
+    thrown.expect(UnsupportedOperationException.class);
+    thrown.expectMessage("operation not permitted while channel is open");
+    EventDescription eventDescription =
+        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event");
+    eventFactory.openChannel(defaultTestChannel);
+
+    eventFactory.deleteEventDescription(eventDescription);
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_deleteUnknownExternalEventDescriptionImplementation_illegalArgumentExceptionIsThrown() {
-    fail("not implemented");
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("unknown eventDescription implementation");
+    EventDescription unknownExternalEventDescriptionImplementation = new EventDescription() {
+
+      @Override
+      public int compareTo(EventDescription o) {
+        throw new UnsupportedOperationException("operation not supported by stub.");
+      }
+
+      @Override
+      public Channel getChannel() {
+        throw new UnsupportedOperationException("operation not supported by stub.");
+      }
+
+      @Override
+      public String getFamily() {
+        throw new UnsupportedOperationException("operation not supported by stub.");
+      }
+
+      @Override
+      public String getName() {
+        throw new UnsupportedOperationException("operation not supported by stub.");
+      }
+
+      @Override
+      public String getFullyQualifiedName() {
+        throw new UnsupportedOperationException("operation not supported by stub.");
+      }
+    };
+
+    eventFactory.deleteEventDescription(unknownExternalEventDescriptionImplementation);
   }
 
   @Test
-  @Ignore("not worked on")
+  @Ignore("HERE: But refactoring is required to pass test")
   public void EventCore_deleteEventDescriptionWhenChannelClosed_eventDescriptionIsDeleted() {
-    fail("not implemented");
+    EventDescription eventDescription =
+        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event");
+
+    assertTrue(defaultTestChannel.getEventDescriptionList().contains(eventDescription));
+    assertEquals(defaultTestChannel, eventDescription.getChannel());
+    eventFactory.deleteEventDescription(eventDescription);
+    assertFalse(defaultTestChannel.getEventDescriptionList().contains(eventDescription));
+    assertNull(eventDescription.getChannel());
   }
 
   @Test

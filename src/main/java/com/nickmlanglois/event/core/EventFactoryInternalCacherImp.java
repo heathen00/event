@@ -36,10 +36,11 @@ final class EventFactoryInternalCacherImp implements EventFactoryInternal {
   public EventDescription createEventDescription(Channel channel, String family, String name) {
     ensureChannelBelongsToFactory(channel);
     EventDescription eventDescription =
-        getChannelCache(channel).getEventDescription(channel, family, name);
+        getChannelCache(channel).getEventDescriptionInternal(channel, family, name);
     if (null == eventDescription) {
       eventDescription = nextEventFactoryInternal.createEventDescription(channel, family, name);
-      getChannelCache(channel).addEventDescription(eventDescription);
+      getChannelCache(channel)
+          .addEventDescriptionInternal((EventDescriptionInternal) eventDescription);
     }
     return eventDescription;
   }
@@ -54,7 +55,7 @@ final class EventFactoryInternalCacherImp implements EventFactoryInternal {
     ensureChannelBelongsToFactory(channel);
     PublisherInternal newPublisher =
         (PublisherInternal) nextEventFactoryInternal.createPublisher(channel);
-    getChannelCache(channel).addPublisher(newPublisher);
+    getChannelCache(channel).addPublisherInternal(newPublisher);
     return newPublisher;
   }
 
@@ -62,7 +63,7 @@ final class EventFactoryInternalCacherImp implements EventFactoryInternal {
   public void addSubscriber(Channel channel, Subscriber subscriber) {
     ensureChannelBelongsToFactory(channel);
     SubscriberInternal subscriberInternal =
-        getChannelCache(channel).getInternalSubscriberForExternalSubscriber(subscriber);
+        getChannelCache(channel).getSubscriberInternalForExternalSubscriber(subscriber);
     if (null != subscriberInternal) {
       return;
     }
@@ -107,7 +108,7 @@ final class EventFactoryInternalCacherImp implements EventFactoryInternal {
   @Override
   public void removeSubcriber(Subscriber subscriber) {
     SubscriberInternal subscriberInternal = getChannelCache(subscriber.getChannel())
-        .getInternalSubscriberForExternalSubscriber(subscriber);
+        .getSubscriberInternalForExternalSubscriber(subscriber);
     if (null == subscriberInternal) {
       return;
     }
@@ -118,7 +119,15 @@ final class EventFactoryInternalCacherImp implements EventFactoryInternal {
 
   @Override
   public void deletePublisher(Publisher publisher) {
-    getChannelCache(publisher.getChannel()).removePublisher((PublisherInternal) publisher);
+    getChannelCache(publisher.getChannel()).removePublisherInternal((PublisherInternal) publisher);
     ((PublisherInternal) publisher).setChannelInternal(null);
+  }
+
+
+  @Override
+  public void deleteEventDescription(EventDescription eventDescription) {
+    getChannelCache(eventDescription.getChannel())
+        .removeEventDescriptionInternal((EventDescriptionInternal) eventDescription);
+    ((EventDescriptionInternal) eventDescription).setChannelInternal(null);
   }
 }

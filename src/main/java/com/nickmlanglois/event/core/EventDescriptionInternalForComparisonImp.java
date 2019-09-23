@@ -1,18 +1,18 @@
 package com.nickmlanglois.event.core;
 
-final class EventDescriptionForComparisonImp implements EventDescription {
-  private Channel channel;
+final class EventDescriptionInternalForComparisonImp implements EventDescriptionInternal {
+  private ChannelInternal channelInternal;
   private String family;
   private String name;
   private final EventDescriptionNaturalOrderImp eventDescriptionNaturalOrder;
 
-  EventDescriptionForComparisonImp() {
+  EventDescriptionInternalForComparisonImp() {
     eventDescriptionNaturalOrder = new EventDescriptionNaturalOrderImp(this);
   }
 
   @Override
   public Channel getChannel() {
-    return channel;
+    return channelInternal;
   }
 
   @Override
@@ -23,10 +23,6 @@ final class EventDescriptionForComparisonImp implements EventDescription {
   @Override
   public String getName() {
     return name;
-  }
-
-  public void setChannel(Channel channel) {
-    this.channel = channel;
   }
 
   public void setFamily(String family) {
@@ -61,6 +57,11 @@ final class EventDescriptionForComparisonImp implements EventDescription {
   public String toString() {
     return "EventDescriptionForComparisonImp [getFullyQualifiedName()=" + getFullyQualifiedName()
         + "]";
+  }
+
+  @Override
+  public void setChannelInternal(ChannelInternal channelInternal) {
+    this.channelInternal = channelInternal;
   }
 }
 

@@ -7,15 +7,15 @@ final class ChannelCacheImp implements ChannelCache {
   private final ChannelInternal channelInternal;
   private final List<SubscriberInternal> subscriberInternalList;
   private final List<PublisherInternal> publisherInternalList;
-  private final List<EventDescription> eventDescriptionList;
-  private final EventDescriptionForComparisonImp eventDescriptionForComparison;
+  private final List<EventDescriptionInternal> eventDescriptionInternalList;
+  private final EventDescriptionInternalForComparisonImp eventDescriptionInternalForComparison;
 
   ChannelCacheImp(ChannelInternal channelInternal) {
     this.channelInternal = channelInternal;
     subscriberInternalList = new ArrayList<>();
     publisherInternalList = new ArrayList<>();
-    eventDescriptionList = new ArrayList<>();
-    eventDescriptionForComparison = new EventDescriptionForComparisonImp();
+    eventDescriptionInternalList = new ArrayList<>();
+    eventDescriptionInternalForComparison = new EventDescriptionInternalForComparisonImp();
   }
 
   public ChannelInternal getChannelInternal() {
@@ -35,7 +35,7 @@ final class ChannelCacheImp implements ChannelCache {
   }
 
   @Override
-  public void addPublisher(PublisherInternal publisherInternal) {
+  public void addPublisherInternal(PublisherInternal publisherInternal) {
     publisherInternalList.add(publisherInternal);
   }
 
@@ -47,36 +47,39 @@ final class ChannelCacheImp implements ChannelCache {
   @Override
   public String toString() {
     return "ChannelCacheImp [getChannelInternal()=" + getChannelInternal()
-        + ", getSubscriberList()=" + getSubscriberInternalList() + ", getPublisherList()="
-        + getPublisherInternalList() + ", getEventDescriptionList()=" + getEventDescriptionList()
+        + ", getSubscriberInternalList()=" + getSubscriberInternalList()
+        + ", getPublisherInternalList()=" + getPublisherInternalList()
+        + ", getEventDescriptionInternalList()=" + getEventDescriptionInternalList()
         + ", hashCode()=" + hashCode() + "]";
   }
 
   @Override
-  public EventDescription getEventDescription(Channel channel, String family, String name) {
-    eventDescriptionForComparison.setChannel(channel);
-    eventDescriptionForComparison.setFamily(family);
-    eventDescriptionForComparison.setName(name);
-    EventDescription eventDescription = null;
-    int existingEventDescriptionIndex = eventDescriptionList.indexOf(eventDescriptionForComparison);
+  public EventDescriptionInternal getEventDescriptionInternal(Channel channel, String family,
+      String name) {
+    eventDescriptionInternalForComparison.setChannelInternal((ChannelInternal) channel);
+    eventDescriptionInternalForComparison.setFamily(family);
+    eventDescriptionInternalForComparison.setName(name);
+    EventDescriptionInternal eventDescriptionInternal = null;
+    int existingEventDescriptionIndex =
+        eventDescriptionInternalList.indexOf(eventDescriptionInternalForComparison);
     if (-1 != existingEventDescriptionIndex) {
-      eventDescription = eventDescriptionList.get(existingEventDescriptionIndex);
+      eventDescriptionInternal = eventDescriptionInternalList.get(existingEventDescriptionIndex);
     }
-    return eventDescription;
+    return eventDescriptionInternal;
   }
 
   @Override
-  public void addEventDescription(EventDescription eventDescription) {
-    eventDescriptionList.add(eventDescription);
+  public void addEventDescriptionInternal(EventDescriptionInternal eventDescriptionInternal) {
+    eventDescriptionInternalList.add(eventDescriptionInternal);
   }
 
   @Override
-  public List<EventDescription> getEventDescriptionList() {
-    return eventDescriptionList;
+  public List<EventDescriptionInternal> getEventDescriptionInternalList() {
+    return eventDescriptionInternalList;
   }
 
   @Override
-  public SubscriberInternal getInternalSubscriberForExternalSubscriber(Subscriber subscriber) {
+  public SubscriberInternal getSubscriberInternalForExternalSubscriber(Subscriber subscriber) {
     for (SubscriberInternal subscriberInternal : subscriberInternalList) {
       if (subscriber == subscriberInternal.getExternalSubscriber()) {
         return subscriberInternal;
@@ -91,7 +94,12 @@ final class ChannelCacheImp implements ChannelCache {
   }
 
   @Override
-  public void removePublisher(PublisherInternal publisherInternal) {
+  public void removePublisherInternal(PublisherInternal publisherInternal) {
     publisherInternalList.remove(publisherInternal);
+  }
+
+  @Override
+  public void removeEventDescriptionInternal(EventDescriptionInternal eventDescriptionInternal) {
+    eventDescriptionInternalList.remove(eventDescriptionInternal);
   }
 }

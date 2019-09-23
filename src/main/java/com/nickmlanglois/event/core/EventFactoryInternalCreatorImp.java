@@ -15,7 +15,7 @@ final class EventFactoryInternalCreatorImp implements EventFactoryInternal {
 
   @Override
   public EventDescription createEventDescription(Channel channel, String family, String name) {
-    return new EventDescriptionImp(channel, family, name);
+    return new EventDescriptionInternalImp((ChannelInternal) channel, family, name);
   }
 
   @Override
@@ -61,5 +61,11 @@ final class EventFactoryInternalCreatorImp implements EventFactoryInternal {
   @Override
   public void deletePublisher(Publisher publisher) {
     throw new UnsupportedOperationException("EventFactory creator does not delete publishers");
+  }
+
+  @Override
+  public void deleteEventDescription(EventDescription eventDescription) {
+    throw new UnsupportedOperationException(
+        "EventFactory creator does not delete eventDescriptions");
   }
 }

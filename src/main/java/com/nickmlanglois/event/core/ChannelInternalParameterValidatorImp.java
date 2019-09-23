@@ -30,7 +30,7 @@ final class ChannelInternalParameterValidatorImp implements ChannelInternal {
   }
 
   private void ensureEventDescriptionDefinedInChannel(EventDescription eventDescription) {
-    if (!getChannelCache().getEventDescriptionList().contains(eventDescription)) {
+    if (!getChannelCache().getEventDescriptionInternalList().contains(eventDescription)) {
       throw new UnsupportedOperationException("eventDescription "
           + eventDescription.getFullyQualifiedName() + " is not defined in this channel");
     }

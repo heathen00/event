@@ -91,4 +91,6 @@ public interface EventFactory {
   void removeSubcriber(Subscriber subscriber);
 
   void deletePublisher(Publisher publisher);
+
+  void deleteEventDescription(EventDescription eventDescription);
 }

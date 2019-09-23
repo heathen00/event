@@ -173,7 +173,7 @@ final class ChannelInternalCoreImp extends NaturalOrderBase<Channel> implements 
 
   @Override
   public List<EventDescription> getEventDescriptionList() {
-    return Collections.unmodifiableList(getChannelCache().getEventDescriptionList());
+    return Collections.unmodifiableList(getChannelCache().getEventDescriptionInternalList());
   }
 
   @Override
