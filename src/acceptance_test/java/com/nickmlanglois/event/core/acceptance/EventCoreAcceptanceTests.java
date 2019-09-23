@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.util.Arrays;
@@ -2036,21 +2035,29 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_deleteChannelWithNullParameter_nullPointerExceptionIsThrown() {
-    fail("not implemented");
+    thrown.expect(NullPointerException.class);
+    thrown.expectMessage("channel cannot equal null");
+
+    eventFactory.deleteChannel((Channel) null);
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_deleteUnknownExternalChannelImplementation_illegalArgumentExceptionIsThrown() {
-    fail("not implemented");
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("unknown channel implementation");
+
+    eventFactory.deleteChannel(createUnsupportedExternalChannelImplementation());
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_deleteOpenChannel_unsupportedOperationExceptionIsThrown() {
-    fail("not implemented");
+    thrown.expect(UnsupportedOperationException.class);
+    thrown.expectMessage("operation not permitted while channel is open");
+    Channel channel = eventFactory.createChannel("test.channel");
+    eventFactory.openChannel(channel);
+
+    eventFactory.deleteChannel(channel);
   }
 
   @Test
@@ -2066,7 +2073,6 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_deleteEmptyClosedChannel_channelIsDeleted() {
     fail("not implemented");
   }

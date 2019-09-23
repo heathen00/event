@@ -137,4 +137,10 @@ final class EventFactoryInternalCacherImp implements EventFactoryInternal {
   public ChannelInternal getDeletedChannelInternal() {
     return nextEventFactoryInternal.getDeletedChannelInternal();
   }
+
+
+  @Override
+  public void deleteChannel(Channel channel) {
+    nextEventFactoryInternal.deleteChannel(channel);
+  }
 }

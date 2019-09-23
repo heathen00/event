@@ -93,4 +93,6 @@ public interface EventFactory {
   void deletePublisher(Publisher publisher);
 
   void deleteEventDescription(EventDescription eventDescription);
+
+  void deleteChannel(Channel channel);
 }
