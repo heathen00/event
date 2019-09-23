@@ -129,7 +129,8 @@ final class EventFactoryInternalCacherImp implements EventFactoryInternal {
   public void deleteEventDescription(EventDescription eventDescription) {
     getChannelCache(eventDescription.getChannel())
         .removeEventDescriptionInternal((EventDescriptionInternal) eventDescription);
-    ((EventDescriptionInternal) eventDescription).setChannelInternal(null);
+    ((EventDescriptionInternal) eventDescription)
+        .setChannelInternal(getRootEventFactoryInternal().getDeletedChannelInternal());
   }
 
   @Override

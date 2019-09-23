@@ -147,6 +147,9 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
     ensureParameterNotNull("eventDescription", eventDescription);
     ensureExpectedImplementation("eventDescription", EventDescriptionInternal.class,
         eventDescription);
+    if (!eventDescription.getChannel().isDefined()) {
+      return;
+    }
     ensureChannelIsClosed(eventDescription.getChannel());
     nextEventFactoryInternal.deleteEventDescription(eventDescription);
   }

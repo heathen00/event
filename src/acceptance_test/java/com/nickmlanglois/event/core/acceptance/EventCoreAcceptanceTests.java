@@ -1951,9 +1951,22 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_deleteEventDescriptionMultipleTimes_eventDescriptionDeletedOnce() {
-    fail("not implemented");
+    final String expectedChannelName = "__DELETED__";
+    EventDescription eventDescription =
+        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event");
+
+    assertTrue(defaultTestChannel.getEventDescriptionList().contains(eventDescription));
+    assertEquals(defaultTestChannel, eventDescription.getChannel());
+    eventFactory.deleteEventDescription(eventDescription);
+    assertFalse(defaultTestChannel.getEventDescriptionList().contains(eventDescription));
+    assertEquals(expectedChannelName, eventDescription.getChannel().getName());
+    assertFalse(eventDescription.getChannel().isDefined());
+    eventFactory.deleteEventDescription(eventDescription);
+    eventFactory.deleteEventDescription(eventDescription);
+    eventFactory.deleteEventDescription(eventDescription);
+    assertEquals(expectedChannelName, eventDescription.getChannel().getName());
+    assertFalse(eventDescription.getChannel().isDefined());
   }
 
   @Test
@@ -2009,8 +2022,8 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  @Ignore("HERE: But refactoring is required to pass test")
   public void EventCore_deleteEventDescriptionWhenChannelClosed_eventDescriptionIsDeleted() {
+    final String expectedChannelName = "__DELETED__";
     EventDescription eventDescription =
         eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event");
 
@@ -2018,7 +2031,8 @@ public class EventCoreAcceptanceTests {
     assertEquals(defaultTestChannel, eventDescription.getChannel());
     eventFactory.deleteEventDescription(eventDescription);
     assertFalse(defaultTestChannel.getEventDescriptionList().contains(eventDescription));
-    assertNull(eventDescription.getChannel());
+    assertEquals(expectedChannelName, eventDescription.getChannel().getName());
+    assertFalse(eventDescription.getChannel().isDefined());
   }
 
   @Test
