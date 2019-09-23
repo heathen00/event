@@ -113,15 +113,16 @@ final class EventFactoryInternalCacherImp implements EventFactoryInternal {
       return;
     }
     getChannelCache(subscriber.getChannel()).removeSubscriberInternal(subscriberInternal);
-    subscriber.setChannel(getRootEventFactoryInternal().getDeletedChannelInternal());
+    subscriber.setChannel(
+        getRootEventFactoryInternal().getDeletedChannelInternal(subscriber.getChannel().getName()));
   }
 
 
   @Override
   public void deletePublisher(Publisher publisher) {
     getChannelCache(publisher.getChannel()).removePublisherInternal((PublisherInternal) publisher);
-    ((PublisherInternal) publisher)
-        .setChannelInternal(getRootEventFactoryInternal().getDeletedChannelInternal());
+    ((PublisherInternal) publisher).setChannelInternal(
+        getRootEventFactoryInternal().getDeletedChannelInternal(publisher.getChannel().getName()));
   }
 
 
@@ -129,15 +130,9 @@ final class EventFactoryInternalCacherImp implements EventFactoryInternal {
   public void deleteEventDescription(EventDescription eventDescription) {
     getChannelCache(eventDescription.getChannel())
         .removeEventDescriptionInternal((EventDescriptionInternal) eventDescription);
-    ((EventDescriptionInternal) eventDescription)
-        .setChannelInternal(getRootEventFactoryInternal().getDeletedChannelInternal());
+    ((EventDescriptionInternal) eventDescription).setChannelInternal(getRootEventFactoryInternal()
+        .getDeletedChannelInternal(eventDescription.getChannel().getName()));
   }
-
-  @Override
-  public ChannelInternal getDeletedChannelInternal() {
-    return nextEventFactoryInternal.getDeletedChannelInternal();
-  }
-
 
   @Override
   public void deleteChannel(Channel channel) {

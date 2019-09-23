@@ -69,11 +69,6 @@ final class EventFactoryInternalRootImp implements EventFactoryInternal {
   }
 
   @Override
-  public ChannelInternal getDeletedChannelInternal() {
-    return nextEventFactoryInternal.getDeletedChannelInternal();
-  }
-
-  @Override
   public void deleteChannel(Channel channel) {
     nextEventFactoryInternal.deleteChannel(channel);
   }

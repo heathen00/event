@@ -1805,12 +1805,13 @@ public class EventCoreAcceptanceTests {
 
   @Test
   public void EventCore_removeSubscriberMultipleTimes_subscriberRemovedOnce() {
-    final String expectedChannelName = "__DELETED__";
-    eventFactory.addSubscriber(defaultTestChannel, accumulatorSubscriberStub);
-    assertTrue(defaultTestChannel.getSubscriberList().contains(accumulatorSubscriberStub));
-    assertEquals(defaultTestChannel, accumulatorSubscriberStub.getChannel());
+    final String expectedChannelName = "test.channel";
+    Channel channel = eventFactory.createChannel(expectedChannelName);
+    eventFactory.addSubscriber(channel, accumulatorSubscriberStub);
+    assertTrue(channel.getSubscriberList().contains(accumulatorSubscriberStub));
+    assertEquals(channel, accumulatorSubscriberStub.getChannel());
     eventFactory.removeSubcriber(accumulatorSubscriberStub);
-    assertFalse(defaultTestChannel.getSubscriberList().contains(accumulatorSubscriberStub));
+    assertFalse(channel.getSubscriberList().contains(accumulatorSubscriberStub));
     assertEquals(expectedChannelName, accumulatorSubscriberStub.getChannel().getName());
     assertFalse(accumulatorSubscriberStub.getChannel().isDefined());
 
@@ -1840,13 +1841,14 @@ public class EventCoreAcceptanceTests {
 
   @Test
   public void EventCore_removeSubscriberWhenChannelClosed_subscriberRemoved() {
-    final String expectedChannelName = "__DELETED__";
-    eventFactory.addSubscriber(defaultTestChannel, accumulatorSubscriberStub);
-    assertTrue(defaultTestChannel.getSubscriberList().contains(accumulatorSubscriberStub));
-    assertEquals(defaultTestChannel, accumulatorSubscriberStub.getChannel());
+    final String expectedChannelName = "test.channel";
+    Channel channel = eventFactory.createChannel(expectedChannelName);
+    eventFactory.addSubscriber(channel, accumulatorSubscriberStub);
+    assertTrue(channel.getSubscriberList().contains(accumulatorSubscriberStub));
+    assertEquals(channel, accumulatorSubscriberStub.getChannel());
 
     eventFactory.removeSubcriber(accumulatorSubscriberStub);
-    assertFalse(defaultTestChannel.getSubscriberList().contains(accumulatorSubscriberStub));
+    assertFalse(channel.getSubscriberList().contains(accumulatorSubscriberStub));
     assertEquals(expectedChannelName, accumulatorSubscriberStub.getChannel().getName());
     assertFalse(accumulatorSubscriberStub.getChannel().isDefined());
   }
@@ -1861,17 +1863,18 @@ public class EventCoreAcceptanceTests {
 
   @Test
   public void EventCore_deletePublisherMultipleTimes_publisherDeletedOnce() {
-    final String expectedChannelName = "__DELETED__";
-    Publisher publisher = eventFactory.createPublisher(defaultTestChannel);
+    final String expectedChannelName = "test.channel";
+    Channel channel = eventFactory.createChannel(expectedChannelName);
+    Publisher publisher = eventFactory.createPublisher(channel);
 
-    assertTrue(defaultTestChannel.getPublisherList().contains(publisher));
-    assertEquals(defaultTestChannel, publisher.getChannel());
+    assertTrue(channel.getPublisherList().contains(publisher));
+    assertEquals(channel, publisher.getChannel());
     eventFactory.deletePublisher(publisher);
-    assertFalse(defaultTestChannel.getPublisherList().contains(publisher));
+    assertFalse(channel.getPublisherList().contains(publisher));
     assertEquals(expectedChannelName, publisher.getChannel().getName());
     assertFalse(publisher.getChannel().isDefined());
     eventFactory.deletePublisher(publisher);
-    assertFalse(defaultTestChannel.getPublisherList().contains(publisher));
+    assertFalse(channel.getPublisherList().contains(publisher));
     assertEquals(expectedChannelName, publisher.getChannel().getName());
     assertFalse(publisher.getChannel().isDefined());
   }
@@ -1929,14 +1932,15 @@ public class EventCoreAcceptanceTests {
 
   @Test
   public void EventCore_deletePublisherWhenChannelClosed_publisherDeleted() {
-    final String expectedChannelName = "__DELETED__";
-    Publisher publisher = eventFactory.createPublisher(defaultTestChannel);
-    assertTrue(defaultTestChannel.getPublisherList().contains(publisher));
-    assertEquals(defaultTestChannel, publisher.getChannel());
+    final String expectedChannelName = "test.channel";
+    Channel channel = eventFactory.createChannel(expectedChannelName);
+    Publisher publisher = eventFactory.createPublisher(channel);
+    assertTrue(channel.getPublisherList().contains(publisher));
+    assertEquals(channel, publisher.getChannel());
 
     eventFactory.deletePublisher(publisher);
 
-    assertFalse(defaultTestChannel.getPublisherList().contains(publisher));
+    assertFalse(channel.getPublisherList().contains(publisher));
     assertEquals(expectedChannelName, publisher.getChannel().getName());
     assertFalse(publisher.getChannel().isDefined());
   }
@@ -1951,14 +1955,15 @@ public class EventCoreAcceptanceTests {
 
   @Test
   public void EventCore_deleteEventDescriptionMultipleTimes_eventDescriptionDeletedOnce() {
-    final String expectedChannelName = "__DELETED__";
+    final String expectedChannelName = "test.channel";
+    Channel channel = eventFactory.createChannel(expectedChannelName);
     EventDescription eventDescription =
-        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event");
+        eventFactory.createEventDescription(channel, "test.family", "test.event");
 
-    assertTrue(defaultTestChannel.getEventDescriptionList().contains(eventDescription));
-    assertEquals(defaultTestChannel, eventDescription.getChannel());
+    assertTrue(channel.getEventDescriptionList().contains(eventDescription));
+    assertEquals(channel, eventDescription.getChannel());
     eventFactory.deleteEventDescription(eventDescription);
-    assertFalse(defaultTestChannel.getEventDescriptionList().contains(eventDescription));
+    assertFalse(channel.getEventDescriptionList().contains(eventDescription));
     assertEquals(expectedChannelName, eventDescription.getChannel().getName());
     assertFalse(eventDescription.getChannel().isDefined());
     eventFactory.deleteEventDescription(eventDescription);
@@ -2022,14 +2027,15 @@ public class EventCoreAcceptanceTests {
 
   @Test
   public void EventCore_deleteEventDescriptionWhenChannelClosed_eventDescriptionIsDeleted() {
-    final String expectedChannelName = "__DELETED__";
+    final String expectedChannelName = "test.channel";
+    Channel channel = eventFactory.createChannel(expectedChannelName);
     EventDescription eventDescription =
-        eventFactory.createEventDescription(defaultTestChannel, "test.family", "test.event");
+        eventFactory.createEventDescription(channel, "test.family", "test.event");
 
-    assertTrue(defaultTestChannel.getEventDescriptionList().contains(eventDescription));
-    assertEquals(defaultTestChannel, eventDescription.getChannel());
+    assertTrue(channel.getEventDescriptionList().contains(eventDescription));
+    assertEquals(channel, eventDescription.getChannel());
     eventFactory.deleteEventDescription(eventDescription);
-    assertFalse(defaultTestChannel.getEventDescriptionList().contains(eventDescription));
+    assertFalse(channel.getEventDescriptionList().contains(eventDescription));
     assertEquals(expectedChannelName, eventDescription.getChannel().getName());
     assertFalse(eventDescription.getChannel().isDefined());
   }

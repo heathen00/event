@@ -155,11 +155,6 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
   }
 
   @Override
-  public ChannelInternal getDeletedChannelInternal() {
-    return nextEventFactoryInternal.getDeletedChannelInternal();
-  }
-
-  @Override
   public void deleteChannel(Channel channel) {
     ensureParameterNotNull("channel", channel);
     ensureExpectedImplementation("channel", ChannelInternal.class, channel);
