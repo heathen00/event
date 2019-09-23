@@ -150,12 +150,12 @@ final class ChannelInternalCoreImp extends NaturalOrderBase<Channel> implements 
     if (getClass() != obj.getClass()) {
       return false;
     }
-    ChannelInternalCoreImp other = (ChannelInternalCoreImp) obj;
+    ChannelInternal other = (ChannelInternal) obj;
     if (name == null) {
-      if (other.name != null) {
+      if (other.getName() != null) {
         return false;
       }
-    } else if (!name.equals(other.name)) {
+    } else if (!getName().equals(other.getName())) {
       return false;
     }
     return true;
@@ -186,5 +186,10 @@ final class ChannelInternalCoreImp extends NaturalOrderBase<Channel> implements 
     for (Event publishedEvent : publishedEventList) {
       subscriber.processPublishEventCallback(publishedEvent);
     }
+  }
+
+  @Override
+  public boolean isDefined() {
+    return true;
   }
 }

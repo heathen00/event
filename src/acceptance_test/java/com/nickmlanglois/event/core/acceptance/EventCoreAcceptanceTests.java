@@ -77,6 +77,11 @@ public class EventCoreAcceptanceTests {
       public List<EventDescription> getEventDescriptionList() {
         throw new UnsupportedOperationException("method not supported by stub");
       }
+
+      @Override
+      public boolean isDefined() {
+        throw new UnsupportedOperationException("method not supported by stub");
+      }
     };
   }
 
@@ -1801,19 +1806,21 @@ public class EventCoreAcceptanceTests {
 
   @Test
   public void EventCore_removeSubscriberMultipleTimes_subscriberRemovedOnce() {
+    final String expectedChannelName = "__DELETED__";
     eventFactory.addSubscriber(defaultTestChannel, accumulatorSubscriberStub);
     assertTrue(defaultTestChannel.getSubscriberList().contains(accumulatorSubscriberStub));
     assertEquals(defaultTestChannel, accumulatorSubscriberStub.getChannel());
     eventFactory.removeSubcriber(accumulatorSubscriberStub);
     assertFalse(defaultTestChannel.getSubscriberList().contains(accumulatorSubscriberStub));
-    assertNull(accumulatorSubscriberStub.getChannel());
+    assertEquals(expectedChannelName, accumulatorSubscriberStub.getChannel().getName());
+    assertFalse(accumulatorSubscriberStub.getChannel().isDefined());
 
     eventFactory.removeSubcriber(accumulatorSubscriberStub);
     eventFactory.removeSubcriber(accumulatorSubscriberStub);
     eventFactory.removeSubcriber(accumulatorSubscriberStub);
 
-    assertFalse(defaultTestChannel.getSubscriberList().contains(accumulatorSubscriberStub));
-    assertNull(accumulatorSubscriberStub.getChannel());
+    assertEquals(expectedChannelName, accumulatorSubscriberStub.getChannel().getName());
+    assertFalse(accumulatorSubscriberStub.getChannel().isDefined());
   }
 
   @Test
@@ -1834,13 +1841,15 @@ public class EventCoreAcceptanceTests {
 
   @Test
   public void EventCore_removeSubscriberWhenChannelClosed_subscriberRemoved() {
+    final String expectedChannelName = "__DELETED__";
     eventFactory.addSubscriber(defaultTestChannel, accumulatorSubscriberStub);
     assertTrue(defaultTestChannel.getSubscriberList().contains(accumulatorSubscriberStub));
     assertEquals(defaultTestChannel, accumulatorSubscriberStub.getChannel());
 
     eventFactory.removeSubcriber(accumulatorSubscriberStub);
     assertFalse(defaultTestChannel.getSubscriberList().contains(accumulatorSubscriberStub));
-    assertNull(accumulatorSubscriberStub.getChannel());
+    assertEquals(expectedChannelName, accumulatorSubscriberStub.getChannel().getName());
+    assertFalse(accumulatorSubscriberStub.getChannel().isDefined());
   }
 
   @Test
@@ -1853,16 +1862,19 @@ public class EventCoreAcceptanceTests {
 
   @Test
   public void EventCore_deletePublisherMultipleTimes_publisherDeletedOnce() {
+    final String expectedChannelName = "__DELETED__";
     Publisher publisher = eventFactory.createPublisher(defaultTestChannel);
 
     assertTrue(defaultTestChannel.getPublisherList().contains(publisher));
     assertEquals(defaultTestChannel, publisher.getChannel());
     eventFactory.deletePublisher(publisher);
     assertFalse(defaultTestChannel.getPublisherList().contains(publisher));
-    assertNull(publisher.getChannel());
+    assertEquals(expectedChannelName, publisher.getChannel().getName());
+    assertFalse(publisher.getChannel().isDefined());
     eventFactory.deletePublisher(publisher);
     assertFalse(defaultTestChannel.getPublisherList().contains(publisher));
-    assertNull(publisher.getChannel());
+    assertEquals(expectedChannelName, publisher.getChannel().getName());
+    assertFalse(publisher.getChannel().isDefined());
   }
 
   @Test
@@ -1918,6 +1930,7 @@ public class EventCoreAcceptanceTests {
 
   @Test
   public void EventCore_deletePublisherWhenChannelClosed_publisherDeleted() {
+    final String expectedChannelName = "__DELETED__";
     Publisher publisher = eventFactory.createPublisher(defaultTestChannel);
     assertTrue(defaultTestChannel.getPublisherList().contains(publisher));
     assertEquals(defaultTestChannel, publisher.getChannel());
@@ -1925,7 +1938,8 @@ public class EventCoreAcceptanceTests {
     eventFactory.deletePublisher(publisher);
 
     assertFalse(defaultTestChannel.getPublisherList().contains(publisher));
-    assertNull(publisher.getChannel());
+    assertEquals(expectedChannelName, publisher.getChannel().getName());
+    assertFalse(publisher.getChannel().isDefined());
   }
 
   @Test
@@ -2092,4 +2106,10 @@ public class EventCoreAcceptanceTests {
    * remove, add, then remove a subscriber. Should work fine.
    * 
    */
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_getFullyQualifiedNameForDeletedEventDescription_unsupportedOperationExceptionIsThrown() {
+    fail("not implemented");
+  }
 }

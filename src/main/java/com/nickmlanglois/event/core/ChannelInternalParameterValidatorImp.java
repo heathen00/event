@@ -127,5 +127,10 @@ final class ChannelInternalParameterValidatorImp implements ChannelInternal {
   public void resendAllCurrentPublishedEventsToExternalSubscriber(Subscriber subscriber) {
     nextChannelInternal.resendAllCurrentPublishedEventsToExternalSubscriber(subscriber);
   }
+
+  @Override
+  public boolean isDefined() {
+    return nextChannelInternal.isDefined();
+  }
 }
 

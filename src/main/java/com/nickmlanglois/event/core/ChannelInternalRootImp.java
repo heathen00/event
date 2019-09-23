@@ -80,4 +80,8 @@ final class ChannelInternalRootImp implements ChannelInternal {
     nextChannelInternal.resendAllCurrentPublishedEventsToExternalSubscriber(subscriber);
   }
 
+  @Override
+  public boolean isDefined() {
+    return nextChannelInternal.isDefined();
+  }
 }

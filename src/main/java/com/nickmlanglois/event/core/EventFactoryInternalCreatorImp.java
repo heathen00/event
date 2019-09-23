@@ -3,6 +3,8 @@ package com.nickmlanglois.event.core;
 final class EventFactoryInternalCreatorImp implements EventFactoryInternal {
   private final EventFactoryInternal rootEventFactoryInternal;
   private final Subject noSubjectSingleton = new NoSubject();
+  private final ChannelInternal deletedChannelInternal =
+      new DeletedChannelInternalImp(getRootEventFactoryInternal());
 
   public EventFactoryInternalCreatorImp(EventFactoryInternal rootEventFactoryInternal) {
     this.rootEventFactoryInternal = rootEventFactoryInternal;
@@ -67,5 +69,10 @@ final class EventFactoryInternalCreatorImp implements EventFactoryInternal {
   public void deleteEventDescription(EventDescription eventDescription) {
     throw new UnsupportedOperationException(
         "EventFactory creator does not delete eventDescriptions");
+  }
+
+  @Override
+  public ChannelInternal getDeletedChannelInternal() {
+    return deletedChannelInternal;
   }
 }

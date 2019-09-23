@@ -47,4 +47,6 @@ public interface Channel extends NaturalOrder<Channel> {
    * @return Whether the Channel is open.
    */
   boolean isOpen();
+
+  boolean isDefined();
 }

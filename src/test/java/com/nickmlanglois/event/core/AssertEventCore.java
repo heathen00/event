@@ -26,6 +26,7 @@ public class AssertEventCore {
     assertEquals(expectedEventDescriptionList, channel.getEventDescriptionList());
     assertEquals(expectedPublisherList, channel.getPublisherList());
     assertEquals(expectedSubscriberList, channel.getSubscriberList());
+    assertTrue(channel.isDefined());
   }
 
   public void assertExpectedEventDescription(Channel expectedChannel, String expectedfamily,

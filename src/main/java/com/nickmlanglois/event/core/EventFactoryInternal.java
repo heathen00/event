@@ -7,5 +7,7 @@ interface EventFactoryInternal extends EventFactory {
 
   Subject getNoSubject();
 
+  ChannelInternal getDeletedChannelInternal();
+
   Event createEvent(EventDescription eventDescription, Subject subject);
 }

@@ -124,6 +124,9 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
     if (null == subscriber.getChannel()) {
       return;
     }
+    if (!subscriber.getChannel().isDefined()) {
+      return;
+    }
     ensureChannelIsClosed(subscriber.getChannel());
     nextEventFactoryInternal.removeSubcriber(subscriber);
   }
@@ -132,7 +135,7 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
   public void deletePublisher(Publisher publisher) {
     ensureParameterNotNull("publisher", publisher);
     ensureExpectedImplementation("publisher", PublisherInternal.class, publisher);
-    if (null == publisher.getChannel()) {
+    if (!publisher.getChannel().isDefined()) {
       return;
     }
     ensureChannelIsClosed(publisher.getChannel());
@@ -146,5 +149,10 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
         eventDescription);
     ensureChannelIsClosed(eventDescription.getChannel());
     nextEventFactoryInternal.deleteEventDescription(eventDescription);
+  }
+
+  @Override
+  public ChannelInternal getDeletedChannelInternal() {
+    return nextEventFactoryInternal.getDeletedChannelInternal();
   }
 }
