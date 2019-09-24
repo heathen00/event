@@ -1824,9 +1824,34 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_removeSubscriberAfterDeletingChannel_nothingHappens() {
-    fail("not implemented");
+    final String expectedChannelName = "test.channel";
+    final String expectedSubscriberName = "test.subscriber";
+    Channel channel = eventFactory.createChannel(expectedChannelName);
+    Subscriber subscriber =
+        AccumulatorSubscriberStub.createAccumulatorSubscriber(expectedSubscriberName);
+    eventFactory.addSubscriber(channel, subscriber);
+
+    assertTrue(channel.isDefined());
+    assertFalse(channel.isOpen());
+    assertEquals(expectedChannelName, channel.getName());
+    assertTrue(channel.getSubscriberList().contains(subscriber));
+    assertEquals(channel, subscriber.getChannel());
+    assertTrue(subscriber.getChannel().isDefined());
+    eventFactory.deleteChannel(channel);
+    assertFalse(channel.isDefined());
+    assertFalse(channel.isOpen());
+    assertEquals(expectedChannelName, channel.getName());
+    assertFalse(channel.getSubscriberList().contains(subscriber));
+    assertEquals(channel, subscriber.getChannel());
+    assertFalse(subscriber.getChannel().isDefined());
+    eventFactory.removeSubcriber(subscriber);
+    assertFalse(channel.isDefined());
+    assertFalse(channel.isOpen());
+    assertEquals(expectedChannelName, channel.getName());
+    assertFalse(channel.getSubscriberList().contains(subscriber));
+    assertEquals(channel, subscriber.getChannel());
+    assertFalse(subscriber.getChannel().isDefined());
   }
 
   @Test
@@ -1880,9 +1905,31 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_deletePublisherAfterDeletingChannel_nothingHappens() {
-    fail("not implemented");
+    final String expectedChannelName = "test.channel";
+    Channel channel = eventFactory.createChannel(expectedChannelName);
+    Publisher publisher = eventFactory.createPublisher(channel);
+
+    assertTrue(channel.isDefined());
+    assertFalse(channel.isOpen());
+    assertTrue(channel.getPublisherList().contains(publisher));
+    assertEquals(expectedChannelName, channel.getName());
+    assertEquals(channel, publisher.getChannel());
+    assertTrue(publisher.getChannel().isDefined());
+    eventFactory.deleteChannel(channel);
+    assertFalse(channel.isDefined());
+    assertFalse(channel.isOpen());
+    assertFalse(channel.getPublisherList().contains(publisher));
+    assertEquals(expectedChannelName, channel.getName());
+    assertEquals(channel, publisher.getChannel());
+    assertFalse(publisher.getChannel().isDefined());
+    eventFactory.deletePublisher(publisher);
+    assertFalse(channel.isDefined());
+    assertFalse(channel.isOpen());
+    assertFalse(channel.getPublisherList().contains(publisher));
+    assertEquals(expectedChannelName, channel.getName());
+    assertEquals(channel, publisher.getChannel());
+    assertFalse(publisher.getChannel().isDefined());
   }
 
   @Test
@@ -1974,9 +2021,32 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_deleteEventDescriptionAfterDeletingChannel_nothingHappens() {
-    fail("not implemented");
+    final String expectedChannelName = "test.channel";
+    Channel channel = eventFactory.createChannel(expectedChannelName);
+    EventDescription eventDescription =
+        eventFactory.createEventDescription(channel, "test.family", "test.event");
+
+    assertTrue(channel.isDefined());
+    assertFalse(channel.isOpen());
+    assertTrue(channel.getEventDescriptionList().contains(eventDescription));
+    assertEquals(expectedChannelName, channel.getName());
+    assertEquals(channel, eventDescription.getChannel());
+    assertTrue(eventDescription.getChannel().isDefined());
+    eventFactory.deleteChannel(channel);
+    assertFalse(channel.isDefined());
+    assertFalse(channel.isOpen());
+    assertFalse(channel.getEventDescriptionList().contains(eventDescription));
+    assertEquals(expectedChannelName, channel.getName());
+    assertEquals(channel, eventDescription.getChannel());
+    assertFalse(eventDescription.getChannel().isDefined());
+    eventFactory.deleteEventDescription(eventDescription);
+    assertFalse(channel.isDefined());
+    assertFalse(channel.isOpen());
+    assertFalse(channel.getEventDescriptionList().contains(eventDescription));
+    assertEquals(expectedChannelName, channel.getName());
+    assertEquals(channel, eventDescription.getChannel());
+    assertFalse(eventDescription.getChannel().isDefined());
   }
 
   @Test
@@ -2163,8 +2233,17 @@ public class EventCoreAcceptanceTests {
    */
 
   @Test
-  @Ignore("not worked on")
-  public void EventCore_getFullyQualifiedNameForDeletedEventDescription_unsupportedOperationExceptionIsThrown() {
-    fail("not implemented");
+  public void EventCore_getFullyQualifiedNameForDeletedEventDescription_expectedFullyQualifiedNameIsReturned() {
+    final String expectedChannelName = "channel.name";
+    final String expectedEventDescriptionFamily = "some.family";
+    final String expectedEventDescriptionName = "some.name";
+    final String expectedFullyQualifiedName = String.join(".", expectedChannelName,
+        expectedEventDescriptionFamily, expectedEventDescriptionName);
+    Channel channel = eventFactory.createChannel(expectedChannelName);
+    EventDescription eventDescription = eventFactory.createEventDescription(channel,
+        expectedEventDescriptionFamily, expectedEventDescriptionName);
+    assertEquals(expectedFullyQualifiedName, eventDescription.getFullyQualifiedName());
+    eventFactory.deleteEventDescription(eventDescription);
+    assertEquals(expectedFullyQualifiedName, eventDescription.getFullyQualifiedName());
   }
 }
