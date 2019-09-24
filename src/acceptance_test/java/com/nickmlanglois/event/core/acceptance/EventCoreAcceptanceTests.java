@@ -84,6 +84,41 @@ public class EventCoreAcceptanceTests {
     };
   }
 
+  private EventDescription createUnknownExternalEventDescriptionImplementation() {
+    return new EventDescription() {
+
+      @Override
+      public int compareTo(EventDescription o) {
+        throw new UnsupportedOperationException("operation not supported by stub.");
+      }
+
+      @Override
+      public Channel getChannel() {
+        throw new UnsupportedOperationException("operation not supported by stub.");
+      }
+
+      @Override
+      public String getFamily() {
+        throw new UnsupportedOperationException("operation not supported by stub.");
+      }
+
+      @Override
+      public String getName() {
+        throw new UnsupportedOperationException("operation not supported by stub.");
+      }
+
+      @Override
+      public String getFullyQualifiedName() {
+        throw new UnsupportedOperationException("operation not supported by stub.");
+      }
+
+      @Override
+      public boolean isDefined() {
+        throw new UnsupportedOperationException("operation not supported by stub.");
+      }
+    };
+  }
+
   private Subject createSubjectStub(String subjectName) {
     return new SubjectStub(subjectName);
   }
@@ -1972,6 +2007,11 @@ public class EventCoreAcceptanceTests {
       public void unpublish(EventDescription eventDescription, Subject subject) {
         throw new UnsupportedOperationException("operation not supported by stub.");
       }
+
+      @Override
+      public boolean isDefined() {
+        throw new UnsupportedOperationException("operation not supported by stub.");
+      }
     };
 
     eventFactory.deletePublisher(unknownExternalPublisherImplementation);
@@ -2064,35 +2104,8 @@ public class EventCoreAcceptanceTests {
   public void EventCore_deleteUnknownExternalEventDescriptionImplementation_illegalArgumentExceptionIsThrown() {
     thrown.expect(IllegalArgumentException.class);
     thrown.expectMessage("unknown eventDescription implementation");
-    EventDescription unknownExternalEventDescriptionImplementation = new EventDescription() {
 
-      @Override
-      public int compareTo(EventDescription o) {
-        throw new UnsupportedOperationException("operation not supported by stub.");
-      }
-
-      @Override
-      public Channel getChannel() {
-        throw new UnsupportedOperationException("operation not supported by stub.");
-      }
-
-      @Override
-      public String getFamily() {
-        throw new UnsupportedOperationException("operation not supported by stub.");
-      }
-
-      @Override
-      public String getName() {
-        throw new UnsupportedOperationException("operation not supported by stub.");
-      }
-
-      @Override
-      public String getFullyQualifiedName() {
-        throw new UnsupportedOperationException("operation not supported by stub.");
-      }
-    };
-
-    eventFactory.deleteEventDescription(unknownExternalEventDescriptionImplementation);
+    eventFactory.deleteEventDescription(createUnknownExternalEventDescriptionImplementation());
   }
 
   @Test
@@ -2184,145 +2197,267 @@ public class EventCoreAcceptanceTests {
 
   @Test
   public void EventCore_deleteChannelContainingEventDescriptions_eventDescriptionsDeletedThenChannelDeleted() {
-    fail("not implemented");
+    final String expectedChannelName = "some.test.channel";
+    Channel channel = eventFactory.createChannel(expectedChannelName);
+    EventDescription eventDescription =
+        eventFactory.createEventDescription(channel, "event.family", "event.name");
+
+    assertTrue(channel.isDefined());
+    assertFalse(channel.isOpen());
+    assertTrue(channel.getEventDescriptionList().contains(eventDescription));
+    assertEquals(expectedChannelName, channel.getName());
+    assertEquals(channel, eventDescription.getChannel());
+    assertTrue(eventDescription.getChannel().isDefined());
+    assertTrue(eventDescription.isDefined());
+    eventFactory.deleteChannel(channel);
+    assertFalse(channel.isDefined());
+    assertFalse(channel.isOpen());
+    assertFalse(channel.getEventDescriptionList().contains(eventDescription));
+    assertEquals(expectedChannelName, channel.getName());
+    assertEquals(channel, eventDescription.getChannel());
+    assertFalse(eventDescription.getChannel().isDefined());
+    assertFalse(eventDescription.isDefined());
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_deleteChannelContainingPublisher_publishersDeletedThenChannelDeleted() {
-    fail("not implemented");
+    final String expectedChannelName = "another.test.channel";
+    Channel channel = eventFactory.createChannel(expectedChannelName);
+    Publisher publisher = eventFactory.createPublisher(channel);
+
+    assertTrue(channel.isDefined());
+    assertFalse(channel.isOpen());
+    assertTrue(channel.getPublisherList().contains(publisher));
+    assertEquals(expectedChannelName, channel.getName());
+    assertEquals(channel, publisher.getChannel());
+    assertTrue(publisher.getChannel().isDefined());
+    assertTrue(publisher.isDefined());
+    eventFactory.deleteChannel(channel);
+    assertFalse(channel.isDefined());
+    assertFalse(channel.isOpen());
+    assertFalse(channel.getPublisherList().contains(publisher));
+    assertEquals(expectedChannelName, channel.getName());
+    assertEquals(channel, publisher.getChannel());
+    assertFalse(publisher.getChannel().isDefined());
+    assertFalse(publisher.isDefined());
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_deleteChannelContainingSubscribers_subscribersDeletedThenChannelDeleted() {
-    fail("not implemented");
+    final String expectedChannelName = "another.test.channel";
+    Channel channel = eventFactory.createChannel(expectedChannelName);
+    Subscriber subscriber =
+        AccumulatorSubscriberStub.createAccumulatorSubscriber("some.subscriber");
+    eventFactory.addSubscriber(channel, subscriber);
+
+    assertTrue(channel.isDefined());
+    assertFalse(channel.isOpen());
+    assertTrue(channel.getSubscriberList().contains(subscriber));
+    assertEquals(expectedChannelName, channel.getName());
+    assertEquals(channel, subscriber.getChannel());
+    assertTrue(subscriber.getChannel().isDefined());
+    assertTrue(subscriber.isDefined());
+    eventFactory.deleteChannel(channel);
+    assertFalse(channel.isDefined());
+    assertFalse(channel.isOpen());
+    assertFalse(channel.getSubscriberList().contains(subscriber));
+    assertEquals(expectedChannelName, channel.getName());
+    assertEquals(channel, subscriber.getChannel());
+    assertFalse(subscriber.getChannel().isDefined());
+    assertFalse(subscriber.isDefined());
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_createEventDescriptionInDeletedChannel_illegalArgumentExceptionIsThrown() {
-    fail("not implemented");
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("operation not permitted for deleted channel");
+    Channel channel = eventFactory.createChannel("gus");
+    eventFactory.deleteChannel(channel);
+
+    eventFactory.createEventDescription(channel, "family", "name");
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_createPublisherInDeletedChannel_illegalArgumentExceptionIsThrown() {
-    fail("not implemented");
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("operation not permitted for deleted channel");
+    Channel channel = eventFactory.createChannel("gus");
+    eventFactory.deleteChannel(channel);
+
+    eventFactory.createPublisher(channel);
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_addSubscriverToDeletedChannel_illegalArgumentExceptionIsThrown() {
-    fail("not implemented");
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("operation not permitted for deleted channel");
+    Channel channel = eventFactory.createChannel("gus");
+    eventFactory.deleteChannel(channel);
+
+    eventFactory.addSubscriber(channel, accumulatorSubscriberStub);
   }
 
   @Test
-  @Ignore("not worked on")
-  public void EventCore_publisherPublishersEventToDeletedChannel_unsupportedOperationExceptionIsThrown() {
-    fail("not implemented");
-  }
-
-  @Test
-  @Ignore("not worked on")
-  public void EventCore_publisherUnpublishersEventToDeletedChannel_unsupportedOperationExceptionIsThrown() {
-    fail("not implemented");
-  }
-
-  @Test
-  @Ignore("not worked on")
-  public void EventCore_publisherPublishersEventAndSubjectToDeletedChannel_unsupportedOperationExceptionIsThrown() {
-    fail("not implemented");
-  }
-
-  @Test
-  @Ignore("not worked on")
-  public void EventCore_publisherUnpublishesEventAndSubjectToDeletedChannel_unsupportedOperationExceptionIsThrown() {
-    fail("not implemented");
-  }
-
-  @Test
-  @Ignore("not worked on")
   public void EventCore_deletedPublisherPublishesEventToOpenChannel_unsupportedOperationExceptionIsThrown() {
-    fail("not implemented");
+    thrown.expect(UnsupportedOperationException.class);
+    thrown.expectMessage("publisher or channel deleted");
+    eventFactory.deletePublisher(defaultTestPublisher);
+    eventFactory.openChannel(defaultTestChannel);
+
+    defaultTestPublisher.publish(defaultTestEventDescription);
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_deletedPublisherUnpublishesEventToOpenChannel_unsupportedOperationExceptionIsThrown() {
-    fail("not implemented");
+    thrown.expect(UnsupportedOperationException.class);
+    thrown.expectMessage("publisher or channel deleted");
+    eventFactory.deletePublisher(defaultTestPublisher);
+    eventFactory.openChannel(defaultTestChannel);
+
+    defaultTestPublisher.unpublish(defaultTestEventDescription);
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_deletedPublisherPublishesEventAndSubjectToOpenChannel_unsupportedOperationExceptionIsThrown() {
-    fail("not implemented");
+    thrown.expect(UnsupportedOperationException.class);
+    thrown.expectMessage("publisher or channel deleted");
+    eventFactory.deletePublisher(defaultTestPublisher);
+    eventFactory.openChannel(defaultTestChannel);
+
+    defaultTestPublisher.publish(defaultTestEventDescription, defaultTestSubject);
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_deletedPublisherUnpublishesEventAndSubjectToOpenChannel_unsupportedOperationExceptionIsThrown() {
-    fail("not implemented");
+    thrown.expect(UnsupportedOperationException.class);
+    thrown.expectMessage("publisher or channel deleted");
+    eventFactory.deletePublisher(defaultTestPublisher);
+    eventFactory.openChannel(defaultTestChannel);
+
+    defaultTestPublisher.unpublish(defaultTestEventDescription, defaultTestSubject);
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_publisherPublishesDeletedEventDescriptionToOpenChannel_unsupportedOperationExceptionIsThrown() {
-    fail("not implemented");
+    thrown.expect(UnsupportedOperationException.class);
+    thrown.expectMessage("event description deleted");
+    eventFactory.deleteEventDescription(defaultTestEventDescription);
+    eventFactory.openChannel(defaultTestChannel);
+
+    defaultTestPublisher.publish(defaultTestEventDescription);
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_publisherUnpublishesDeletedEventDescriptionToOpenChannel_unsupportedOperationExceptionIsThrown() {
-    fail("not implemented");
+    thrown.expect(UnsupportedOperationException.class);
+    thrown.expectMessage("event description deleted");
+    eventFactory.deleteEventDescription(defaultTestEventDescription);
+    eventFactory.openChannel(defaultTestChannel);
+
+    defaultTestPublisher.unpublish(defaultTestEventDescription);
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_publisherPublishesDeletedEventDescriptionAndValidSubjectToOpenChannel_unsupportedOperationExceptionIsThrown() {
-    fail("not implemented");
+    thrown.expect(UnsupportedOperationException.class);
+    thrown.expectMessage("event description deleted");
+    eventFactory.deleteEventDescription(defaultTestEventDescription);
+    eventFactory.openChannel(defaultTestChannel);
+
+    defaultTestPublisher.publish(defaultTestEventDescription, defaultTestSubject);
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_publisherUnpublishesDeletedEventDescriptionAndValidSubjectToOpenChannel_unsupportedOperationExceptionIsThrown() {
-    fail("not implemented");
+    thrown.expect(UnsupportedOperationException.class);
+    thrown.expectMessage("event description deleted");
+    eventFactory.deleteEventDescription(defaultTestEventDescription);
+    eventFactory.openChannel(defaultTestChannel);
+
+    defaultTestPublisher.unpublish(defaultTestEventDescription, defaultTestSubject);
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_publisherPublishesUnknownExternalEventDescription_illegalArgumentExceptionIsThrown() {
-    fail("not implemented");
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("unknown eventDescription implementation");
+    eventFactory.openChannel(defaultTestChannel);
+
+    defaultTestPublisher.publish(createUnknownExternalEventDescriptionImplementation());
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_publisherUnpublishesUnknownExternalEventDescription_illegalArgumentExceptionIsThrown() {
-    fail("not implemented");
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("unknown eventDescription implementation");
+    eventFactory.openChannel(defaultTestChannel);
+
+    defaultTestPublisher.unpublish(createUnknownExternalEventDescriptionImplementation());
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_publisherPublishesUnknownExternalEventDescriptionAndValidSubject_illegalArgumentExceptionIsThrown() {
-    fail("not implemented");
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("unknown eventDescription implementation");
+    eventFactory.openChannel(defaultTestChannel);
+
+    defaultTestPublisher.publish(createUnknownExternalEventDescriptionImplementation(),
+        defaultTestSubject);
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_publisherUnpublishesUnknownExternalEventDescriptionAndValidSubject_illegalArgumentExceptionIsThrown() {
-    fail("not implemented");
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("unknown eventDescription implementation");
+    eventFactory.openChannel(defaultTestChannel);
+
+    defaultTestPublisher.unpublish(createUnknownExternalEventDescriptionImplementation(),
+        defaultTestSubject);
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_addSubscriberRemoveSubscriberThenReaddSubscriber_subscriberReceivesPublishedEvents() {
-    fail("not implemented");
+    final int expectedPublishedEventListSize = 1;
+    eventFactory.addSubscriber(defaultTestChannel, accumulatorSubscriberStub);
+    eventFactory.removeSubcriber(accumulatorSubscriberStub);
+    eventFactory.addSubscriber(defaultTestChannel, accumulatorSubscriberStub);
+    eventFactory.openChannel(defaultTestChannel);
+    defaultTestPublisher.publish(defaultTestEventDescription);
+
+    assertEquals(expectedPublishedEventListSize,
+        accumulatorSubscriberStub.getProcessedPublishedEventList().size());
+    assertEquals(defaultTestEventDescription,
+        accumulatorSubscriberStub.getProcessedPublishedEventList().get(0).getEventDescription());
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_deleteChannelWithSubscriberThenAddSubscriberToAnotherChannel_subscriberReceivesPublishedEventsFromNewChannel() {
-    fail("not implemented");
+    final int expectedPublishedEventSize = 1;
+    Channel channelToDelete = eventFactory.createChannel("channel.to.delete");
+    AccumulatorSubscriberStub subscriber =
+        AccumulatorSubscriberStub.createAccumulatorSubscriber("my.test.subscriber");
+    eventFactory.addSubscriber(channelToDelete, subscriber);
+    eventFactory.deleteChannel(channelToDelete);
+    Channel channel = eventFactory.createChannel("channel");
+    eventFactory.addSubscriber(channel, subscriber);
+    Publisher publisher = eventFactory.createPublisher(channel);
+    EventDescription eventDescription =
+        eventFactory.createEventDescription(channel, "family", "name");
+    eventFactory.openChannel(channel);
+
+    publisher.publish(eventDescription);
+
+    assertEquals(expectedPublishedEventSize, subscriber.getProcessedPublishedEventList().size());
+    assertEquals(eventDescription,
+        subscriber.getProcessedPublishedEventList().get(0).getEventDescription());
+  }
+
+  @Test
+  public void EventCore_checkSubscriberIsDefinedBeforeAddingSubscriberToChannel_returnsFalse() {
+    Subscriber subscriber =
+        AccumulatorSubscriberStub.createAccumulatorSubscriber("some.subscriber");
+
+    assertFalse(subscriber.isDefined());
   }
 
   @Test

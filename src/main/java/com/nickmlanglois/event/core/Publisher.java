@@ -69,4 +69,6 @@ public interface Publisher {
    * @throws UnsupportedOperationException if eventDescription is not defined in this Channel.
    */
   void unpublish(EventDescription eventDescription, Subject subject);
+
+  boolean isDefined();
 }

@@ -54,6 +54,12 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
     }
   }
 
+  private void ensureChannelIsDefined(Channel channel) {
+    if (!channel.isDefined()) {
+      throw new IllegalArgumentException("operation not permitted for deleted channel");
+    }
+  }
+
   @Override
   public Channel createChannel(String name) {
     ensureParameterNotNull("name", name);
@@ -65,6 +71,7 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
   public EventDescription createEventDescription(Channel channel, String family, String name) {
     ensureParameterNotNull("channel", channel);
     ensureExpectedImplementation("channel", ChannelInternal.class, channel);
+    ensureChannelIsDefined(channel);
     ensureChannelIsClosed(channel);
     ensureParameterNotNull("family", family);
     ensureExpectedNamingConvention("family", family);
@@ -77,6 +84,7 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
   public Publisher createPublisher(Channel channel) {
     ensureParameterNotNull("channel", channel);
     ensureExpectedImplementation("channel", ChannelInternal.class, channel);
+    ensureChannelIsDefined(channel);
     ensureChannelIsClosed(channel);
     return nextEventFactoryInternal.createPublisher(channel);
   }
@@ -85,6 +93,7 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
   public void addSubscriber(Channel channel, Subscriber subscriber) {
     ensureParameterNotNull("channel", channel);
     ensureExpectedImplementation("channel", ChannelInternal.class, channel);
+    ensureChannelIsDefined(channel);
     ensureChannelIsClosed(channel);
     ensureParameterNotNull("subscriber", subscriber);
     ensureSubscriberGetNameValid(subscriber);

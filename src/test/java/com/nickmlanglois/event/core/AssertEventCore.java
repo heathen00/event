@@ -38,6 +38,7 @@ public class AssertEventCore {
     assertEquals(String.join(".", eventDescription.getChannel().getName(),
         eventDescription.getFamily(), eventDescription.getName()),
         eventDescription.getFullyQualifiedName());
+    assertTrue(eventDescription.isDefined());
   }
 
   public void assertExpectedEventDescription(EventDescription expectedEventDescription,
@@ -74,5 +75,6 @@ public class AssertEventCore {
   public void assertExpectedPublisher(Channel expectedChannel, Publisher publisher) {
     assertNotNull(publisher);
     assertEquals(expectedChannel, publisher.getChannel());
+    assertTrue(publisher.isDefined());
   }
 }

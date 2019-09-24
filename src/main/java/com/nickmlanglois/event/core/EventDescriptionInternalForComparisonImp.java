@@ -63,5 +63,10 @@ final class EventDescriptionInternalForComparisonImp implements EventDescription
   public void setChannelInternal(ChannelInternal channelInternal) {
     this.channelInternal = channelInternal;
   }
+
+  @Override
+  public boolean isDefined() {
+    return true;
+  }
 }
 

@@ -57,5 +57,10 @@ final class EventDescriptionInternalImp implements EventDescriptionInternal {
   public void setChannelInternal(ChannelInternal channelInternal) {
     this.channelInternal = channelInternal;
   }
+
+  @Override
+  public boolean isDefined() {
+    return channelInternal.isDefined();
+  }
 }
 

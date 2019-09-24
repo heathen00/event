@@ -50,4 +50,6 @@ public interface EventDescription extends NaturalOrder<EventDescription> {
    * @return
    */
   String getFullyQualifiedName();
+
+  boolean isDefined();
 }

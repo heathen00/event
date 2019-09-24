@@ -87,16 +87,24 @@ final class DeletedChannelInternalImp implements ChannelInternal {
   }
 
   @Override
-  public void publish(Publisher publisher, EventDescription eventDescription) {}
+  public void publish(Publisher publisher, EventDescription eventDescription) {
+    defaultDeletedChannelAction();
+  }
 
   @Override
-  public void publish(Publisher publisher, EventDescription eventDescription, Subject subject) {}
+  public void publish(Publisher publisher, EventDescription eventDescription, Subject subject) {
+    defaultDeletedChannelAction();
+  }
 
   @Override
-  public void unpublish(Publisher publisher, EventDescription eventDescription) {}
+  public void unpublish(Publisher publisher, EventDescription eventDescription) {
+    defaultDeletedChannelAction();
+  }
 
   @Override
-  public void unpublish(Publisher publisher, EventDescription eventDescription, Subject subject) {}
+  public void unpublish(Publisher publisher, EventDescription eventDescription, Subject subject) {
+    defaultDeletedChannelAction();
+  }
 
   @Override
   public void open() {}
@@ -111,4 +119,8 @@ final class DeletedChannelInternalImp implements ChannelInternal {
 
   @Override
   public void setDeleted() {}
+
+  private void defaultDeletedChannelAction() {
+    throw new UnsupportedOperationException("publisher or channel deleted");
+  }
 }

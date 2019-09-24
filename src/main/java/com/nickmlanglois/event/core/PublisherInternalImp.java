@@ -36,4 +36,9 @@ public final class PublisherInternalImp implements PublisherInternal {
   public void setChannelInternal(ChannelInternal channelInternal) {
     this.channelInternal = channelInternal;
   }
+
+  @Override
+  public boolean isDefined() {
+    return channelInternal.isDefined();
+  }
 }

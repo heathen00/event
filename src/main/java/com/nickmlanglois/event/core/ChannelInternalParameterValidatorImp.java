@@ -29,6 +29,12 @@ final class ChannelInternalParameterValidatorImp implements ChannelInternal {
     }
   }
 
+  private void ensureEventDescriptionIsDefined(EventDescription eventDescription) {
+    if (!eventDescription.isDefined()) {
+      throw new UnsupportedOperationException("event description deleted");
+    }
+  }
+
   private void ensureEventDescriptionDefinedInChannel(EventDescription eventDescription) {
     if (!getChannelCache().getEventDescriptionInternalList().contains(eventDescription)) {
       throw new UnsupportedOperationException("eventDescription "
@@ -39,6 +45,13 @@ final class ChannelInternalParameterValidatorImp implements ChannelInternal {
   private void ensureSubjectIsDefined(Subject subject) {
     if (!subject.isDefined()) {
       throw new IllegalArgumentException("Subject.isDefined() cannot return false");
+    }
+  }
+
+  private void ensureExpectedImplementation(String parameterName, Class<?> expectedClazz,
+      Object parameter) {
+    if (!expectedClazz.isInstance(parameter)) {
+      throw new IllegalArgumentException("unknown " + parameterName + " implementation");
     }
   }
 
@@ -81,6 +94,9 @@ final class ChannelInternalParameterValidatorImp implements ChannelInternal {
   public void publish(Publisher publisher, EventDescription eventDescription) {
     ensureParameterIsNotNull("eventDescription", eventDescription);
     ensureChannelIsOpen();
+    ensureExpectedImplementation("eventDescription", EventDescriptionInternal.class,
+        eventDescription);
+    ensureEventDescriptionIsDefined(eventDescription);
     ensureEventDescriptionDefinedInChannel(eventDescription);
     nextChannelInternal.publish(publisher, eventDescription);
   }
@@ -91,6 +107,9 @@ final class ChannelInternalParameterValidatorImp implements ChannelInternal {
     ensureParameterIsNotNull("subject", subject);
     ensureSubjectIsDefined(subject);
     ensureChannelIsOpen();
+    ensureExpectedImplementation("eventDescription", EventDescriptionInternal.class,
+        eventDescription);
+    ensureEventDescriptionIsDefined(eventDescription);
     ensureEventDescriptionDefinedInChannel(eventDescription);
     nextChannelInternal.publish(publisher, eventDescription, subject);
   }
@@ -99,6 +118,9 @@ final class ChannelInternalParameterValidatorImp implements ChannelInternal {
   public void unpublish(Publisher publisher, EventDescription eventDescription) {
     ensureParameterIsNotNull("eventDescription", eventDescription);
     ensureChannelIsOpen();
+    ensureExpectedImplementation("eventDescription", EventDescriptionInternal.class,
+        eventDescription);
+    ensureEventDescriptionIsDefined(eventDescription);
     ensureEventDescriptionDefinedInChannel(eventDescription);
     nextChannelInternal.unpublish(publisher, eventDescription);
   }
@@ -109,6 +131,9 @@ final class ChannelInternalParameterValidatorImp implements ChannelInternal {
     ensureParameterIsNotNull("subject", subject);
     ensureSubjectIsDefined(subject);
     ensureChannelIsOpen();
+    ensureExpectedImplementation("eventDescription", EventDescriptionInternal.class,
+        eventDescription);
+    ensureEventDescriptionIsDefined(eventDescription);
     ensureEventDescriptionDefinedInChannel(eventDescription);
     nextChannelInternal.unpublish(publisher, eventDescription, subject);
   }

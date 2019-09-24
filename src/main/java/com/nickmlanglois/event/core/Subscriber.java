@@ -76,4 +76,8 @@ public abstract class Subscriber implements SubscriberPublished<Subscriber> {
   public final void resendAllCurrentPublishedEvents() {
     channelInternal.resendAllCurrentPublishedEventsToExternalSubscriber(this);
   }
+
+  public final boolean isDefined() {
+    return (null == channelInternal ? false : channelInternal.isDefined());
+  }
 }
