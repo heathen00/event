@@ -2182,55 +2182,148 @@ public class EventCoreAcceptanceTests {
     assertEquals(expectedChannelName, channel.getName());
   }
 
+  @Test
+  public void EventCore_deleteChannelContainingEventDescriptions_eventDescriptionsDeletedThenChannelDeleted() {
+    fail("not implemented");
+  }
 
-  /**
-   * 
-   * Rough list of test scenarios:
-   * 
-   * delete channel that contains event descriptions. Event descriptions deleted, then channel
-   * deleted.
-   * 
-   * delete channel that contains publisher. Publishers deleted then channel deleted.
-   * 
-   * delete channel that contains subscribers. Subscribers removed then channel deleted.
-   * 
-   * add an event description to a deleted channel. IllegalArgumentException is thrown.
-   * 
-   * add a publisher to a deleted channel. IllegalArgumentException is thrown.
-   * 
-   * add a subscriber to a deleted channel. IllegalArgumentException
-   * 
-   * 
-   * publisher publishes event to deleted channel. UnsupportedOperationException
-   * 
-   * publisher unpublishes event to deleted channel. UnsupportedOperationException
-   * 
-   * publisher publishes event and subject to deleted channel. Unsupported ...
-   * 
-   * publisher unpublishes event and subject to deleted channel. Unsupported ...
-   * 
-   * deleted publisher publishes event to open channel. Unsupported ...
-   * 
-   * deleted publisher unpublishes event to open channel. Unsupported ...
-   * 
-   * deleted publisher publishes event and subject to open channel. Unsupported ...
-   * 
-   * deleted publisher unpublishes event and subject to open channel. Unsupported ...
-   * 
-   * publisher publishes deleted event to open channel. Unsupported ...
-   * 
-   * publisher unpublishes deleted event to open channel. Unsupported ...
-   * 
-   * publisher publishes deleted event and valid subject to open channel. Unsupported ...
-   * 
-   * publisher unpublishes deleted event and valid subject to open channel. Unsupported ...
-   * 
-   * publisher publishes / unpublishes unknown external implementation of EventDescription. What
-   * happens? Not implemented but not related to delete functionality either.
-   * 
-   * remove, add, then remove a subscriber. Should work fine.
-   * 
-   */
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_deleteChannelContainingPublisher_publishersDeletedThenChannelDeleted() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_deleteChannelContainingSubscribers_subscribersDeletedThenChannelDeleted() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_createEventDescriptionInDeletedChannel_illegalArgumentExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_createPublisherInDeletedChannel_illegalArgumentExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_addSubscriverToDeletedChannel_illegalArgumentExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_publisherPublishersEventToDeletedChannel_unsupportedOperationExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_publisherUnpublishersEventToDeletedChannel_unsupportedOperationExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_publisherPublishersEventAndSubjectToDeletedChannel_unsupportedOperationExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_publisherUnpublishesEventAndSubjectToDeletedChannel_unsupportedOperationExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_deletedPublisherPublishesEventToOpenChannel_unsupportedOperationExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_deletedPublisherUnpublishesEventToOpenChannel_unsupportedOperationExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_deletedPublisherPublishesEventAndSubjectToOpenChannel_unsupportedOperationExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_deletedPublisherUnpublishesEventAndSubjectToOpenChannel_unsupportedOperationExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_publisherPublishesDeletedEventDescriptionToOpenChannel_unsupportedOperationExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_publisherUnpublishesDeletedEventDescriptionToOpenChannel_unsupportedOperationExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_publisherPublishesDeletedEventDescriptionAndValidSubjectToOpenChannel_unsupportedOperationExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_publisherUnpublishesDeletedEventDescriptionAndValidSubjectToOpenChannel_unsupportedOperationExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_publisherPublishesUnknownExternalEventDescription_illegalArgumentExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_publisherUnpublishesUnknownExternalEventDescription_illegalArgumentExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_publisherPublishesUnknownExternalEventDescriptionAndValidSubject_illegalArgumentExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_publisherUnpublishesUnknownExternalEventDescriptionAndValidSubject_illegalArgumentExceptionIsThrown() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_addSubscriberRemoveSubscriberThenReaddSubscriber_subscriberReceivesPublishedEvents() {
+    fail("not implemented");
+  }
+
+  @Test
+  @Ignore("not worked on")
+  public void EventCore_deleteChannelWithSubscriberThenAddSubscriberToAnotherChannel_subscriberReceivesPublishedEventsFromNewChannel() {
+    fail("not implemented");
+  }
 
   @Test
   public void EventCore_getFullyQualifiedNameForDeletedEventDescription_expectedFullyQualifiedNameIsReturned() {
