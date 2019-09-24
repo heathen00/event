@@ -2067,15 +2067,35 @@ public class EventCoreAcceptanceTests {
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_deleteChannelMultipleTimes_channelDeletedOnce() {
-    fail("not implemented");
+    final String expectedChannelName = "test.channel";
+    Channel channel = eventFactory.createChannel(expectedChannelName);
+
+    assertTrue(channel.isDefined());
+    assertFalse(channel.isOpen());
+    assertEquals(expectedChannelName, channel.getName());
+    eventFactory.deleteChannel(channel);
+    assertFalse(channel.isDefined());
+    assertFalse(channel.isOpen());
+    assertEquals(expectedChannelName, channel.getName());
+
+    eventFactory.deleteChannel(channel);
+    eventFactory.deleteChannel(channel);
+    eventFactory.deleteChannel(channel);
+    assertFalse(channel.isDefined());
+    assertFalse(channel.isOpen());
+    assertEquals(expectedChannelName, channel.getName());
   }
 
   @Test
-  @Ignore("not worked on")
   public void EventCore_openChannelThatIsDeleted_illegalArgumentExceptionIsThrown() {
-    fail("not implemented");
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("cannot open a deleted channel");
+    final String expectedChannelName = "test.channel";
+    Channel channel = eventFactory.createChannel(expectedChannelName);
+    eventFactory.deleteChannel(channel);
+
+    eventFactory.openChannel(channel);
   }
 
   @Test

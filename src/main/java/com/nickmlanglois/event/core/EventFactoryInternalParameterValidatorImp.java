@@ -95,6 +95,9 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
   public void openChannel(Channel channel) {
     ensureParameterNotNull("channel", channel);
     ensureExpectedImplementation("channel", ChannelInternal.class, channel);
+    if (!channel.isDefined()) {
+      throw new IllegalArgumentException("cannot open a deleted channel");
+    }
     nextEventFactoryInternal.openChannel(channel);
   }
 
@@ -158,6 +161,9 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
   public void deleteChannel(Channel channel) {
     ensureParameterNotNull("channel", channel);
     ensureExpectedImplementation("channel", ChannelInternal.class, channel);
+    if (!channel.isDefined()) {
+      return;
+    }
     ensureChannelIsClosed(channel);
     nextEventFactoryInternal.deleteChannel(channel);
   }
