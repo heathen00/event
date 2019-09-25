@@ -23,7 +23,7 @@ public interface EventDescription extends NaturalOrder<EventDescription> {
   /**
    * Get the Channel this EventDescription was created in.
    * 
-   * @return The Channel this EventDescription was created in.
+   * @return The Channel this EventDescription was created in
    * 
    */
   Channel getChannel();
@@ -31,7 +31,7 @@ public interface EventDescription extends NaturalOrder<EventDescription> {
   /**
    * Get the Family of related EventDescription's this EventDescription is a member of.
    * 
-   * @return The Family of related EventDescription's this EventDescription is a member of.
+   * @return The Family of related EventDescription's this EventDescription is a member of
    */
   String getFamily();
 
@@ -39,7 +39,7 @@ public interface EventDescription extends NaturalOrder<EventDescription> {
    * Get the name of this EventDescription. The name is unique to this EventDescription within its
    * Family membership.
    * 
-   * @return The name of this EventDescription.
+   * @return The name of this EventDescription
    */
   String getName();
 
@@ -47,9 +47,16 @@ public interface EventDescription extends NaturalOrder<EventDescription> {
    * Get the fully qualified name of this EventDescription. It is defined based on the Channel name,
    * EventDescription family name, and EventDescription name.
    * 
-   * @return
+   * @return The fully qualified name of this EventDescription
    */
   String getFullyQualifiedName();
 
+  /**
+   * Checks whether an EventDescription is defined or not. Undefined EventDescriptions cannot be
+   * used. EventDescriptions are undefined after they have been deleted from a Channel or when the
+   * Channel that contains them is deleted.
+   * 
+   * @return true if the EventDescription is defined
+   */
   boolean isDefined();
 }

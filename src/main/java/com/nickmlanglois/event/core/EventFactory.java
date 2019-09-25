@@ -21,10 +21,10 @@ public interface EventFactory {
    * ".". New Channel instances are closed by default, however, if this method returns an existing
    * Channel instance it may already be open.
    * 
-   * @param name The unique Channel name.
-   * @throws NullPointerException if name is null.
-   * @throws IllegalArgumentException if name does not follow correct naming convention.
-   * @return A Channel instance with the specified name.
+   * @param name The unique Channel name
+   * @throws NullPointerException if name is null
+   * @throws IllegalArgumentException if name does not follow correct naming convention
+   * @return A Channel instance with the specified name
    */
   Channel createChannel(String name);
 
@@ -34,46 +34,46 @@ public interface EventFactory {
    * returned. The EventDescription family and name must consist of lower case letters, numbers, and
    * ".". The EventDescription family and name cannot start nor end with ".".
    * 
-   * @param channel The Channel that the EventDescription should be created in.
-   * @param family The family of related EventDescriptions this EventDescription belongs to.
-   * @param name The name of EventDescription. It is unique within the EventDescription family.
-   * @throws NullPointerException if channel is null.
-   * @throws NullPointerException if family is null.
-   * @throws NullPointerException if name is null.
-   * @throws IllegalArgumentException if channel is an unknown implementation.
-   * @throws UnsupportedOperationException if the channel is open.
-   * @throws IllegalArgumentException if family does not follow correct naming convention.
-   * @throws IllegalArgumentException if name does not follow correct naming convention.
+   * @param channel The Channel that the EventDescription should be created in
+   * @param family The family of related EventDescriptions this EventDescription belongs to
+   * @param name The name of EventDescription. It is unique within the EventDescription family
+   * @throws NullPointerException if channel is null
+   * @throws NullPointerException if family is null
+   * @throws NullPointerException if name is null
+   * @throws IllegalArgumentException if channel is an unknown implementation
+   * @throws UnsupportedOperationException if the channel is open
+   * @throws IllegalArgumentException if family does not follow correct naming convention
+   * @throws IllegalArgumentException if name does not follow correct naming convention
    * @return An EventDescription instance defined within the specified Channel with the specified
-   *         family and name.
+   *         family and name
    */
   EventDescription createEventDescription(Channel channel, String family, String name);
 
   /**
    * Request to create a Publisher instance in the Channel.
    * 
-   * @param channel The Channel to create the Publisher in.
-   * @throws NullPointerException if channel is null.
-   * @throws IllegalArgumentException if channel is an unknown implementation.
-   * @throws UnsupportedOperationException if the channel is open.
+   * @param channel The Channel to create the Publisher in
+   * @throws NullPointerException if channel is null
+   * @throws IllegalArgumentException if channel is an unknown implementation
+   * @throws UnsupportedOperationException if the channel is open
    * 
-   * @return A Publisher instance for the specified Channel.
+   * @return A Publisher instance for the specified Channel
    */
   Publisher createPublisher(Channel channel);
 
   /**
-   * Add a Subscriber instance to the Channel. Adding the same Subscriber instance multiple times
-   * does nothing.
+   * Add a Subscriber instance to the Channel. Adding the same Subscriber multiple times does
+   * nothing.
    * 
-   * @param channel The Channel the Subscriber should be added to.
-   * @param subscriber The subscriber to add to the Channel.
-   * @throws NullPointerException if channel is null.
-   * @throws NullPointerException if subscriber is null.
-   * @throws IllegalArgumentException if channel is an unknown implementation.
-   * @throws UnsupportedOperationException if the channel is open.
-   * @throws IllegalArgumentException if subscriber.getName() threw an exception.
-   * @throws NullPointerException if subscriber.getName() is null.
-   * @throws IllegalArgumentException if subscriber.getName() returns an empty String.
+   * @param channel The Channel the Subscriber should be added to
+   * @param subscriber The subscriber to add to the Channel
+   * @throws NullPointerException if channel is null
+   * @throws NullPointerException if subscriber is null
+   * @throws IllegalArgumentException if channel is an unknown implementation
+   * @throws UnsupportedOperationException if the channel is open
+   * @throws IllegalArgumentException if subscriber.getName() threw an exception
+   * @throws NullPointerException if subscriber.getName() is null
+   * @throws IllegalArgumentException if subscriber.getName() returns an empty String
    */
   void addSubscriber(Channel channel, Subscriber subscriber);
 
@@ -81,18 +81,53 @@ public interface EventFactory {
    * Open the specified Channel. Opening the same Channel multiple times does nothing. Opening the
    * Channel means that the Channel setup phase is complete and now the Channel is ready to start
    * processing Events.
-   * 
-   * @param channel The Channel to open.
-   * @throws NullPointerException if channel is null.
-   * @throws IllegalArgumentException if channel is an unknown implementation.
+   *
+   * @param channel The Channel to open
+   * @throws NullPointerException if channel is null
+   * @throws IllegalArgumentException if channel is an unknown implementation
    */
   void openChannel(Channel channel);
 
+  /**
+   * Remove a previously added subscriber from the Channel. Removing the same Subscriber multiple
+   * times does nothing.
+   * 
+   * @param subscriber The Subscriber to remove from the Channel
+   * @throws NullPointerException if subscriber is null
+   * @throws UnsupportedOperationException if the channel is open
+   */
   void removeSubcriber(Subscriber subscriber);
 
+  /**
+   * Delete a publisher previously created in a Channel. Deleting the same publisher multiple times
+   * does nothing.
+   * 
+   * @param publisher The Publisher to delete from the Channel
+   * @throws NullPointerException if publisher is null
+   * @throws IllegalArgumentException if the publisher is an unknown external implementation
+   * @throws UnsupportedOperationException if the channel is open
+   */
   void deletePublisher(Publisher publisher);
 
+  /**
+   * Delete an event description previously created in a Channel. Deleting the same event
+   * description multiple times does nothing.
+   * 
+   * @param eventDescription The EventDescription to delete from the Channel
+   * @throws NullPointerException if eventDescription is null
+   * @throws IllegalArgumentException if the eventDescription is an unknown external implementation
+   * @throws UnsupportedOperationException if the channel is open
+   */
   void deleteEventDescription(EventDescription eventDescription);
 
+  /**
+   * Delete a channel and all event descriptions, publishers, and subscribers defined within it.
+   * Deleting the same channel multiple times does nothing.
+   * 
+   * @param channel The channel to delete from the event system
+   * @throws NullPointerException if channel is null
+   * @throws IllegalArgumentException if the channel is an unknown external implementation
+   * @throws UnsupportedOperationException if the channel is open
+   */
   void deleteChannel(Channel channel);
 }

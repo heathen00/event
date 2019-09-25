@@ -15,7 +15,7 @@ public abstract class Subscriber implements SubscriberPublished<Subscriber> {
   /**
    * The Subscriber's unique name. It must be a non-empty String. It should be immutable.
    * 
-   * @return The Subscriber's unique name.
+   * @return The Subscriber's unique name
    */
   @Override
   public abstract String getName();
@@ -37,7 +37,7 @@ public abstract class Subscriber implements SubscriberPublished<Subscriber> {
    * The default implementation does nothing. Override this method to receive published Events in
    * this Channel.
    * 
-   * @param event The Event published in this Channel.
+   * @param event The Event published in this Channel
    */
   @Override
   public void processPublishEventCallback(Event event) {}
@@ -47,7 +47,7 @@ public abstract class Subscriber implements SubscriberPublished<Subscriber> {
    * Channel. The default implementation does nothing. Override this method to receive published
    * Events in this Channel.
    * 
-   * @param The Event unpublished in this Channel.
+   * @param The Event unpublished in this Channel
    */
   @Override
   public void processUnpublishEventCallback(Event event) {}
@@ -77,6 +77,14 @@ public abstract class Subscriber implements SubscriberPublished<Subscriber> {
     channelInternal.resendAllCurrentPublishedEventsToExternalSubscriber(this);
   }
 
+  /**
+   * Checks whether this Subscriber is defined or not. An undefined Subscriber cannot be used to
+   * receive Event publish and unpublish notifications in a Channel. Subscribers are set to
+   * undefined when they have been removed from a Channel or if the Channel they were added to has
+   * been deleted.
+   * 
+   * @return true if the Subscriber is defined
+   */
   public final boolean isDefined() {
     return (null == channelInternal ? false : channelInternal.isDefined());
   }

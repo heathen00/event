@@ -14,7 +14,7 @@ public abstract class Subject implements SubjectPublished<Subject> {
    * Subject, then the Event will have a reference to a "no subject" Subject. This "no subject"
    * Subject's isDefined() method returns false.
    * 
-   * @return true if this is a valid, defined Subject. false if this is the "no subject" Subject.
+   * @return true if this is a valid, defined Subject. false if this is the "no subject" Subject
    */
   @Override
   public boolean isDefined() {

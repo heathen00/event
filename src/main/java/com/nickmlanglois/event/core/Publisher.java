@@ -12,7 +12,7 @@ public interface Publisher {
   /**
    * Get the Channel this publisher was created in.
    * 
-   * @return The Channel this publisher was created in.
+   * @return The Channel this publisher was created in
    */
   Channel getChannel();
 
@@ -21,10 +21,10 @@ public interface Publisher {
    * associated with it. All Subscribers in the Channel will receive the published Event. Publishing
    * the same Event multiple times without unpublishing first does nothing.
    * 
-   * @param eventDescription The description of the Event to publish.
+   * @param eventDescription The description of the Event to publish
    * @throws NullPointerException if eventDescription is null
-   * @throws UnsupportedOperationException if the Channel is closed.
-   * @throws UnsupportedOperationException if eventDescription is not defined in this Channel.
+   * @throws UnsupportedOperationException if the Channel is closed
+   * @throws UnsupportedOperationException if eventDescription is not defined in this Channel
    */
   void publish(EventDescription eventDescription);
 
@@ -33,10 +33,10 @@ public interface Publisher {
    * associated with it. All Subscribers in the Channel will receive the unpublished Event.
    * Unpublishing an Event that was not initially published does nothing.
    * 
-   * @param eventDescription The description of the Event to unpublish.
+   * @param eventDescription The description of the Event to unpublish
    * @throws NullPointerException if eventDescription is null
-   * @throws UnsupportedOperationException if the Channel is closed.
-   * @throws UnsupportedOperationException if eventDescription is not defined in this Channel.
+   * @throws UnsupportedOperationException if the Channel is closed
+   * @throws UnsupportedOperationException if eventDescription is not defined in this Channel
    */
   void unpublish(EventDescription eventDescription);
 
@@ -46,12 +46,12 @@ public interface Publisher {
    * EventDescription and Subject multiple times without unpublishing first does nothing.
    * 
    * @param eventDescription The description of the Event to publish. That is, what the Event is
-   *        about.
-   * @param subject The subject of the Event. That is, who the Event is about.
+   *        about
+   * @param subject The subject of the Event. That is, who the Event is about
    * @throws NullPointerException if eventDescription is null
    * @throws NullPointerException if subject is null
-   * @throws UnsupportedOperationException if the Channel is closed.
-   * @throws UnsupportedOperationException if eventDescription is not defined in this Channel.
+   * @throws UnsupportedOperationException if the Channel is closed
+   * @throws UnsupportedOperationException if eventDescription is not defined in this Channel
    */
   void publish(EventDescription eventDescription, Subject subject);
 
@@ -61,14 +61,21 @@ public interface Publisher {
    * EventDescription and Subject that was not initially published does nothing.
    * 
    * @param eventDescription The description of the Event to publish. That is, what the Event is
-   *        about.
-   * @param subject The subject of the Event. That is, who the Event is about.
+   *        about
+   * @param subject The subject of the Event. That is, who the Event is about
    * @throws NullPointerException if eventDescription is null
    * @throws NullPointerException if subject is null
-   * @throws UnsupportedOperationException if the Channel is closed.
-   * @throws UnsupportedOperationException if eventDescription is not defined in this Channel.
+   * @throws UnsupportedOperationException if the Channel is closed
+   * @throws UnsupportedOperationException if eventDescription is not defined in this Channel
    */
   void unpublish(EventDescription eventDescription, Subject subject);
 
+  /**
+   * Checks whether this Publisher is defined. An undefined Publisher cannot be used to publish
+   * Events to a Channel. A Publisher is set to undefined if it is deleted from a Channel or if the
+   * Channel that contains it is deleted.
+   * 
+   * @return true if this Publisher is defined
+   */
   boolean isDefined();
 }

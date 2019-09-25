@@ -16,37 +16,44 @@ public interface Channel extends NaturalOrder<Channel> {
   /**
    * The Channel's unique name.
    * 
-   * @return The Channel's name.
+   * @return The Channel's name
    */
   String getName();
 
   /**
    * Get the list of EventDescriptions created in this Channel.
    * 
-   * @return The non-modifiable list of EventDescriptions in this Channel.
+   * @return The non-modifiable list of EventDescriptions in this Channel
    */
   List<EventDescription> getEventDescriptionList();
 
   /**
    * Get the list of Subscribers added to this Channel.
    * 
-   * @return The non-modifiable list of Subscribers in this Channel.
+   * @return The non-modifiable list of Subscribers in this Channel
    */
   List<Subscriber> getSubscriberList();
 
   /**
    * Get the list of Publishers created in this Channel.
    * 
-   * @return The non-modifiable list of Subscribers in this Channel.
+   * @return The non-modifiable list of Subscribers in this Channel
    */
   List<Publisher> getPublisherList();
 
   /**
    * Checks if this Channel is open and so ready to process events.
    * 
-   * @return Whether the Channel is open.
+   * @return true if the Channel is open
    */
   boolean isOpen();
 
+  /**
+   * Checks if this Channel is defined. A defined Channel can have Publishers, Subscribers, and
+   * EventDescriptions added to it. It can also be opened. A Channel will be set to undefined if it
+   * is deleted.
+   * 
+   * @return true if the Channel is defined
+   */
   boolean isDefined();
 }
