@@ -7,6 +7,7 @@ final class EventFactoryInternalHeadImp extends EventFactoryInternalBaseImp {
     EventFactoryInternal parameterValidator = new EventFactoryInternalParameterValidatorImp();
     EventFactoryInternal cacher = new EventFactoryInternalCacherImp();
     EventFactoryInternal creator = new EventFactoryInternalCreatorImp();
+    EventFactoryInternal tail = new EventFactoryInternalTailImp();
     setHeadEventFactoryInternal(this);
     setNextEventFactoryInternal(parameterValidator);
     parameterValidator.setHeadEventFactoryInternal(this);
@@ -14,7 +15,8 @@ final class EventFactoryInternalHeadImp extends EventFactoryInternalBaseImp {
     cacher.setHeadEventFactoryInternal(this);
     cacher.setNextEventFactoryInternal(creator);
     creator.setHeadEventFactoryInternal(this);
-    creator.setNextEventFactoryInternal(null);
-    // TODO when you create the Tail, just make sure that every method throws an exception.
+    creator.setNextEventFactoryInternal(tail);
+    tail.setHeadEventFactoryInternal(this);
+    tail.setNextEventFactoryInternal(null);
   }
 }

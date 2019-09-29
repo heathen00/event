@@ -28,44 +28,8 @@ final class EventFactoryInternalCreatorImp extends EventFactoryInternalBaseImp {
   }
 
   @Override
-  public void addSubscriber(Channel channel, Subscriber subscriber) {
-    throw new UnsupportedOperationException("EventFactory creator does not create subscribers");
-  }
-
-  @Override
-  public void openChannel(Channel channel) {
-    throw new UnsupportedOperationException("EventFactory creator does not open channels");
-  }
-
-  @Override
-  public InstanceCache getInstanceCache() {
-    throw new UnsupportedOperationException("EventFactory creator does not cache instances");
-  }
-
-  @Override
   public Subject getNoSubject() {
     return noSubjectSingleton;
-  }
-
-  @Override
-  public void removeSubcriber(Subscriber subscriber) {
-    throw new UnsupportedOperationException("EventFactory creator does not remove subscribers");
-  }
-
-  @Override
-  public void deletePublisher(Publisher publisher) {
-    throw new UnsupportedOperationException("EventFactory creator does not delete publishers");
-  }
-
-  @Override
-  public void deleteEventDescription(EventDescription eventDescription) {
-    throw new UnsupportedOperationException(
-        "EventFactory creator does not delete eventDescriptions");
-  }
-
-  @Override
-  public void deleteChannel(Channel channel) {
-    throw new UnsupportedOperationException("EventFactory creator does not delete channels");
   }
 
   @Override
