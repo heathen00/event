@@ -2,16 +2,7 @@ package com.nickmlanglois.event.core;
 
 import org.apache.commons.lang3.StringUtils;
 
-final class EventFactoryInternalParameterValidatorImp implements EventFactoryInternal {
-  private final EventFactoryInternal rootEventFactoryInternal;
-  private final EventFactoryInternal nextEventFactoryInternal;
-
-  EventFactoryInternalParameterValidatorImp(EventFactoryInternal rootEventFactoryInternal,
-      EventFactoryInternal nextEventFactoryInternal) {
-    this.rootEventFactoryInternal = rootEventFactoryInternal;
-    this.nextEventFactoryInternal = nextEventFactoryInternal;
-  }
-
+final class EventFactoryInternalParameterValidatorImp extends EventFactoryInternalBaseImp {
   private void ensureParameterNotNull(String parameterName, Object parameter) {
     if (null == parameter) {
       throw new NullPointerException(parameterName + " cannot equal null");
@@ -64,7 +55,7 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
   public Channel createChannel(String name) {
     ensureParameterNotNull("name", name);
     ensureExpectedNamingConvention("name", name);
-    return nextEventFactoryInternal.createChannel(name);
+    return getNextEventFactoryInternal().createChannel(name);
   }
 
   @Override
@@ -77,7 +68,7 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
     ensureExpectedNamingConvention("family", family);
     ensureParameterNotNull("name", name);
     ensureExpectedNamingConvention("name", name);
-    return nextEventFactoryInternal.createEventDescription(channel, family, name);
+    return getNextEventFactoryInternal().createEventDescription(channel, family, name);
   }
 
   @Override
@@ -86,7 +77,7 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
     ensureExpectedImplementation("channel", ChannelInternal.class, channel);
     ensureChannelIsDefined(channel);
     ensureChannelIsClosed(channel);
-    return nextEventFactoryInternal.createPublisher(channel);
+    return getNextEventFactoryInternal().createPublisher(channel);
   }
 
   @Override
@@ -97,7 +88,7 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
     ensureChannelIsClosed(channel);
     ensureParameterNotNull("subscriber", subscriber);
     ensureSubscriberGetNameValid(subscriber);
-    nextEventFactoryInternal.addSubscriber(channel, subscriber);
+    getNextEventFactoryInternal().addSubscriber(channel, subscriber);
   }
 
   @Override
@@ -107,27 +98,7 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
     if (!channel.isDefined()) {
       throw new IllegalArgumentException("cannot open a deleted channel");
     }
-    nextEventFactoryInternal.openChannel(channel);
-  }
-
-  @Override
-  public EventFactoryInternal getRootEventFactoryInternal() {
-    return rootEventFactoryInternal;
-  }
-
-  @Override
-  public InstanceCache getInstanceCache() {
-    return nextEventFactoryInternal.getInstanceCache();
-  }
-
-  @Override
-  public Subject getNoSubject() {
-    return nextEventFactoryInternal.getNoSubject();
-  }
-
-  @Override
-  public Event createEvent(EventDescription eventDescription, Subject subject) {
-    return nextEventFactoryInternal.createEvent(eventDescription, subject);
+    getNextEventFactoryInternal().openChannel(channel);
   }
 
   @Override
@@ -140,7 +111,7 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
       return;
     }
     ensureChannelIsClosed(subscriber.getChannel());
-    nextEventFactoryInternal.removeSubcriber(subscriber);
+    getNextEventFactoryInternal().removeSubcriber(subscriber);
   }
 
   @Override
@@ -151,7 +122,7 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
       return;
     }
     ensureChannelIsClosed(publisher.getChannel());
-    nextEventFactoryInternal.deletePublisher(publisher);
+    getNextEventFactoryInternal().deletePublisher(publisher);
   }
 
   @Override
@@ -163,7 +134,7 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
       return;
     }
     ensureChannelIsClosed(eventDescription.getChannel());
-    nextEventFactoryInternal.deleteEventDescription(eventDescription);
+    getNextEventFactoryInternal().deleteEventDescription(eventDescription);
   }
 
   @Override
@@ -174,11 +145,6 @@ final class EventFactoryInternalParameterValidatorImp implements EventFactoryInt
       return;
     }
     ensureChannelIsClosed(channel);
-    nextEventFactoryInternal.deleteChannel(channel);
-  }
-
-  @Override
-  public ChannelInternal getDeletedChannelInternal(String channelName) {
-    return nextEventFactoryInternal.getDeletedChannelInternal(channelName);
+    getNextEventFactoryInternal().deleteChannel(channel);
   }
 }

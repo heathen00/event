@@ -1,16 +1,15 @@
 package com.nickmlanglois.event.core;
 
-final class EventFactoryInternalCreatorImp implements EventFactoryInternal {
-  private final EventFactoryInternal rootEventFactoryInternal;
-  private final Subject noSubjectSingleton = new NoSubject();
+final class EventFactoryInternalCreatorImp extends EventFactoryInternalBaseImp {
+  private final Subject noSubjectSingleton;
 
-  public EventFactoryInternalCreatorImp(EventFactoryInternal rootEventFactoryInternal) {
-    this.rootEventFactoryInternal = rootEventFactoryInternal;
+  EventFactoryInternalCreatorImp() {
+    noSubjectSingleton = new NoSubject();
   }
 
   @Override
   public Channel createChannel(String name) {
-    return new ChannelInternalRootImp(getRootEventFactoryInternal(), name);
+    return new ChannelInternalRootImp(getHeadEventFactoryInternal(), name);
   }
 
   @Override
@@ -36,11 +35,6 @@ final class EventFactoryInternalCreatorImp implements EventFactoryInternal {
   @Override
   public void openChannel(Channel channel) {
     throw new UnsupportedOperationException("EventFactory creator does not open channels");
-  }
-
-  @Override
-  public EventFactoryInternal getRootEventFactoryInternal() {
-    return rootEventFactoryInternal;
   }
 
   @Override
@@ -76,6 +70,6 @@ final class EventFactoryInternalCreatorImp implements EventFactoryInternal {
 
   @Override
   public ChannelInternal getDeletedChannelInternal(String channelName) {
-    return new DeletedChannelInternalImp(getRootEventFactoryInternal(), channelName);
+    return new DeletedChannelInternalImp(getHeadEventFactoryInternal(), channelName);
   }
 }

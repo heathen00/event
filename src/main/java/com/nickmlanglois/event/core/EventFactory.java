@@ -11,7 +11,7 @@ package com.nickmlanglois.event.core;
  */
 public interface EventFactory {
   static EventFactory createFactory() {
-    return new EventFactoryInternalRootImp();
+    return new EventFactoryInternalHeadImp();
   }
 
   /**
