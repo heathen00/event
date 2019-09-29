@@ -7,8 +7,6 @@ interface EventFactoryInternal extends EventFactory {
 
   ChannelInternal getDeletedChannelInternal(String channelName);
 
-  // TODO should this even be defined here? I would expect the ONLY layer to access the instance
-  // cache to be the cacher.
   InstanceCache getInstanceCache();
 
   EventFactoryInternal getHeadEventFactoryInternal();

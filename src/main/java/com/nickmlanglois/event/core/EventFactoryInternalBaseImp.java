@@ -53,7 +53,7 @@ abstract class EventFactoryInternalBaseImp implements EventFactoryInternal {
 
   @Override
   public InstanceCache getInstanceCache() {
-    return getNextEventFactoryInternal().getInstanceCache();
+    return getHeadEventFactoryInternal().getInstanceCache();
   }
 
   @Override

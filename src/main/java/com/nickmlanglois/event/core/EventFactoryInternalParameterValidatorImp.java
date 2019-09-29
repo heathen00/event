@@ -51,6 +51,13 @@ final class EventFactoryInternalParameterValidatorImp extends EventFactoryIntern
     }
   }
 
+  private void ensureChannelBelongsToFactory(Channel channel) {
+    if (null == getInstanceCache().getChannelCache(channel.getName())) {
+      throw new UnsupportedOperationException(
+          "channel " + channel.getName() + " does not exist in this factory");
+    }
+  }
+
   @Override
   public Channel createChannel(String name) {
     ensureParameterNotNull("name", name);
@@ -64,6 +71,7 @@ final class EventFactoryInternalParameterValidatorImp extends EventFactoryIntern
     ensureExpectedImplementation("channel", ChannelInternal.class, channel);
     ensureChannelIsDefined(channel);
     ensureChannelIsClosed(channel);
+    ensureChannelBelongsToFactory(channel);
     ensureParameterNotNull("family", family);
     ensureExpectedNamingConvention("family", family);
     ensureParameterNotNull("name", name);
@@ -77,6 +85,7 @@ final class EventFactoryInternalParameterValidatorImp extends EventFactoryIntern
     ensureExpectedImplementation("channel", ChannelInternal.class, channel);
     ensureChannelIsDefined(channel);
     ensureChannelIsClosed(channel);
+    ensureChannelBelongsToFactory(channel);
     return getNextEventFactoryInternal().createPublisher(channel);
   }
 
@@ -86,6 +95,7 @@ final class EventFactoryInternalParameterValidatorImp extends EventFactoryIntern
     ensureExpectedImplementation("channel", ChannelInternal.class, channel);
     ensureChannelIsDefined(channel);
     ensureChannelIsClosed(channel);
+    ensureChannelBelongsToFactory(channel);
     ensureParameterNotNull("subscriber", subscriber);
     ensureSubscriberGetNameValid(subscriber);
     getNextEventFactoryInternal().addSubscriber(channel, subscriber);
@@ -98,6 +108,7 @@ final class EventFactoryInternalParameterValidatorImp extends EventFactoryIntern
     if (!channel.isDefined()) {
       throw new IllegalArgumentException("cannot open a deleted channel");
     }
+    ensureChannelBelongsToFactory(channel);
     getNextEventFactoryInternal().openChannel(channel);
   }
 

@@ -1,34 +1,20 @@
 package com.nickmlanglois.event.core;
 
 final class EventFactoryInternalCacherImp extends EventFactoryInternalBaseImp {
-  private final InstanceCache instanceCache;
-
-  EventFactoryInternalCacherImp() {
-    this.instanceCache = InstanceCache.createInstanceCache();
-  }
-
-  private void ensureChannelBelongsToFactory(Channel channel) {
-    if (null == instanceCache.getChannelCache(channel.getName())) {
-      throw new UnsupportedOperationException(
-          "channel " + channel.getName() + " does not exist in this factory");
-    }
-  }
-
   @Override
   public Channel createChannel(String name) {
     ChannelInternal channelInternal = null;
-    if (null == instanceCache.getChannelCache(name)) {
+    if (null == getInstanceCache().getChannelCache(name)) {
       channelInternal = (ChannelInternal) getNextEventFactoryInternal().createChannel(name);
-      instanceCache.addChannelCache(name, channelInternal);
+      getInstanceCache().addChannelCache(name, channelInternal);
     } else {
-      channelInternal = instanceCache.getChannelCache(name).getChannelInternal();
+      channelInternal = getInstanceCache().getChannelCache(name).getChannelInternal();
     }
     return channelInternal;
   }
 
   @Override
   public EventDescription createEventDescription(Channel channel, String family, String name) {
-    ensureChannelBelongsToFactory(channel);
     EventDescription eventDescription =
         getChannelCache(channel).getEventDescriptionInternal(channel, family, name);
     if (null == eventDescription) {
@@ -42,7 +28,6 @@ final class EventFactoryInternalCacherImp extends EventFactoryInternalBaseImp {
 
   @Override
   public Publisher createPublisher(Channel channel) {
-    ensureChannelBelongsToFactory(channel);
     PublisherInternal newPublisher =
         (PublisherInternal) getNextEventFactoryInternal().createPublisher(channel);
     getChannelCache(channel).addPublisherInternal(newPublisher);
@@ -51,7 +36,6 @@ final class EventFactoryInternalCacherImp extends EventFactoryInternalBaseImp {
 
   @Override
   public void addSubscriber(Channel channel, Subscriber subscriber) {
-    ensureChannelBelongsToFactory(channel);
     SubscriberInternal subscriberInternal =
         getChannelCache(channel).getSubscriberInternalForExternalSubscriber(subscriber);
     if (null != subscriberInternal) {
@@ -71,17 +55,11 @@ final class EventFactoryInternalCacherImp extends EventFactoryInternalBaseImp {
 
   @Override
   public void openChannel(Channel channel) {
-    ensureChannelBelongsToFactory(channel);
     getChannelCache(channel).getChannelInternal().open();
   }
 
   private ChannelCache getChannelCache(Channel channel) {
-    return instanceCache.getChannelCache(channel.getName());
-  }
-
-  @Override
-  public InstanceCache getInstanceCache() {
-    return instanceCache;
+    return getInstanceCache().getChannelCache(channel.getName());
   }
 
   @Override
