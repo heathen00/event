@@ -16,11 +16,11 @@ final class EventFactoryInternalCacherImp extends EventFactoryInternalBaseImp {
   @Override
   public EventDescription createEventDescription(Channel channel, String family, String name) {
     EventDescription eventDescription =
-        getChannelCache(channel).getEventDescriptionInternal(channel, family, name);
+        getChannelCacheInternal(channel).getEventDescriptionInternal(channel, family, name);
     if (null == eventDescription) {
       eventDescription =
           getNextEventFactoryInternal().createEventDescription(channel, family, name);
-      getChannelCache(channel)
+      getChannelCacheInternal(channel)
           .addEventDescriptionInternal((EventDescriptionInternal) eventDescription);
     }
     return eventDescription;
@@ -30,14 +30,14 @@ final class EventFactoryInternalCacherImp extends EventFactoryInternalBaseImp {
   public Publisher createPublisher(Channel channel) {
     PublisherInternal newPublisher =
         (PublisherInternal) getNextEventFactoryInternal().createPublisher(channel);
-    getChannelCache(channel).addPublisherInternal(newPublisher);
+    getChannelCacheInternal(channel).addPublisherInternal(newPublisher);
     return newPublisher;
   }
 
   @Override
   public void addSubscriber(Channel channel, Subscriber subscriber) {
     SubscriberInternal subscriberInternal =
-        getChannelCache(channel).getSubscriberInternalForExternalSubscriber(subscriber);
+        getChannelCacheInternal(channel).getSubscriberInternalForExternalSubscriber(subscriber);
     if (null != subscriberInternal) {
       return;
     }
@@ -49,41 +49,41 @@ final class EventFactoryInternalCacherImp extends EventFactoryInternalBaseImp {
       throw new UnsupportedOperationException("subscriber already subscribed to channel "
           + subscriberInternalsCurrentChannelInternal.getName());
     }
-    getChannelCache(channel).addSubscriberInternal(subscriberInternal);
+    getChannelCacheInternal(channel).addSubscriberInternal(subscriberInternal);
     subscriber.setChannel(channel);
   }
 
   @Override
   public void openChannel(Channel channel) {
-    getChannelCache(channel).getChannelInternal().open();
+    getChannelCacheInternal(channel).getChannelInternal().open();
   }
 
-  private ChannelCacheInternal getChannelCache(Channel channel) {
+  private ChannelCacheInternal getChannelCacheInternal(Channel channel) {
     return getInstanceCacheInternal().getChannelCacheInternal(channel.getName());
   }
 
   @Override
   public void removeSubcriber(Subscriber subscriber) {
-    SubscriberInternal subscriberInternal = getChannelCache(subscriber.getChannel())
+    SubscriberInternal subscriberInternal = getChannelCacheInternal(subscriber.getChannel())
         .getSubscriberInternalForExternalSubscriber(subscriber);
     if (null == subscriberInternal) {
       return;
     }
-    getChannelCache(subscriber.getChannel()).removeSubscriberInternal(subscriberInternal);
+    getChannelCacheInternal(subscriber.getChannel()).removeSubscriberInternal(subscriberInternal);
     subscriber.setChannel(
         getHeadEventFactoryInternal().getDeletedChannelInternal(subscriber.getChannel().getName()));
   }
 
   @Override
   public void deletePublisher(Publisher publisher) {
-    getChannelCache(publisher.getChannel()).removePublisherInternal((PublisherInternal) publisher);
+    getChannelCacheInternal(publisher.getChannel()).removePublisherInternal((PublisherInternal) publisher);
     ((PublisherInternal) publisher).setChannelInternal(
         getHeadEventFactoryInternal().getDeletedChannelInternal(publisher.getChannel().getName()));
   }
 
   @Override
   public void deleteEventDescription(EventDescription eventDescription) {
-    getChannelCache(eventDescription.getChannel())
+    getChannelCacheInternal(eventDescription.getChannel())
         .removeEventDescriptionInternal((EventDescriptionInternal) eventDescription);
     ((EventDescriptionInternal) eventDescription).setChannelInternal(getHeadEventFactoryInternal()
         .getDeletedChannelInternal(eventDescription.getChannel().getName()));
