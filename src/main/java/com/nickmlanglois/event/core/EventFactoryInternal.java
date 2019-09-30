@@ -21,4 +21,8 @@ interface EventFactoryInternal extends EventFactory {
       String family, String name);
 
   void deleteEventDescriptionInternal(EventDescriptionInternal eventDescriptionInternal);
+
+  PublisherInternal createPublisherInternal(ChannelInternal channelInternal);
+
+  void deletePublisherInternal(PublisherInternal publisherInternal);
 }

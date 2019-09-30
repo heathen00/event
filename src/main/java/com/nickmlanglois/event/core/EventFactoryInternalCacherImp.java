@@ -29,11 +29,11 @@ final class EventFactoryInternalCacherImp extends EventFactoryInternalBaseImp {
   }
 
   @Override
-  public Publisher createPublisher(Channel channel) {
-    PublisherInternal newPublisher =
-        (PublisherInternal) getNextEventFactoryInternal().createPublisher(channel);
-    getChannelCacheInternal(channel).addPublisherInternal(newPublisher);
-    return newPublisher;
+  public PublisherInternal createPublisherInternal(ChannelInternal channelInternal) {
+    PublisherInternal publisherInternal =
+        getNextEventFactoryInternal().createPublisherInternal(channelInternal);
+    getChannelCacheInternal(channelInternal).addPublisherInternal(publisherInternal);
+    return publisherInternal;
   }
 
   @Override
@@ -77,11 +77,11 @@ final class EventFactoryInternalCacherImp extends EventFactoryInternalBaseImp {
   }
 
   @Override
-  public void deletePublisher(Publisher publisher) {
-    getChannelCacheInternal(publisher.getChannel())
-        .removePublisherInternal((PublisherInternal) publisher);
-    ((PublisherInternal) publisher).setChannelInternal(
-        getHeadEventFactoryInternal().getDeletedChannelInternal(publisher.getChannel().getName()));
+  public void deletePublisherInternal(PublisherInternal publisherInternal) {
+    getChannelCacheInternal(publisherInternal.getChannel())
+        .removePublisherInternal(publisherInternal);
+    publisherInternal.setChannelInternal(getHeadEventFactoryInternal()
+        .getDeletedChannelInternal(publisherInternal.getChannel().getName()));
   }
 
   @Override

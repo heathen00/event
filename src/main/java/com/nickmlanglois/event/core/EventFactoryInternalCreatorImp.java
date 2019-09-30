@@ -24,8 +24,8 @@ final class EventFactoryInternalCreatorImp extends EventFactoryInternalBaseImp {
   }
 
   @Override
-  public Publisher createPublisher(Channel channel) {
-    return new PublisherInternalImp((ChannelInternal) channel);
+  public PublisherInternal createPublisherInternal(ChannelInternal channelInternal) {
+    return new PublisherInternalImp(channelInternal);
   }
 
   @Override
