@@ -8,6 +8,7 @@ final class EventFactoryInternalHeadImp extends EventFactoryInternalBaseImp {
     instanceCacheInternal = InstanceCacheInternal.createInstanceCacheInternal();
 
     EventFactoryInternal parameterValidator = new EventFactoryInternalParameterValidatorImp();
+    EventFactoryInternal mapper = new EventFactoryInternalPublishedToInternalImp();
     EventFactoryInternal cacher = new EventFactoryInternalCacherImp();
     EventFactoryInternal creator = new EventFactoryInternalCreatorImp();
     EventFactoryInternal tail = new EventFactoryInternalTailImp();
@@ -15,7 +16,9 @@ final class EventFactoryInternalHeadImp extends EventFactoryInternalBaseImp {
     setHeadEventFactoryInternal(this);
     setNextEventFactoryInternal(parameterValidator);
     parameterValidator.setHeadEventFactoryInternal(this);
-    parameterValidator.setNextEventFactoryInternal(cacher);
+    parameterValidator.setNextEventFactoryInternal(mapper);
+    mapper.setHeadEventFactoryInternal(this);
+    mapper.setNextEventFactoryInternal(cacher);
     cacher.setHeadEventFactoryInternal(this);
     cacher.setNextEventFactoryInternal(creator);
     creator.setHeadEventFactoryInternal(this);

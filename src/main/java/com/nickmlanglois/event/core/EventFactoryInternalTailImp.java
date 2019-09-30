@@ -95,4 +95,16 @@ final class EventFactoryInternalTailImp implements EventFactoryInternal {
 
   @Override
   public void setNextEventFactoryInternal(EventFactoryInternal nextEventFactoryInternal) {}
+
+  @Override
+  public EventDescriptionInternal createEventDescriptionInternal(ChannelInternal channelInternal,
+      String family, String name) {
+    throwExceptionBecauseTailReached("createEventDescriptionInternal()");
+    return null;
+  }
+
+  @Override
+  public void deleteEventDescriptionInternal(EventDescriptionInternal eventDescriptionInternal) {
+    throwExceptionBecauseTailReached("deleteEventDescriptionInternal()");
+  }
 }

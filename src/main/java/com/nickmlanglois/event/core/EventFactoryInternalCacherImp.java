@@ -8,22 +8,24 @@ final class EventFactoryInternalCacherImp extends EventFactoryInternalBaseImp {
       channelInternal = (ChannelInternal) getNextEventFactoryInternal().createChannel(name);
       getInstanceCacheInternal().addChannelCacheInternal(name, channelInternal);
     } else {
-      channelInternal = getInstanceCacheInternal().getChannelCacheInternal(name).getChannelInternal();
+      channelInternal =
+          getInstanceCacheInternal().getChannelCacheInternal(name).getChannelInternal();
     }
     return channelInternal;
   }
 
   @Override
-  public EventDescription createEventDescription(Channel channel, String family, String name) {
-    EventDescription eventDescription =
-        getChannelCacheInternal(channel).getEventDescriptionInternal(channel, family, name);
-    if (null == eventDescription) {
-      eventDescription =
-          getNextEventFactoryInternal().createEventDescription(channel, family, name);
-      getChannelCacheInternal(channel)
-          .addEventDescriptionInternal((EventDescriptionInternal) eventDescription);
+  public EventDescriptionInternal createEventDescriptionInternal(ChannelInternal channelInternal,
+      String family, String name) {
+    EventDescriptionInternal eventDescriptionInternal = getChannelCacheInternal(channelInternal)
+        .getEventDescriptionInternal(channelInternal, family, name);
+    if (null == eventDescriptionInternal) {
+      eventDescriptionInternal = getNextEventFactoryInternal()
+          .createEventDescriptionInternal(channelInternal, family, name);
+      getChannelCacheInternal(channelInternal)
+          .addEventDescriptionInternal(eventDescriptionInternal);
     }
-    return eventDescription;
+    return eventDescriptionInternal;
   }
 
   @Override
@@ -76,17 +78,18 @@ final class EventFactoryInternalCacherImp extends EventFactoryInternalBaseImp {
 
   @Override
   public void deletePublisher(Publisher publisher) {
-    getChannelCacheInternal(publisher.getChannel()).removePublisherInternal((PublisherInternal) publisher);
+    getChannelCacheInternal(publisher.getChannel())
+        .removePublisherInternal((PublisherInternal) publisher);
     ((PublisherInternal) publisher).setChannelInternal(
         getHeadEventFactoryInternal().getDeletedChannelInternal(publisher.getChannel().getName()));
   }
 
   @Override
-  public void deleteEventDescription(EventDescription eventDescription) {
-    getChannelCacheInternal(eventDescription.getChannel())
-        .removeEventDescriptionInternal((EventDescriptionInternal) eventDescription);
-    ((EventDescriptionInternal) eventDescription).setChannelInternal(getHeadEventFactoryInternal()
-        .getDeletedChannelInternal(eventDescription.getChannel().getName()));
+  public void deleteEventDescriptionInternal(EventDescriptionInternal eventDescriptionInternal) {
+    getChannelCacheInternal(eventDescriptionInternal.getChannel())
+        .removeEventDescriptionInternal(eventDescriptionInternal);
+    eventDescriptionInternal.setChannelInternal(getHeadEventFactoryInternal()
+        .getDeletedChannelInternal(eventDescriptionInternal.getChannel().getName()));
   }
 
   @Override

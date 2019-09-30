@@ -16,4 +16,9 @@ interface EventFactoryInternal extends EventFactory {
   EventFactoryInternal getNextEventFactoryInternal();
 
   void setNextEventFactoryInternal(EventFactoryInternal nextEventFactoryInternal);
+
+  EventDescriptionInternal createEventDescriptionInternal(ChannelInternal channelInternal,
+      String family, String name);
+
+  void deleteEventDescriptionInternal(EventDescriptionInternal eventDescriptionInternal);
 }

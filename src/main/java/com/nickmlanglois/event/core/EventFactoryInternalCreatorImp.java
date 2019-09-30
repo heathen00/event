@@ -13,8 +13,9 @@ final class EventFactoryInternalCreatorImp extends EventFactoryInternalBaseImp {
   }
 
   @Override
-  public EventDescription createEventDescription(Channel channel, String family, String name) {
-    return new EventDescriptionInternalImp((ChannelInternal) channel, family, name);
+  public EventDescriptionInternal createEventDescriptionInternal(ChannelInternal channelInternal,
+      String family, String name) {
+    return new EventDescriptionInternalImp(channelInternal, family, name);
   }
 
   @Override

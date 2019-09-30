@@ -90,4 +90,16 @@ abstract class EventFactoryInternalBaseImp implements EventFactoryInternal {
   public final void setNextEventFactoryInternal(EventFactoryInternal nextEventFactoryInternal) {
     this.nextEventFactoryInternal = nextEventFactoryInternal;
   }
+
+  @Override
+  public EventDescriptionInternal createEventDescriptionInternal(ChannelInternal channelInternal,
+      String family, String name) {
+    return getNextEventFactoryInternal().createEventDescriptionInternal(channelInternal, family,
+        name);
+  }
+
+  @Override
+  public void deleteEventDescriptionInternal(EventDescriptionInternal eventDescriptionInternal) {
+    getNextEventFactoryInternal().deleteEventDescriptionInternal(eventDescriptionInternal);
+  }
 }
