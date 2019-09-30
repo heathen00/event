@@ -52,7 +52,7 @@ final class EventFactoryInternalParameterValidatorImp extends EventFactoryIntern
   }
 
   private void ensureChannelBelongsToFactory(Channel channel) {
-    if (null == getInstanceCache().getChannelCache(channel.getName())) {
+    if (null == getInstanceCacheInternal().getChannelCacheInternal(channel.getName())) {
       throw new UnsupportedOperationException(
           "channel " + channel.getName() + " does not exist in this factory");
     }

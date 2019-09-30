@@ -26,8 +26,8 @@ final class ChannelInternalCoreImp extends NaturalOrderBase<Channel> implements 
     isOpen = false;
   }
 
-  private ChannelCache getChannelCache() {
-    return eventFactoryInternal.getInstanceCache().getChannelCache(getName());
+  private ChannelCacheInternal getChannelCache() {
+    return eventFactoryInternal.getInstanceCacheInternal().getChannelCacheInternal(getName());
   }
 
   private boolean shouldEventBePublishedAndUpdatePublishedEvents(Event event, Publisher publisher) {

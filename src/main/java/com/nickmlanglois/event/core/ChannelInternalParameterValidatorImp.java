@@ -12,9 +12,9 @@ final class ChannelInternalParameterValidatorImp implements ChannelInternal {
     this.nextChannelInternal = nextChannelInternal;
   }
 
-  private ChannelCache getChannelCache() {
-    return nextChannelInternal.getEventFactoryInternal().getInstanceCache()
-        .getChannelCache(getName());
+  private ChannelCacheInternal getChannelCache() {
+    return nextChannelInternal.getEventFactoryInternal().getInstanceCacheInternal()
+        .getChannelCacheInternal(getName());
   }
 
   private void ensureParameterIsNotNull(String parameterName, Object parameter) {

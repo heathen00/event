@@ -3,14 +3,14 @@ package com.nickmlanglois.event.core;
 import java.util.ArrayList;
 import java.util.List;
 
-final class ChannelCacheImp implements ChannelCache {
+final class ChannelCacheInternalImp implements ChannelCacheInternal {
   private final ChannelInternal channelInternal;
   private final List<SubscriberInternal> subscriberInternalList;
   private final List<PublisherInternal> publisherInternalList;
   private final List<EventDescriptionInternal> eventDescriptionInternalList;
   private final EventDescriptionInternalForComparisonImp eventDescriptionInternalForComparison;
 
-  ChannelCacheImp(ChannelInternal channelInternal) {
+  ChannelCacheInternalImp(ChannelInternal channelInternal) {
     this.channelInternal = channelInternal;
     subscriberInternalList = new ArrayList<>();
     publisherInternalList = new ArrayList<>();

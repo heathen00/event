@@ -1,11 +1,11 @@
 package com.nickmlanglois.event.core;
 
 final class EventFactoryInternalHeadImp extends EventFactoryInternalBaseImp {
-  private final InstanceCache instanceCache;
+  private final InstanceCacheInternal instanceCacheInternal;
 
   EventFactoryInternalHeadImp() {
     super();
-    instanceCache = InstanceCache.createInstanceCache();
+    instanceCacheInternal = InstanceCacheInternal.createInstanceCacheInternal();
 
     EventFactoryInternal parameterValidator = new EventFactoryInternalParameterValidatorImp();
     EventFactoryInternal cacher = new EventFactoryInternalCacherImp();
@@ -25,7 +25,7 @@ final class EventFactoryInternalHeadImp extends EventFactoryInternalBaseImp {
   }
 
   @Override
-  public InstanceCache getInstanceCache() {
-    return instanceCache;
+  public InstanceCacheInternal getInstanceCacheInternal() {
+    return instanceCacheInternal;
   }
 }

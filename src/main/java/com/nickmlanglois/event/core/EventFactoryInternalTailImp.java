@@ -17,7 +17,7 @@ final class EventFactoryInternalTailImp implements EventFactoryInternal {
   }
 
   @Override
-  public InstanceCache getInstanceCache() {
+  public InstanceCacheInternal getInstanceCacheInternal() {
     throwExceptionBecauseTailReached("getInstanceCache()");
     return null;
   }

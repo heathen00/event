@@ -4,11 +4,11 @@ final class EventFactoryInternalCacherImp extends EventFactoryInternalBaseImp {
   @Override
   public Channel createChannel(String name) {
     ChannelInternal channelInternal = null;
-    if (null == getInstanceCache().getChannelCache(name)) {
+    if (null == getInstanceCacheInternal().getChannelCacheInternal(name)) {
       channelInternal = (ChannelInternal) getNextEventFactoryInternal().createChannel(name);
-      getInstanceCache().addChannelCache(name, channelInternal);
+      getInstanceCacheInternal().addChannelCacheInternal(name, channelInternal);
     } else {
-      channelInternal = getInstanceCache().getChannelCache(name).getChannelInternal();
+      channelInternal = getInstanceCacheInternal().getChannelCacheInternal(name).getChannelInternal();
     }
     return channelInternal;
   }
@@ -43,7 +43,7 @@ final class EventFactoryInternalCacherImp extends EventFactoryInternalBaseImp {
     }
     subscriberInternal = new SubscriberInternalImp(subscriber);
     ChannelInternal subscriberInternalsCurrentChannelInternal =
-        getInstanceCache().getChannelInternalForSubscriberInternal(subscriberInternal);
+        getInstanceCacheInternal().getChannelInternalForSubscriberInternal(subscriberInternal);
     if (null != subscriberInternalsCurrentChannelInternal
         && !channel.equals(subscriberInternalsCurrentChannelInternal)) {
       throw new UnsupportedOperationException("subscriber already subscribed to channel "
@@ -58,8 +58,8 @@ final class EventFactoryInternalCacherImp extends EventFactoryInternalBaseImp {
     getChannelCache(channel).getChannelInternal().open();
   }
 
-  private ChannelCache getChannelCache(Channel channel) {
-    return getInstanceCache().getChannelCache(channel.getName());
+  private ChannelCacheInternal getChannelCache(Channel channel) {
+    return getInstanceCacheInternal().getChannelCacheInternal(channel.getName());
   }
 
   @Override
@@ -91,7 +91,7 @@ final class EventFactoryInternalCacherImp extends EventFactoryInternalBaseImp {
 
   @Override
   public void deleteChannel(Channel channel) {
-    getInstanceCache().deleteChannelCache(channel.getName());
+    getInstanceCacheInternal().deleteChannelCacheInternal(channel.getName());
     ((ChannelInternal) channel).setDeleted();
   }
 }

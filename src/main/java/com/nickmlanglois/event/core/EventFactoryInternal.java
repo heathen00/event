@@ -7,7 +7,7 @@ interface EventFactoryInternal extends EventFactory {
 
   ChannelInternal getDeletedChannelInternal(String channelName);
 
-  InstanceCache getInstanceCache();
+  InstanceCacheInternal getInstanceCacheInternal();
 
   EventFactoryInternal getHeadEventFactoryInternal();
 

@@ -2,7 +2,7 @@ package com.nickmlanglois.event.core;
 
 import java.util.List;
 
-interface ChannelCache {
+interface ChannelCacheInternal {
   ChannelInternal getChannelInternal();
 
   List<SubscriberInternal> getSubscriberInternalList();
