@@ -8,7 +8,7 @@ final class EventFactoryInternalCreatorImp extends EventFactoryInternalBaseImp {
   }
 
   @Override
-  public Channel createChannel(String name) {
+  public ChannelInternal createChannelInternal(String name) {
     return new ChannelInternalRootImp(getHeadEventFactoryInternal(), name);
   }
 

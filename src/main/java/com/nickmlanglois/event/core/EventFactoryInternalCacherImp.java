@@ -2,10 +2,10 @@ package com.nickmlanglois.event.core;
 
 final class EventFactoryInternalCacherImp extends EventFactoryInternalBaseImp {
   @Override
-  public Channel createChannel(String name) {
+  public ChannelInternal createChannelInternal(String name) {
     ChannelInternal channelInternal = null;
     if (null == getInstanceCacheInternal().getChannelCacheInternal(name)) {
-      channelInternal = (ChannelInternal) getNextEventFactoryInternal().createChannel(name);
+      channelInternal = getNextEventFactoryInternal().createChannelInternal(name);
       getInstanceCacheInternal().addChannelCacheInternal(name, channelInternal);
     } else {
       channelInternal =
@@ -44,6 +44,13 @@ final class EventFactoryInternalCacherImp extends EventFactoryInternalBaseImp {
       return;
     }
     subscriberInternal = new SubscriberInternalImp(subscriber);
+    ensureSubscriberNotSubscribedToAnotherChannel(channel, subscriberInternal);
+    getChannelCacheInternal(channel).addSubscriberInternal(subscriberInternal);
+    subscriber.setChannel(channel);
+  }
+
+  private void ensureSubscriberNotSubscribedToAnotherChannel(Channel channel,
+      SubscriberInternal subscriberInternal) {
     ChannelInternal subscriberInternalsCurrentChannelInternal =
         getInstanceCacheInternal().getChannelInternalForSubscriberInternal(subscriberInternal);
     if (null != subscriberInternalsCurrentChannelInternal
@@ -51,8 +58,6 @@ final class EventFactoryInternalCacherImp extends EventFactoryInternalBaseImp {
       throw new UnsupportedOperationException("subscriber already subscribed to channel "
           + subscriberInternalsCurrentChannelInternal.getName());
     }
-    getChannelCacheInternal(channel).addSubscriberInternal(subscriberInternal);
-    subscriber.setChannel(channel);
   }
 
   @Override
@@ -93,8 +98,8 @@ final class EventFactoryInternalCacherImp extends EventFactoryInternalBaseImp {
   }
 
   @Override
-  public void deleteChannel(Channel channel) {
-    getInstanceCacheInternal().deleteChannelCacheInternal(channel.getName());
-    ((ChannelInternal) channel).setDeleted();
+  public void deleteChannelInternal(ChannelInternal channelInternal) {
+    getInstanceCacheInternal().deleteChannelCacheInternal(channelInternal.getName());
+    channelInternal.setDeleted();
   }
 }

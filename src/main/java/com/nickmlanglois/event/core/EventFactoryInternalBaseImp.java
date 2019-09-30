@@ -112,4 +112,14 @@ abstract class EventFactoryInternalBaseImp implements EventFactoryInternal {
   public void deletePublisherInternal(PublisherInternal publisherInternal) {
     getNextEventFactoryInternal().deletePublisherInternal(publisherInternal);
   }
+
+  @Override
+  public ChannelInternal createChannelInternal(String name) {
+    return getNextEventFactoryInternal().createChannelInternal(name);
+  }
+
+  @Override
+  public void deleteChannelInternal(ChannelInternal channelInternal) {
+    getNextEventFactoryInternal().deleteChannelInternal(channelInternal);
+  }
 }

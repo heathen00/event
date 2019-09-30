@@ -25,4 +25,8 @@ interface EventFactoryInternal extends EventFactory {
   PublisherInternal createPublisherInternal(ChannelInternal channelInternal);
 
   void deletePublisherInternal(PublisherInternal publisherInternal);
+
+  ChannelInternal createChannelInternal(String name);
+
+  void deleteChannelInternal(ChannelInternal channelInternal);
 }

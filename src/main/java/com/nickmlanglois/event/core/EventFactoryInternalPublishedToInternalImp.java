@@ -23,4 +23,14 @@ final class EventFactoryInternalPublishedToInternalImp extends EventFactoryInter
   public void deletePublisher(Publisher publisher) {
     getNextEventFactoryInternal().deletePublisherInternal((PublisherInternal) publisher);
   }
+
+  @Override
+  public Channel createChannel(String name) {
+    return getNextEventFactoryInternal().createChannelInternal(name);
+  }
+
+  @Override
+  public void deleteChannel(Channel channel) {
+    getNextEventFactoryInternal().deleteChannelInternal((ChannelInternal) channel);
+  }
 }

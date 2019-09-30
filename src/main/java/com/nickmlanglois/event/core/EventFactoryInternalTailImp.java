@@ -118,4 +118,15 @@ final class EventFactoryInternalTailImp implements EventFactoryInternal {
   public void deletePublisherInternal(PublisherInternal publisherInternal) {
     throwExceptionBecauseTailReached("deletePublisherInternal()");
   }
+
+  @Override
+  public ChannelInternal createChannelInternal(String name) {
+    throwExceptionBecauseTailReached("createChannelInternal()");
+    return null;
+  }
+
+  @Override
+  public void deleteChannelInternal(ChannelInternal channelInternal) {
+    throwExceptionBecauseTailReached("deleteChannelInternal()");
+  }
 }
