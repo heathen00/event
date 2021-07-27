@@ -1,4 +1,11 @@
-apply plugin: 'java-library'
+plugins {
+  id 'java-library'
+  id 'eclipse'
+}
+
+repositories {
+  mavenCentral()
+}
 
 sourceSets {
   test {
@@ -9,12 +16,9 @@ sourceSets {
   }
 }
 
-repositories {
-    jcenter()
-}
-
 dependencies {
-    testImplementation 'junit:junit:4.12'
+  implementation 'org.apache.commons:commons-lang3:3.12.0'
+  testImplementation 'junit:junit:4.12'
 }
 
 
